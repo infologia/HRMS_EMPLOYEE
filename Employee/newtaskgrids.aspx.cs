@@ -140,22 +140,34 @@ public partial class Employee_taskgrids : System.Web.UI.Page
         string projectKey = Request.QueryString["id"];
         string userid = this.SC.Userid;
         
-        // Check if user is Division 1 (Team Lead) or Destination 24/11
         bool showCreateButton = false;
         
         if (!string.IsNullOrEmpty(userid))
         {
-            SqlCommand cmdCheck = new SqlCommand("SELECT Division, Destination FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Employeestatus = 1");
-            cmdCheck.Parameters.AddWithValue("@EmpId", userid);
-            DataTable dtCheck = DA.GetDataTable(cmdCheck);
-            
-            if (dtCheck != null && dtCheck.Rows.Count > 0)
+            if (!string.IsNullOrEmpty(projectKey))
             {
-                int userDivision = dtCheck.Rows[0]["Division"] != DBNull.Value ? Convert.ToInt32(dtCheck.Rows[0]["Division"]) : 0;
-                int destination = dtCheck.Rows[0]["Destination"] != DBNull.Value ? Convert.ToInt32(dtCheck.Rows[0]["Destination"]) : 0;
+                // Check if the user is explicitly assigned as a Team Lead for this specific project
+                SqlCommand cmdCheckTL = new SqlCommand("SELECT 1 FROM IT_ProjectTeamLeads WHERE ProjectKey = @ProjectKey AND EmployeeKey = @EmpId");
+                cmdCheckTL.Parameters.AddWithValue("@ProjectKey", projectKey);
+                cmdCheckTL.Parameters.AddWithValue("@EmpId", userid);
+                DataTable dtCheckTL = DA.GetDataTable(cmdCheckTL);
                 
-                // Show button for Division 1 OR Destination 11, 23, 24
-                showCreateButton = (userDivision == 1) || (destination == 11) || (destination == 23) || (destination == 24);
+                if (dtCheckTL != null && dtCheckTL.Rows.Count > 0)
+                {
+                    showCreateButton = true;
+                }
+            }
+            else
+            {
+                // If viewing All Projects, check if they are a team lead in ANY project
+                SqlCommand cmdCheckTL = new SqlCommand("SELECT 1 FROM IT_ProjectTeamLeads WHERE EmployeeKey = @EmpId");
+                cmdCheckTL.Parameters.AddWithValue("@EmpId", userid);
+                DataTable dtCheckTL = DA.GetDataTable(cmdCheckTL);
+                
+                if (dtCheckTL != null && dtCheckTL.Rows.Count > 0)
+                {
+                    showCreateButton = true;
+                }
             }
         }
         
@@ -237,6 +249,11 @@ public partial class Employee_taskgrids : System.Web.UI.Page
             {
                 ddlEmployee.Items.Add(new ListItem(dr["EmployeeName"].ToString(), dr["EmployeeKey"].ToString()));
             }
+        }
+        
+        if (ddlEmployee.Items.FindByValue(this.SC.Userid) != null)
+        {
+            ddlEmployee.SelectedValue = this.SC.Userid;
         }
     }
 

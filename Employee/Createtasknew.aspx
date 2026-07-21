@@ -62,7 +62,7 @@
                     <asp:HiddenField ID="hfEndDate" runat="server" />
                     <asp:HiddenField ID="hfViewMode" runat="server" Value="0" />
                     <asp:HiddenField ID="hfHasFullAccess" runat="server" Value="0" />
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label>Work Day <span style="color: red">*</span></label>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="icon-calendar22"></i></span>
@@ -75,7 +75,7 @@
                         <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtStartDate" ErrorMessage="Select Start Date" ForeColor="Red" />
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label>Project Name <span style="color: red">*</span></label>
                         <asp:DropDownList ID="ddlProject"
                             runat="server"
@@ -89,7 +89,7 @@
                             ErrorMessage="Select Project"
                             ForeColor="Red" />
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label>Team Members <span style="color: red">*</span></label>
                         <asp:DropDownList ID="ddlEmployee"
                             runat="server"
@@ -98,14 +98,7 @@
                         <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" ControlToValidate="ddlEmployee" InitialValue="0" ErrorMessage="Select Team members" ForeColor="Red" />
                     </div>
 
-                    <div class="col-md-3">
-                        <label>Work Type</label>
-                        <asp:DropDownList ID="ddlRole"
-                            runat="server"
-                            CssClass="form-control">
-                        </asp:DropDownList>
-                        <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" ControlToValidate="ddlRole" InitialValue="0" ErrorMessage="Select work type" ForeColor="Red" />
-                    </div>
+
                     <!-- Row 2 -->
                     <!-- Row 2 - Task Details Table -->
                     <div class="row" style="margin-top: 15px;">
@@ -123,11 +116,12 @@
                                 <table class="table table-bordered table-striped table-hover" style="font-size:12px;">
                                     <thead class="bg-primary">
                                         <tr>
-                                            <th style="width: 18%; padding: 4px 6px; font-size:11px;">Task Name</th>
-                                            <th style="width: 22%; padding: 4px 6px; font-size:11px;">Task Description</th>
-                                            <th style="width: 10%; padding: 4px 6px; font-size:11px; text-align:center;">Assigned Hours</th>
-                                            <th style="width: 10%; padding: 4px 6px; font-size:11px; text-align:center;">Actual Hours</th>
-                                            <th style="width: 14%; padding: 4px 6px; font-size:11px;">Status</th>
+                                            <th style="width: 15%; padding: 4px 6px; font-size:11px;">Task Name</th>
+                                            <th style="width: 18%; padding: 4px 6px; font-size:11px;">Task Description</th>
+                                            <th style="width: 10%; padding: 4px 6px; font-size:11px;">Work Type</th>
+                                            <th style="width: 9%; padding: 4px 6px; font-size:11px; text-align:center;">Assigned Hours</th>
+                                            <th style="width: 9%; padding: 4px 6px; font-size:11px; text-align:center;">Actual Hours</th>
+                                            <th style="width: 11%; padding: 4px 6px; font-size:11px;">Status</th>
                                             <th style="width: 18%; padding: 4px 6px; font-size:11px;">Notes</th>
                                             <th style="width: 10%; padding: 4px 6px; font-size:11px;" class="text-center">Action</th>
                                         </tr>
@@ -143,6 +137,9 @@
                             </select>
                             <select id="hoursTemplate" style="display: none">
                                 <asp:Literal ID="ltHoursOptions" runat="server"></asp:Literal>
+                            </select>
+                            <select id="workTypeTemplate" style="display: none">
+                                <asp:Literal ID="ltWorkTypeOptions" runat="server"></asp:Literal>
                             </select>
                         </div>
                     </div>
@@ -259,16 +256,19 @@
             }
         });
 
+        // Bind event using delegation to ensure it works for dynamically added and static rows
+        $(document).on('change', 'select[name="task_status"], select.status-select', function() {
+            updateStatusColor(this);
+            validateActualHoursField(this, true);
+        });
+
         function applyStatusColors() {
             $('select[name="task_status"], select.status-select').each(function() {
                 updateStatusColor(this);
-            }).off('change.statuscolor').on('change.statuscolor', function() {
-                updateStatusColor(this);
-                validateActualHoursField(this);
             });
         }
 
-        function validateActualHoursField(element) {
+        function validateActualHoursField(element, showPopup) {
             var row = $(element).closest('tr');
             var status = row.find('.status-select').val();
             var hoursInput = row.find('input[name="task_actual_hours"]');
@@ -277,6 +277,14 @@
             if (status === '4' && (!hoursInput.val() || parseFloat(hoursInput.val()) <= 0)) {
                 errorLabel.show();
                 hoursInput.css('border-color', 'red');
+                if (showPopup) {
+                    if (typeof toastr !== 'undefined') {
+                        toastr.warning('Actual Hours required for Completed status.');
+                    } else {
+                        alert('Actual Hours required for Completed status.');
+                    }
+                    hoursInput.focus();
+                }
             } else {
                 errorLabel.hide();
                 hoursInput.css('border-color', '');
@@ -374,6 +382,8 @@
             var statusOptions = template.innerHTML.trim();
             var hoursTemplate = document.getElementById('hoursTemplate');
             var hoursOptions = hoursTemplate ? hoursTemplate.innerHTML.trim() : '';
+            var workTypeTemplate = document.getElementById('workTypeTemplate');
+            var workTypeOptions = workTypeTemplate ? workTypeTemplate.innerHTML.trim() : '';
             var tr = document.createElement('tr');
             tr.className = 'row-edit-mode';
 
@@ -382,6 +392,8 @@
                 + '<span class="display-field" style="font-size:12px;"></span></td>'
                 + '<td style="padding:2px 6px;"><textarea class="form-control editable-field" name="task_description" rows="1" style="resize:vertical;font-size:12px;"></textarea>'
                 + '<textarea class="form-control display-field" name="task_description_display" rows="1" style="resize:vertical;font-size:12px;" readonly></textarea></td>'
+                + '<td style="padding:2px 6px;"><select class="form-control input-sm editable-field" name="task_work_type">' + workTypeOptions + '</select>'
+                + '<span class="display-field" style="font-size:12px;"></span></td>'
                 + '<td style="padding:2px 6px;text-align:center;"><select class="form-control input-sm editable-field" name="task_assigned_hours">' + hoursOptions + '</select>'
                 + '<span class="display-field" style="font-size:12px;"></span></td>'
                 + '<td style="padding:2px 6px;text-align:center;"><input type="number" class="form-control input-sm always-on-field" name="task_actual_hours" min="0" step="1" oninput="validateActualHoursField(this)" onchange="validateActualHoursField(this)" onkeyup="validateActualHoursField(this)" />'
@@ -439,6 +451,22 @@
             var isEditing = row.classList.contains('row-edit-mode');
 
             if (isEditing) {
+                // Validate Actual Hours for Completed Status before locking
+                var statusSelect = row.querySelector('select[name="task_status"]');
+                var actualHoursInput = row.querySelector('input[name="task_actual_hours"]');
+                if (statusSelect && statusSelect.value === '4') {
+                    if (!actualHoursInput.value || parseFloat(actualHoursInput.value) <= 0) {
+                        if (typeof toastr !== 'undefined') {
+                            toastr.warning('Actual Hours required for Completed status.');
+                        } else {
+                            alert('Actual Hours required for Completed status.');
+                        }
+                        validateActualHoursField(actualHoursInput);
+                        actualHoursInput.focus();
+                        return;
+                    }
+                }
+
                 // copy editable-field values to display elements
                 row.querySelectorAll('td').forEach(function(td) {
                     var input = td.querySelector('input.editable-field');
@@ -549,6 +577,7 @@
                 var rowNum = index + 1;
                 var taskName = row.querySelector('input[name="task_name"]');
                 var taskDesc = row.querySelector('textarea[name="task_description"]');
+                var workType = row.querySelector('select[name="task_work_type"]');
                 var assignedHours = row.querySelector('select[name="task_assigned_hours"]');
                 var taskStatus = row.querySelector('select[name="task_status"]');
                 var taskStatusHidden = row.querySelector('input[data-status-backup]');
@@ -556,6 +585,7 @@
 
                 var nameVal = taskName ? taskName.value.trim() : '';
                 var descVal = taskDesc ? taskDesc.value.trim() : '';
+                var workTypeVal = workType ? workType.value : '';
                 var hoursVal = assignedHours ? assignedHours.value : '';
                 var statusVal = taskStatus ? taskStatus.value : (taskStatusHidden ? taskStatusHidden.value : '');
                 var actualHoursVal = taskActualHours ? taskActualHours.value.trim() : '';
@@ -563,6 +593,7 @@
                 var rowErrors = [];
                 if (!nameVal) rowErrors.push('Task Name');
                 if (!descVal) rowErrors.push('Task Description');
+                if (!workTypeVal) rowErrors.push('Work Type');
                 if (!hoursVal) rowErrors.push('Assigned Hours');
                 if (!statusVal) rowErrors.push('Status');
                 
