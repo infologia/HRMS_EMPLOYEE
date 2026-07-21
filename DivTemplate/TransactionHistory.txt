@@ -1,0 +1,12 @@
+﻿
+							<tr>
+						
+									<td><a href="#">%%userkey%%</a></td>
+									<td>%%name%%</td>
+									<td>%%moneytype%%</td>
+									<td>%%amount%%</td>
+							        <td>%%createdon%%</td>
+									<td>%%balance%%</td>
+								</tr>
+				
+					

@@ -1,0 +1,12 @@
+
+<tr>
+                   
+                    
+                     <td>%%year%%</td>
+					  <td>%%month%%</td>
+                      <td>%%Numberofdaysinmonth%%</td>
+                     <td>%%Numberofworkdaysinmonth%%</td>
+					 <td>%%Numberofleavedaysinmonth%%</td>
+					  <td>%%createdon%%</td>
+					 <td><a href="WorkingDayDetails.aspx?id=%%employeeworkingdaydetailskey%%"><span class="label label-info">Update</span></a></td> 
+					 </tr>

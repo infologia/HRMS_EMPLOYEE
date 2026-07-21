@@ -1,0 +1,10 @@
+﻿<tr>
+	 <td>%%EmployeeName%%</td>
+	 <td>%%WorkDate%%</td>
+     <td>%%InTime%%</td>
+     <td>%%OutTime%%</td>
+     <td>%%GrossWorkingHours%%</td>
+     <td>%%LunchDuration%%</td>
+     <td>%%BreakDuration%%</td>
+     <td>%%NetWorkingDuration%%</td>
+</tr>

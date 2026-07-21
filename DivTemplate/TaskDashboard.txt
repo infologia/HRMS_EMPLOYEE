@@ -1,0 +1,9 @@
+<div class="dash-card %%BorderClass%%" style="animation-delay: %%AnimDelay%%s;">
+
+    <div class="dash-date">%%TaskDate%%</div>
+
+    %%StatusHtml%%
+
+    %%NormalContent%%
+
+</div>

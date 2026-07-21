@@ -1,0 +1,13 @@
+﻿
+  <tr>
+                         
+						    <td>%%taskname%%</td>
+                    <td>%%username%%</td>
+                    <td>%%Comment%%</td>
+               
+           
+				        <td>%%createdon%%</td>
+
+                    
+                </tr>
+          

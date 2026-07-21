@@ -1,0 +1,9 @@
+﻿<tr>
+    <td>%%InvoiceNumber%%</td>
+    <td>%%InvoiceDate%%</td>
+    <td>%%GSTAmount%%</td>
+    <td>%%GSTPaidDate%%</td>
+    <td>%%InvoiceAmount%%</td>
+    <td>%%GSTDescription%%</td>
+    <td>%%StatusText%%</td>
+</tr>

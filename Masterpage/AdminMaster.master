@@ -1,0 +1,747 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeFile="AdminMaster.master.cs" Inherits="Masterpage_AdminMaster" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="google" content="notranslate" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HRMS_TOOL</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css" />
+    <link href="../Template/assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css" />
+    <link href="../Template/assets/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="../Template/assets/css/core.css" rel="stylesheet" type="text/css" />
+    <link href="../Template/assets/css/components.css" rel="stylesheet" type="text/css" />
+    <link href="../Template/assets/css/colors.css" rel="stylesheet" type="text/css" />
+    <link href="../Template/assets/css/holidays.css" rel="stylesheet" type="text/css" />
+    <link href="../Template/Toastr/toastr.min.css" rel="stylesheet" />
+<link href="../Template/assets/css/PermissionRequestView.css" rel="stylesheet" type="text/css" />
+    <!-- Core JS files -->
+    <script type="text/javascript" src="../Template/assets/js/plugins/loaders/pace.min.js"></script>
+    <script type="text/javascript" src="../Template/assets/js/core/libraries/jquery.min.js"></script>
+    <script type="text/javascript" src="../Template/assets/js/core/libraries/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../Template/assets/js/plugins/loaders/blockui.min.js"></script>
+
+    <script type="text/javascript" src="../Template/assets/js/plugins/forms/selects/bootstrap_multiselect.js"></script>
+
+    <script type="text/javascript" src="../Template/assets/js/core/app.js"></script>
+    <script type="text/javascript" src="../Template/assets/js/pages/form_multiselect.js"></script>
+
+    <!-- Theme JS files -->
+    <script type="text/javascript" src="../Template/assets/js/plugins/visualization/d3/d3.min.js"></script>
+    <script type="text/javascript" src="../Template/assets/js/plugins/visualization/d3/d3_tooltip.js"></script>
+    <script type="text/javascript" src="../Template/assets/js/plugins/forms/styling/switchery.min.js"></script>
+    <script type="text/javascript" src="../Template/assets/js/plugins/forms/styling/uniform.min.js"></script>
+    <script type="text/javascript" src="../Template/assets/js/plugins/forms/selects/bootstrap_multiselect.js"></script>
+    <script type="text/javascript" src="../Template/assets/js/plugins/ui/moment/moment.min.js"></script>
+    <script type="text/javascript" src="../Template/assets/js/plugins/pickers/daterangepicker.js"></script>
+
+    <!-- Theme JS files -->
+    <script type="text/javascript" src="../Template/assets/js/plugins/notifications/jgrowl.min.js"></script>
+    <script type="text/javascript" src="../Template/assets/js/plugins/pickers/anytime.min.js"></script>
+    <script type="text/javascript" src="../Template/assets/js/plugins/pickers/pickadate/picker.js"></script>
+    <script type="text/javascript" src="../Template/assets/js/plugins/pickers/pickadate/picker.date.js"></script>
+    <script type="text/javascript" src="../Template/assets/js/plugins/pickers/pickadate/picker.time.js"></script>
+    <script type="text/javascript" src="../Template/assets/js/plugins/pickers/pickadate/legacy.js"></script>
+
+
+    <script type="text/javascript" src="../Template/assets/js/pages/picker_date.js"></script>
+
+    <script type="text/javascript" src="../Template/assets/js/pages/datatables_basic.js"></script>
+    <script type="text/javascript" src="../Template/assets/js/plugins/tables/datatables/datatables.min.js"></script>
+    <script type="text/javascript" src="../Template/assets/js/plugins/forms/selects/select2.min.js"></script>
+    <script type="text/javascript" src="../Template/assets/js/pages/dashboard.js"></script>
+
+    <script type="text/javascript" src="../Template/Toastr/toastr.min.js"></script>
+    <script type="text/javascript" src="./Template/assets/js/pages/components_modals.js"></script>
+
+    <style>
+        /* ===== HEADER ===== */
+        .header-color {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            box-shadow: 0 2px 20px rgba(102,126,234,0.3) !important;
+            border-bottom: none !important;
+        }
+
+        .navbar.navbar-fixed-top {
+            height: 56px;
+            min-height: 56px;
+            border-radius: 0 0 20px 0;
+        }
+
+        .navbar-inverse {
+            border-bottom: 0 !important;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 18px;
+        }
+
+        .navbar-brand .brand-icon {
+            height: 32px;
+            width: auto;
+            border-radius: 8px;
+        }
+
+        .brand-text {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .navbar-inverse .navbar-nav > li > a {
+            color: rgba(255,255,255,0.9);
+            transition: all 0.2s;
+        }
+        .navbar-inverse .navbar-nav > li > a:hover {
+            color: #ffffff;
+            background: rgba(255,255,255,0.15);
+            border-radius: 8px;
+        }
+
+        /* User dropdown */
+        .dropdown-user > a {
+            display: flex !important;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 12px !important;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.2);
+            transition: background 0.2s;
+        }
+        .dropdown-user > a:hover {
+            background: rgba(255,255,255,0.3) !important;
+        }
+        .dropdown-user img {
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.5);
+        }
+        .navbar-nav > li.dropdown-user > a {
+            margin-top: 4px !important;
+        }
+        .navbar-inverse .navbar-nav > .dropdown-user > .dropdown-menu {
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(102,126,234,0.2);
+            border: none;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar-main {
+            background: linear-gradient(180deg, #f8f9ff 0%, #f0f2ff 100%) !important;
+            box-shadow: 3px 0 20px rgba(102,126,234,0.1);
+            border-right: 1px solid #e8ecff;
+        }
+
+        .sidebar-content {
+            background: transparent !important;
+        }
+
+        /* Sidebar user section */
+        .sidebar-user .category-content {
+            background: linear-gradient(135deg, #667eea, #764ba2) !important;
+            border-bottom: none;
+            padding: 16px !important;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 8px;
+        }
+        .sidebar-user .media-heading {
+            color: #ffffff !important;
+            font-weight: 700;
+            font-size: 13px;
+        }
+        .sidebar-user .text-muted {
+            color: rgba(255,255,255,0.75) !important;
+        }
+        .sidebar-user img {
+            border: 2px solid rgba(255,255,255,0.6);
+            border-radius: 50%;
+        }
+
+        /* Navigation items */
+        .navigation-main > li > a {
+            color: #4a5568 !important;
+            border-radius: 10px;
+            margin: 2px 10px;
+            padding: 10px 14px !important;
+            transition: all 0.25s ease;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .navigation-main > li > a:hover {
+            background: linear-gradient(135deg, rgba(102,126,234,0.12), rgba(118,75,162,0.08)) !important;
+            color: #667eea !important;
+            transform: translateX(4px);
+        }
+        .navigation-main > li > a i {
+            color: #a0aec0;
+            margin-right: 10px;
+            width: 18px;
+            text-align: center;
+            transition: color 0.2s;
+        }
+        .navigation-main > li > a:hover i {
+            color: #667eea;
+        }
+
+        /* Active menu item */
+        .navigation-main > li.active > a,
+        .navigation-main > li > a.active {
+            background: linear-gradient(135deg, rgba(102,126,234,0.15), rgba(118,75,162,0.1)) !important;
+            color: #667eea !important;
+            border-left: 3px solid #667eea;
+            border-radius: 0 10px 10px 0;
+            margin-left: 10px;
+            font-weight: 600;
+        }
+        .navigation-main > li.active > a i {
+            color: #667eea;
+        }
+
+        /* Submenu */
+        .navigation-main .navigation-submenu > li > a {
+            color: #718096 !important;
+            padding-left: 42px !important;
+            font-size: 12px;
+            border-radius: 8px;
+            margin: 1px 10px;
+        }
+        .navigation-main .navigation-submenu > li > a:hover {
+            background: rgba(102,126,234,0.08) !important;
+            color: #667eea !important;
+        }
+
+        /* Scrollbar */
+        .sidebar-content::-webkit-scrollbar { width: 4px; }
+        .sidebar-content::-webkit-scrollbar-track { background: transparent; }
+        .sidebar-content::-webkit-scrollbar-thumb { background: rgba(102,126,234,0.3); border-radius: 4px; }
+
+
+        /* ===== MOBILE ===== */
+        @media (max-width: 767px) {
+            .visible-xs-block > li > a {
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
+
+            .visible-xs-block {
+                padding-left: 170px !important;
+            }
+
+            .sidebar-mobile-main-toggle i {
+                position: relative;
+                top: -1px;
+                margin-left: -150px;
+            }
+
+            .navbar-nav > li.dropdown-user {
+                position: relative !important;
+            }
+
+            .navbar-nav > li.dropdown-user > .dropdown-menu {
+                position: absolute !important;
+                top: 100% !important;
+                right: 0 !important;
+                left: auto !important;
+                min-width: 180px;
+                z-index: 2000;
+                float: none;
+                margin-top: 0 !important;
+                border-top: 0 !important;
+            }
+
+            .navbar-nav > li.dropdown-user > a {
+                padding-bottom: 0 !important;
+                margin-bottom: 0 !important;
+                line-height: 30px !important;
+            }
+
+            .navbar,
+            .navbar-collapse {
+                overflow: visible !important;
+            }
+
+            .navbar.navbar-fixed-top {
+                height: 56px !important;
+                min-height: 56px !important;
+            }
+
+            .navbar-collapse {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                height: 56px !important;
+                min-height: 56px !important;
+                padding: 0 !important;
+                overflow: visible !important;
+                background: linear-gradient(135deg, #667eea, #764ba2) !important;
+                border-top: 0 !important;
+                flex-wrap: nowrap !important;
+            }
+
+            .navbar-nav > li > a,
+            .navbar-text {
+                line-height: 56px !important;
+                padding-top: 0 !important;
+                padding-bottom: 0 !important;
+                background-color: transparent !important;
+            }
+
+            .navbar-header {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                background: linear-gradient(135deg, #667eea, #764ba2);
+            }
+
+            .navbar-brand img {
+                height: 36px !important;
+                padding: 0 !important;
+                margin-top: -2px;
+            }
+
+            .brand-text {
+                color: #ffffff;
+                font-size: 15px;
+                font-weight: 600;
+                line-height: 1;
+                white-space: nowrap;
+            }
+
+            .visible-xs-block {
+                display: flex !important;
+                margin: 0 !important;
+            }
+
+            .icon-tree5 {
+                display: none !important;
+            }
+
+            .navbar-nav {
+                display: flex !important;
+                flex-direction: row !important;
+                margin: 0 !important;
+            }
+
+            .navbar-text {
+                margin: 0 6px !important;
+                font-size: 11px;
+                white-space: nowrap;
+                position: static !important;
+                background-color: transparent !important;
+                box-shadow: none !important;
+            }
+
+            .navbar-right {
+                display: flex !important;
+                align-items: center;
+                gap: 6px;
+                margin: 0 !important;
+                margin-left: auto !important;
+                margin-right: -10px !important;
+            }
+
+            .dropdown-user > a {
+                display: flex !important;
+                align-items: center;
+                gap: 5px;
+                padding: 4px 6px;
+                padding-right: 10px !important;
+            }
+
+            .dropdown-user img {
+                height: 28px;
+                width: 28px;
+            }
+
+            .navbar,
+            .navbar * {
+                white-space: nowrap;
+            }
+
+            .navbar-inverse .navbar-nav > .dropdown-user.open > .dropdown-menu,
+            .navbar-inverse .navbar-nav > .dropdown-user > .dropdown-menu {
+                background-color: #fff;
+                border-color: rgba(102,126,234,0.2) !important;
+            }
+
+            .navbar-inverse .navbar-nav > .dropdown-user > .dropdown-menu > li > a {
+                color: #333 !important;
+            }
+
+            .navbar-inverse .navbar-nav > .dropdown-user > .dropdown-menu > li > a:hover {
+                background-color: #f5f5f5 !important;
+                color: #667eea !important;
+            }
+
+            .navbar.navbar-fixed-top {
+                position: fixed !important;
+                top: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                z-index: 1050;
+            }
+
+            .page-content {
+                padding-top: 100px !important;
+            }
+
+            .navbar-inverse .navbar-collapse {
+                background: linear-gradient(135deg, #667eea, #764ba2) !important;
+                border-top: 0 !important;
+                margin-top: -8px;
+            }
+
+            .sidebar-content {
+                background: linear-gradient(180deg, #f8f9ff, #f0f2ff) !important;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .page-title .title-left { text-align: left !important; }
+            .page-title .title-right { text-align: right !important; }
+        }
+    </style>
+
+    <script type="text/javascript">
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-bottom-right",
+            "timeOut": "3000"
+        };
+
+        function showToastr(type, message) {
+            toastr[type](message);
+        }
+    </script>
+        <script type="text/javascript">
+            function myFunction() {
+                window.location.reload();
+            }
+        </script>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <asp:ScriptManager ID="ScriptManager1" runat="server" />
+        <div>
+            <div class="navbar-top">
+
+                <!-- Main navbar -->
+                <div class="navbar navbar-inverse navbar-fixed-top header-color">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="#">
+                            <%--<img src="../Template/assets/images/BF_LOGO.png" alt="" style=" height: 55px; padding-bottom: 27px;"/>
+
+                        <span class="mobile-brand"> 
+                            <img src="../Template/assets/images/globe.png" class="mobile-brand-icon" />
+                            <span class="mobile-brand-text"> INFOLOGIA</span>
+                        </span>--%>
+
+                            <img src="../Template/assets/images/globe.png" class="img-circle img-lg" />
+                            <span class="brand-text">INFOLOGIA
+        
+                            </span>
+                        </a>
+
+                            <p class="navbar-text navbar-right">
+                                <a href="#" onclick="myFunction()" title="Refresh" style="color: #fff;">
+                                    <i class="icon-git-compare"></i>
+                                </a>
+                            </p>
+
+                    </div>
+
+                    <div class="navbar-collapse collapse custom-mobile-header" id="navbar-mobile">
+                        <ul class="nav navbar-nav">
+                             <%--<li><a class="sidebar-control sidebar-main-toggle hidden-xs"><i class="icon-paragraph-justify3"></i></a></li>--<%
+
+                            <%--<li class="dropdown">
+                                <a href="#" onclick="myFunction()" class="dropdown-toggle" data-toggle="dropdown" title="Refresh">
+                                    <i class="icon-git-compare"></i>
+
+                                </a>
+
+
+                            </li>--%>
+
+                                
+                                <li class="hidden-xs">
+                                    <a class="sidebar-control sidebar-main-toggle">
+                                        <i class="icon-paragraph-justify3"></i>
+                                    </a>
+                                </li>
+
+                                
+                                <li class="visible-xs-block">
+                                    <a class="sidebar-mobile-main-toggle">
+                                        <i class="icon-paragraph-justify3"></i>
+                                    </a>
+                                </li>
+
+
+                        </ul>
+
+                        <%--<p class="navbar-text"><span class="label bg-success">Online</span></p>--%>
+
+                        <%--<p class="navbar-text">
+                            <a href="#" onclick="myFunction()" title="Refresh" style="color: #fff;">
+                                <i class="icon-git-compare"></i>
+                            </a>
+                        </p>--<%
+
+
+                        <ul class="nav navbar-nav navbar-right">
+                            <!--<li class="dropdown language-switch">
+                                <a class="dropdown-toggle" data-toggle="dropdown">
+                                    <img src="../Template/assets/images/flags/gb.png" class="position-left" alt=""/>
+                                    English
+					
+                                    <span class="caret"></span>
+                                </a>
+
+
+                            </li>-->
+
+                            <%--  <li class="dropdown">
+                                <a href="#" class="dropdown-toggle">
+                                    <i class="icon-bubbles4"></i>
+                                    <span class="visible-xs-inline-block position-right">Messages</span>
+
+                                </a>
+
+
+                            </li>--%>
+
+                          <ul class="nav navbar-nav navbar-right">
+                            <li class="dropdown dropdown-user">
+                                <a class="dropdown-toggle" data-toggle="dropdown">
+                                    <asp:Image ID="Img_Profile" runat="server" />
+                                    <span>
+                                        <asp:Label ID="lbl_usernametop" runat="server"></asp:Label></span>
+                                    <i class="caret"></i>
+                                </a>
+
+                                <ul class="dropdown-menu dropdown-menu-right">
+
+                                    <li><a href="../Admin/ChangePassword.aspx"><i class="icon-key"></i>Change Password</a></li>
+                                    <%-- <li><a href="#"><span class="badge bg-teal-400 pull-right"></span><i class="icon-comment-discussion"></i>Messages</a></li>--%>
+                                    <li class="divider"></li>
+                                    <li><a href="../Admin/ProfilePage.aspx"><i class="icon-cog5"></i>Account settings</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="../LogOut.aspx"><i class="icon-switch2"></i>Logout</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- /main navbar -->
+
+
+                <!-- Page container -->
+                <div class="page-container">
+
+                    <!-- Page content -->
+                    <div class="page-content">
+
+                        <!-- Main sidebar -->
+                        <div class="sidebar sidebar-main sidebar-fixed header-color">
+                            <div class="sidebar-content">
+
+                                <!-- User menu -->
+                                <div class="sidebar-user">
+                                    <div class="category-content" style="background-color: darkcyan;">
+                                        <div class="media">
+                                            <a href="#" class="media-left">
+                                                <asp:Image ID="image_small" runat="server" CssClass="img-circle img-sm" /></a>
+                                            <div class="media-body">
+                                                <span class="media-heading text-semibold">
+                                                    <asp:Label ID="lbl_username" runat="server"></asp:Label></span>
+                                                <div class="text-size-mini text-muted" style="font-size:10px;">
+                                                    <asp:Label ID="lbl_destination" runat="server"></asp:Label>
+                                                    <%--<i class="icon-pin text-size-small"></i>&nbsp;<asp:Label ID="Label1" runat="server"></asp:Label>--%>
+                                                </div>
+                                            </div>
+
+                                            <div class="media-right media-middle">
+                                                <%-- <ul class="icons-list">
+                                                    <li>
+                                                        <a href="#"><i class="icon-cog3"></i></a>
+                                                    </li>
+                                                </ul>--%>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /user menu -->
+
+
+                                <!-- Main navigation -->
+                                <div class="sidebar-category sidebar-category-visible">
+                                    <div class="category-content no-padding">
+                                        <ul class="navigation navigation-main navigation-accordion">
+                                            <!-- Main -->
+                                            <%--<li class="navigation-header"><span></span><i class="icon-menu" title="Main pages"></i></li>--%>
+                                            <%--          <li><a href="../Admin/ParentMenuGrid.aspx" id="A2"><i class="icon-paypal2"></i><span>Parent Menu</span></a></li>
+                                           
+                                             <li><a href="../Admin/Menu.aspx" id="A3"><i class="icon-paypal2"></i><span>Create Menu</span></a></li>--%>
+
+
+                                            <asp:Literal ID="Literal1" runat="server"></asp:Literal>
+                                        </ul>
+
+                                        <%--  <li id="li1"><a href="../Admin/Dashboard.aspx" id="A12"><i class="icon-home4"></i><span>Dashboard</span></a></li>
+                                            <li><a href="../Admin/TimeMonitoring.aspx" id="A13"><i class="glyphicon glyphicon-time"></i><span>Time Monitoring</span></a></li>
+                                            <li><a href="../Admin/PermissionResponse.aspx" id="A14"><i class="icon-history"></i><span>Permission Response</span></a></li>
+                                            <li><a href="../Admin/ComplaintResponse.aspx" id="A15"><i class="icon-ticket"></i><span>Complaint</span></a></li>
+                                            <li><a href="../Admin/Suggestionresponse.aspx" id=""><i class="icon-add"></i><span>Suggestion</span></a></li>
+                                            <li><a href="../Admin/MailTemplate.aspx" id="A16"><i class="icon-envelop5"></i><span>Mail Template</span></a></li>
+                                            <li><a href="../Admin/Documents.aspx" id="A17"><i class="icon-magazine"></i><span>Documents</span></a></li>
+                                            <li><a href="../Admin/EmployeeRegister.aspx" id="A18"><i class="glyphicon glyphicon-registration-mark"></i><span>Employee Register</span></a></li>
+                                            <li><a href="../Admin/SalaryDetails.aspx" id="A19"><i class="icon-coin-dollar"></i><span>Employee Salary Details</span></a></li>
+                                            <li><a href="../Admin/EmployeeView.aspx" id="A20"><i class="icon-pencil7"></i><span>Employee Edit</span></a></li>
+
+                                            <li><a href="../Admin/LeaveResponse.aspx" id="A21"><i class="icon-clipboard3"></i><span>Employee  Leave Details</span></a></li>
+                                            <li><a href="../Admin/PageUnderConstruction.aspx" id="A22"><i class="icon-cash3"></i><span>Loan Suggestion  Details</span></a></li>
+                                            <li><a href="../Admin/Department.aspx" id="A23"><i class="icon-tree6"></i><span>Department</span></a></li>
+                                            <li><a href="../Admin/Division.aspx" id="A24"><i class="icon-tree5"></i><span>Division</span></a></li>
+                                            <li><a href="../Admin/Designation.aspx" id="A25"><i class="icon-menu2"></i><span>Designation</span></a></li>
+                                            <li><a href="../Admin/WorkingDayViewDetails.aspx" id="A26"><i class="glyphicon glyphicon-calendar"></i><span>Working Day Details</span></a></li>
+                                            <li><a href="../Admin/payroll.aspx" id="A27"><i class="icon-paypal2"></i><span>Pay Roll</span></a></li>
+                                            <li><a href="../Admin/Projects.aspx" id="A1"><i class="icon-paypal2"></i><span>Create Project</span></a></li>
+                                            <li><a href="../Admin/ProjectFlowchart.aspx" id="A2"><i class="icon-paypal2"></i><span>Project Flowchart</span></a></li>
+                                            <li><a href="../Admin/ProjectCategoryView.aspx" id="A3"><i class="icon-paypal2"></i><span>Project Category</span></a></li>
+                                            <li><a href="../Admin/TaskCategoryView.aspx" id="A4"><i class="icon-paypal2"></i><span>Task Category</span></a></li>
+                                            <li><a href="../Admin/Project'sSummary.aspx" id="A8"><i class="icon-clipboard3"></i><span>Project's Summary</span></a></li>
+                                            <li><a href="../Admin/AddUserView.aspx" id="A5"><i class="icon-clipboard3"></i><span>Add User</span></a></li>
+                                            <li><a href="../Admin/CreateTask.aspx" id="A6"><i class="icon-pencil7"></i><span>Create task</span></a></li>
+                                            <li><a href="../Admin/ProjectIssue.aspx" id="A7"><i class="icon-paypal2"></i><span>ProjectIssue</span></a></li>--%>
+                                        <%--   </ul>--%>
+                                    </div>
+                                </div>
+                                <!-- /main navigation -->
+
+                            </div>
+                        </div>
+                        <!-- /main sidebar -->
+
+
+                        <!-- Main content -->
+                        <div class="content-wrapper">
+
+                            <!-- Page header -->
+                            <div class="page-header page-header-default">
+               
+                                <div class="page-header-content">
+<div class="page-title">
+    <div class="row align-items-center">
+
+        <div class="col-12 col-md-6 title-left">
+            <h4>
+                <asp:Label ID="lbl_bread" runat="server" Text="Dashboard"></asp:Label>
+            </h4>
+        </div>
+
+        <div class="col-12 col-md-6 title-right">
+            <asp:Label ID="lbl_dashtime" runat="server" Text="Welcome to Infologia"></asp:Label>
+        </div>
+
+    </div>
+</div>
+
+
+
+<%--                                                                                <asp:Image ID="Image1" runat="server" />--%>
+
+                                       <%--   <div id="intime" runat="server">
+       <div class="col-md-1" id="div_intimeshow" runat="server">
+         <asp:Button ID="btn_InTime" runat="server" CssClass="btn btn-success"   Text=" In Time" OnClick="btn_InTime_Click" />
+       </div>
+   </div>
+   <div id="outTime" runat="server" visible="true">
+       <div class="col-md-1" id="div_outtimeshow" runat="server">
+         <asp:Button ID="btn_OutTime" runat="server" CssClass="btn btn-danger" Enabled="false" Text=" Out Time" OnClick="btn_OutTime_Click" />
+
+       </div>
+   </div>--%>
+                                    <%--  <div class="heading-elements">
+                                        <%-- <div class="heading-btn-group">
+                                            <a href="#" class="btn btn-link btn-float has-text"><i class="icon-bars-alt text-primary"></i><span>Statistics</span></a>
+                                            <a href="#" class="btn btn-link btn-float has-text"><i class="icon-calculator text-primary"></i><span>Invoices</span></a>
+                                            <a href="#" class="btn btn-link btn-float has-text"><i class="icon-calendar5 text-primary"></i><span>Schedule</span></a>
+                                        </div>
+                                    </div>--%>
+                                </div>
+
+                                <%--<div class="breadcrumb-line">
+                                    <ul class="breadcrumb">
+                                    </ul>
+
+                                    <ul class="breadcrumb-elements">
+                                        <%-- <li><a href="#"><i class="icon-comment-discussion position-left"></i>Support</a></li>
+                                        <li class="dropdown">
+                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                                <i class="icon-gear position-left"></i>
+                                                Settings
+								
+                                                <span class="caret"></span>
+                                            </a>
+
+                                            <ul class="dropdown-menu dropdown-menu-right">
+                                                <li><a href="#"><i class="icon-user-lock"></i>Account security</a></li>
+                                                <li><a href="#"><i class="icon-statistics"></i>Analytics</a></li>
+                                                <li><a href="#"><i class="icon-accessibility"></i>Accessibility</a></li>
+                                                <li class="divider"></li>
+                                                <li><a href="#"><i class="icon-gear"></i>All settings</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>--%>
+                            </div>
+                            <!-- /page header -->
+                            <!-- /page header -->
+
+
+                            <!-- Content area -->
+                            <div class="content">
+
+                                <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                                </asp:ContentPlaceHolder>
+
+                                <div class="footer text-muted" style="margin-left: 20px">
+                                    &copy; 2026. <a href="http://www.infologia.in/InfologiaWebsite/Default.aspx" target="_blank">Infologia Technologies</a>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+                <!-- /page container -->
+
+            </div>
+
+        </div>
+    </form>
+      
+</body>
+</html>

@@ -1,0 +1,91 @@
+﻿<tr>
+<div class="col-md-12">
+
+                            <div class="panel panel-flat">
+								<div class="panel-heading">
+									<h5 class="panel-title"></h5>
+									<div class="heading-elements">
+										
+				                	</div>
+			                	</div>
+                                								
+								<div class="panel-body" >
+                                    <fieldset>
+											<legend class="text-semibold"><i class="icon-pencil5"></i> Project's Summary</legend>
+									<div action="#">
+                           <div class="col-md-6">
+                                         <div class="form-group">
+                               <label>Project Name :</label>
+										<td>%%pjname%%</td>
+                                </div>
+                           
+                            
+                                 <div class="form-group">
+                                 <label>Created Date :</label>
+										<td>%%createdon%%</td>
+                                    
+                                </div>
+                          
+                               <div class="form-group">
+                                 <label>Closed Date :</label>
+										<td>%%createdon%%</td>
+                                </div>
+                            
+
+                            <div class="form-group ">
+                               <label>Name :</label>
+										<td>%%username%%</td>
+                                 </div>
+                                          <div class="form-group ">
+                                <label >Description :</label>
+                                
+                                   <td>%%pjdescription%%</td>
+                                 </div>
+
+								  <div class="form-group ">
+                                <label >Due Date :</label>
+                                
+                                   <td>%%createdon%%</td>
+                                 </div>
+								 </div>
+								  <div class="col-md-6">
+								  <div class="form-group ">
+                                <label >Number Of Task :</label>
+                                
+                                   <td>%%taskkey%%</td>
+                                 </div>
+								  <div class="form-group ">
+                                <label >Pending of Task :</label>
+                                
+                                   <td>%%pending%%</td>
+                                 </div>
+								  <div class="form-group ">
+                                <label >Inprogress of Task :</label>
+                                
+                                   <td>%%Inprogress%%</td>
+                                 </div>
+
+								  <div class="form-group ">
+                                <label >Completed Task :</label>
+                                
+                                   <td>%%Done%%</td>
+                                 </div>
+								  <div class="form-group ">
+                                <label >Number Of users in Project :</label>
+                                
+                                   <td>%%users%%</td>
+                                 </div>
+								 </div>
+                            
+                          <div class="form-group">
+                              <div class="text-right">
+                                   <a href="Project'sSummary.aspx" class="btn bg-slate-800 margin-left-1" style="margin-right:15px"><i class="icon-undo" ></i> Back</a>
+                              </div>
+                          </div>
+                          </div>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                        </div>
+				
+</tr>

@@ -1,0 +1,8 @@
+   <tr>
+                    <td>%%ClientCode%%</td>
+                    <td>%%ClientName%%</td>
+                    <td>%%CompanyName%%</td>
+                    <td>%%ContactPerson%%</td>
+                    <td>%%ActiveText%%</td>
+                    <td>%%CreatedOn%%</td>
+                </tr>

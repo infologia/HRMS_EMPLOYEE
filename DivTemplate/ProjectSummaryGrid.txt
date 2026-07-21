@@ -1,0 +1,9 @@
+﻿<tr>
+    <td>%%ProjectName%%</td>
+    <td>%%AssignedTask%%</td>
+    <td>%%CompletedTask%%</td>
+    <td>%%PendingTask%%</td>
+    <td>%%OverdueTask%%</td>
+    <td>%%ProjectDue%%</td>
+    <td>%%ViewText%%</td>
+</tr>

@@ -1,0 +1,6 @@
+<li>
+									<a href="#"><i class="icon-stack2"></i> <span>%%parentmenu%%</span></a>
+									<ul>
+										<li><a href="%%pagename%%">%%Menuname%%</a></li>
+</ul>
+</li>

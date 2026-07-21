@@ -1,0 +1,24 @@
+﻿<tr class="odd" role="row">
+ <td style="display: none">    
+                                </td>
+								 <td>
+                                 
+								 <input type="checkbox" name="location[]" value="%%Barcode3%%"" />
+								  
+                                </td>
+								 <td>
+                                   <img src=%%Barcode2%%>  
+                                </td>
+								<td>
+                                     %%Barcode3%%
+                                </td>
+								<td>
+                                     %%created_date1%%
+                                </td>
+									
+                 
+
+
+	
+	
+</tr>

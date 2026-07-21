@@ -1,0 +1,6 @@
+﻿<tr>
+<td>%%Invalue%%</td>
+<td>%%Outvalue%%</td>
+<td>%%ActiveText%%</td>
+
+</tr>

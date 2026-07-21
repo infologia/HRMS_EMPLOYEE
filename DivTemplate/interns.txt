@@ -1,0 +1,10 @@
+	<tr>
+		<td>%%FullName%%</td>
+		<td>%%highestqualification%%</td>
+		<td>%%passedout%%</td>
+		<td>%%university_college%%</td>
+		<td>%%currentlocation%%</td>
+		<td>%%phno%%</td>
+		<td>%%createdon%%</td>
+		<td style="text-align:center;">%%ResumeLink%%</td>
+	</tr>

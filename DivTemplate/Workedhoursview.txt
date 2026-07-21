@@ -1,0 +1,10 @@
+﻿   <tr>
+                    <td>%%name%%</td>
+                    
+                    <td>%%monthvalue%%</td>
+                    <td>%%year%%</td>
+                    <td>%%workingday%%</td>
+                    <td>%%Numberofworkdaysinmonth%%</td>
+                     <td>%%workeddays%%</td> 
+                </tr>
+          

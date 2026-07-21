@@ -1,0 +1,66 @@
+﻿<div class="col-md-6" style="width: 100%;">
+									<div class="panel border-left-lg border-left-primary">
+										<div class="panel-body">
+											<div class="row">
+												<div class="col-md-8">
+													<h6 class="no-margin-top"><a href="Taskdetails.aspx?key=%%TaskKey%%">%%Taskname%%</a></h6>
+													<p class="mb-15">%%Descriptions%%...</p>
+
+													<li>
+									                		Type: &nbsp; 
+															<span class="label bg-pink-400 position-left">%%Categoryname%%</span>
+															
+												</li>
+												<br/>
+												<li>
+									                		Status: &nbsp; 
+															%%ActiveCategory%%
+															
+												</li>
+								                	
+												</div>
+
+												<div class="col-md-4">
+													<ul class="list task-details">
+														
+											<li>
+									                		Priority: &nbsp; 
+															<span class="label bg-indigo-400">%%Priorityname%%</span></li>
+															
+										
+														<li><a href="Project'sSummaryDetails.aspx?key=%%projectkey%%">%%pjname%%</a></li>
+
+														
+												
+
+                                          <li>Reporter:<span class="badge badge-default">A</span>&nbsp%%Username%%</i></li>
+										   
+													</ul>
+												</div>
+											</div>
+										</div>
+
+										<div class="panel-footer panel-footer-condensed">
+											<div class="heading-elements">
+												<span class="heading-text">Due: <span class="text-semibold">%%Duedate%%</span></span>
+
+												<ul class="list-inline list-inline-condensed heading-text pull-right">
+												
+
+												<li>
+					<a href="../Admin/Createtask.aspx?id=%%TaskKey%%"><i class="icon-pencil7"></i> Edit task</a>
+					
+					</a>
+				</li>&nbsp&nbsp
+
+
+												  
+													
+												
+														</ul>
+													</li>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</div>

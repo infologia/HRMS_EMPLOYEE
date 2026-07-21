@@ -1,0 +1,12 @@
+   <tr>
+                    <td>%%name%%</td>
+                    <td>%%request%%</td>
+                    <td>%%Fromtime%%</td>
+                    <td>%%Totime%%</td>
+                    <td>%%Permissionhourse%%</td>
+                    <td>%%ActiveText%%</td>
+                   
+                   
+                     <td><a href="/Employee/UpdateLaterecord.aspx?id=%%LatePermissionDetailskey%%"><span class="label label-info">Update</span></a></td> 
+             <td><a style="visibility:%%ViewText%%"><span class="label label-info"  onclick="fn_DeleteProject('%%LatePermissionDetailskey%%')">Remove</span></a></td> 
+			    </tr>

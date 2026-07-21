@@ -1,0 +1,10 @@
+﻿   <tr>
+                    
+                    <td>%%Company%%</td>
+                    <td>%%LeadType%%</td>
+                    <td>%%CreatedOn%%</td>
+                    <td>%%ModifiedOn%%</td>
+                    %%ViewText%%
+                    <td><a><span class="label label-danger"  onclick="fn_DeleteProject('%%LeadKey%%')">Remove</span></a></td> 
+                </tr>
+          

@@ -1,0 +1,11 @@
+﻿   <tr>
+                    <td>%%EmployeeKey%%</td>
+                     <td>%%EquipmentName%%</td>
+                     <td>%%Brand%%</td>
+                     <td>%%ModelSerialNumber%%</td>
+                    <td>%%AssignedDate%%</td>
+                    <td>%%ActiveText%%</td>
+                     <td><a href="AssignassetsCreation.aspx?id=%%AssignedAssets%%"><span class="label label-info">Update</span></a></td> 
+                  
+                </tr>
+          

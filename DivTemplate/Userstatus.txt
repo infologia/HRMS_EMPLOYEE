@@ -1,0 +1,18 @@
+﻿
+
+
+
+                  
+
+
+								<li class="media">
+										<a href="#" class="media-link">
+											<div class="media-left"><img src="%%Document%%" class="img-circle img-md" alt=""></div>
+											<div class="media-body" style="padding-top: 10px;">
+												<div class="media-heading text-semibold">%%Username%%</div>
+											</div>
+											<div class="media-right media-middle">%%ActiveText%%
+												
+											</div>
+										</a>
+									</li>

@@ -1,0 +1,8 @@
+﻿<tr>
+<td>%%pjname%%</td>
+<td>%%Taskname%%</td>
+<td>%%Categoryname%%</td>
+<td>%%Duedate%%</td>
+<td>%%ActiveCategory%%</td>
+<td><a href="../Employee/taskcreation.aspx?id=%%TaskKey%%&&key=1" class="label label-warning">View</a></td>
+</tr>

@@ -1,0 +1,23 @@
+﻿
+				
+				
+		
+                                    <ul class="media-list">
+                                        <li class="media">
+                                            <div class="media-left"><a href="#" class="btn border-primary text-primary btn-icon btn-flat btn-sm btn-rounded"><i class="icon-git-pull-request"></i></a></div>
+                                            <div class="media-body">
+                                               
+                                                <div class="media-annotation">%%pjname%%</div>
+												 <a href="ProjectIssue.aspx?key=%%TaskKey%%">%%Taskname%%</a>
+                                                <div class="media-annotation">%%TimeAgo%%</div><br/>
+                                            </div>
+                                        </li>
+										
+
+
+                                    </ul>
+                           
+								 
+							
+                     
+                         

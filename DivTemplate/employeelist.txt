@@ -1,0 +1,14 @@
+﻿
+							<tr>
+									
+							<td><a href="#">%%Employeeid%%</a></td>
+							<td>%%username%%</td>
+							<td>%%email%%</td>
+						    <td>%%phonenumber%%</td>
+							<td>%%createdon%%</td>
+							<td>%%ActiveText%%</td>
+					<td><a href="UpdateEmployeeProfile.aspx?id=%%Employeekey%%" class="label label-info">Upadte</a></td>
+					
+								</tr>
+				
+					

@@ -1,0 +1,10 @@
+﻿   <tr>
+                    <td>%%Category%%</td>
+                    <td>%%Type%%</td>
+                    <td>%%CreatedOn%%</td>
+                    <td>%%ModifiedOn%%</td>
+                   <td>%%ActiveText%%</td>
+                     <td><a href="Assetscategorycreation.aspx?id=%%AssetsCategoryKey%%"><span class="label label-info">Update</span></a></td> 
+                    
+                </tr>
+          

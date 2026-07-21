@@ -1,0 +1,73 @@
+﻿<div class="col-md-6">
+									<div class="panel border-left-lg border-left-primary">
+										<div class="panel-body">
+											<div class="row">
+												<div class="col-md-8">
+													<h6 class="no-margin-top"><a href="Taskdetails.aspx?key=%%TaskKey%%">%%Taskname%%</a></h6>
+													<p class="mb-15">%%Descriptions%%...</p>
+
+													<li>
+									                		Type: &nbsp; 
+															<span class="label bg-pink-400 position-left">%%Categoryname%%</span>
+															
+												</li>
+												<br/>
+												<li>
+									                		Status: &nbsp; 
+															%%ActiveCategory%%
+															
+												</li>
+								                	
+												</div>
+
+												<div class="col-md-4">
+													<ul class="list task-details">
+														<li>%%TimeAgo%%</li>
+											<li>
+									                		Priority: &nbsp; 
+															<span class="label bg-indigo-400">%%Priorityname%%</span></li>
+															
+										
+														<li><a href="Project'sSummaryDetails.aspx?key=%%projectkey%%">%%pjname%%</a></li>
+
+														
+												
+
+                                          <li>Reporter:<span class="badge badge-default">A</span>&nbsp%%Username%%</i></li>
+										    <li>Watchers: <span class="badge badge-default">%%watchers%%</span></li>
+													</ul>
+												</div>
+											</div>
+										</div>
+
+										<div class="panel-footer panel-footer-condensed">
+											<div class="heading-elements">
+												<span class="heading-text">Due: <span class="text-semibold">%%Duedate%%</span></span>
+
+												<ul class="list-inline list-inline-condensed heading-text pull-right">
+												
+
+												<li>
+					<a  href="TaskActivity.aspx?key=%%TaskKey%%">Activity
+						<i class="icon-drag-right"></i>
+					</a>
+				</li>&nbsp&nbsp
+
+
+												  
+													<li class="dropdown">
+														<a href="#" class="text-default dropdown-toggle" data-toggle="dropdown"><i class="icon-menu7"></i> <span class="caret"></span></a>
+														<ul class="dropdown-menu dropdown-menu-right">
+																		<li><a href="Createtask.aspx?id=%%TaskKey%%"><i class="icon-pencil7"></i> Edit task</a></li>
+															
+														
+															<li><a href="Watchesview.aspx"><i class="icon-rotate-ccw2"></i>Add Watchers</a></li>
+													
+												
+														</ul>
+													</li>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</div>

@@ -1,0 +1,7 @@
+   <tr>
+                    <td>%%BlogTitle%%</td>
+                    <td>%%BlogCreator%%</td>
+                    <td>%%Description%%</td>
+                    <td>%%Title%%</td>
+                    <td class="text-center"><a href="blog.aspx?action=edit&key=%%BL_ID%%"><span class="label label-info">Update</span></a></td>
+                </tr>

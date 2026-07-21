@@ -1,0 +1,9 @@
+﻿   <tr>
+                    <td>%%ProjectName%%</td>
+                    <td>%%InvoiceNumber%%</td>
+                    <td>%%TotalAmount%%</td>
+                    <td>%%InvoiceDate%%</td>
+                    <td>%%ReceivedDate%%</td>
+                   <td>%%CreatedOn%%</td>
+                </tr>
+          

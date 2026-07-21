@@ -1,0 +1,9 @@
+   <tr>
+                    <td>%%Employeeid%%</td>
+                    <td>%%salarymonth%%</td>                                                    
+                    <td>%%netpay%%</td>
+                    <td>%%lop%%</td>
+<td>%%Workingdays%%</td>
+<td>%%leavedays%%</td>
+	  <td><a href="EmployeePayrollView.aspx?key=%%payrollkey%%" <span class="label label-primary">View</span></a></td> 
+    </tr>

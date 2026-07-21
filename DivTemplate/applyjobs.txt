@@ -1,0 +1,10 @@
+	<tr>
+		<td>%%fullname%%</td>
+		<td>%%jobtitle%%</td>
+		<td>%%totalyearofexperience%%</td>
+		<td>%%highestqualification%%</td>
+		<td>%%currentlocation%%</td>
+		<td>%%phoneno%%</td>
+		<td>%%createdon%%</td>
+		<td style="text-align:center;">%%ResumeLink%%</td>
+	</tr>

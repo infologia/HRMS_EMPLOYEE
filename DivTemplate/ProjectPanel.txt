@@ -1,0 +1,18 @@
+<div class="col-sm-4">
+<div class="panel border-indigo">
+                <div class="panel-heading bg-indigo">
+                    <h6 class="panel-title">%%pjname%%</h6>
+                    <div class="heading-elements">
+                        <ul class="icons-list">
+                            <li><a data-action="collapse"></a></li>                            
+                        </ul>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <a href="Project'sSummary.aspx?key=%%projectkey%%" class="text-primary-300">%%pjname%%</a>
+                    <br />
+                    <a>%%Categoryname%%</a>
+                </div>
+            </div>
+			</div>
+			

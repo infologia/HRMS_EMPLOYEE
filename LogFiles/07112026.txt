@@ -1,0 +1,699 @@
+Severity:Information;Source:; Message:Sql : select * from  IT_EmployeeRegister where Username=@Username COLLATE SQL_Latin1_General_CP1_CS_AS and Password=@Password COLLATE SQL_Latin1_General_CP1_CS_AS ; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select  Numberofworkdaysinmonth from IT_EmployeeWorkingDayDetails where Year=Year(GETDATE()) and monthvalue=Month(GETDATE()) ; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from it_inouttime where employeekey='c5452fb0-ea2b-4395-a058-5fdb5510ae1d' and Month(OutTime) = Month(getdate()) ; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from it_inouttime where employeekey='c5452fb0-ea2b-4395-a058-5fdb5510ae1d' and Year(OutTime) = Year(getdate()) ; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select sum(cast(numberofworkdaysinmonth as int)) as numberofworkdaysinmonth from IT_EmployeeWorkingDayDetails where  year = year(getdate()); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select sum(cast(Numberofworkdaysinmonth as int)) as Numberofworkdaysinmonth from IT_EmployeeWorkingDayDetails where monthvalue = month(getdate()) and year = year(getdate()); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT ISNULL(Numberofworkdaysinmonth,0) FROM IT_EmployeeWorkingDayDetails WHERE monthvalue = MONTH(GETDATE()) AND year = YEAR(GETDATE()); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT ISNULL(SUM(DATEDIFF(MINUTE,0,WorkingHours)),0)/60 AS Hours,ISNULL(SUM(DATEDIFF(MINUTE,0,WorkingHours)),0)%60 AS Minutes FROM IT_inouttime WHERE Employeekey=@Employeekey AND MONTH(Intime)=MONTH(GETDATE()) AND YEAR(Intime)=YEAR(GETDATE()); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT ISNULL(SUM(CAST(Numberofworkdaysinmonth AS INT)),0) FROM IT_EmployeeWorkingDayDetails WHERE year = YEAR(GETDATE()); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT ISNULL(SUM(DATEDIFF(MINUTE,0,WorkingHours)),0)/60 AS Hours,ISNULL(SUM(DATEDIFF(MINUTE,0,WorkingHours)),0)%60 AS Minutes FROM IT_inouttime WHERE Employeekey=@Employeekey AND YEAR(Intime)=YEAR(GETDATE()); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+    SELECT ISNULL(SUM(CAST(LeaveDays AS DECIMAL(5,2))), 0) AS LeaveDays, Employeekey
+    FROM IT_EmployeeLeaveDetails
+    WHERE Responsestatus = '2'
+      AND Employeekey = @Employeekey
+      AND MONTH(Todate) = MONTH(GETDATE())
+      AND YEAR(Todate) = YEAR(GETDATE())
+    GROUP BY Employeekey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select FORMAT(InTime,'hh:mm tt') AS InTime , FORMAT(OutTime,'hh:mm tt') AS OutTime,CONVERT(Varchar,createdon,103)as Date from IT_InOutTime where Createdby=@Createdby and Createdon between @createdonfrom and @createdonto; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 5 CONVERT(Varchar,Fromdate,103)as Invalue,Reason,Responsestatus,responsereason from IT_EmployeeLeaveDetails where Employeekey=@Employeekey Order by Todate DESC; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : Select top 5 Requestdate,Reason,Responsestatus,responsereason from IT_EmployeePermissionDetails where Employeekey=@Employeekey Order by Requestdate DESC; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select InTime,OutTime from IT_InOutTime where Createdby=@Createdby and Createdon between @createdonfrom and @createdonto; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+        SELECT d.Departmentname FROM IT_EmployeeRegister e
+INNER JOIN IT_Department d
+    ON e.Department = d.Departmentid where e.Employeekey='c5452fb0-ea2b-4395-a058-5fdb5510ae1d'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 intime,outtime,modifiedon 
+                  from IT_Inouttime 
+                  WHERE Createdby='c5452fb0-ea2b-4395-a058-5fdb5510ae1d' 
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (1,2)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 breakin,breakout,modifiedon 
+                  from IT_break 
+                  WHERE Createdby='c5452fb0-ea2b-4395-a058-5fdb5510ae1d'
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (3,4)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 lunchin,lunchout,modifiedon 
+                  from IT_lunch 
+                  WHERE Createdby='c5452fb0-ea2b-4395-a058-5fdb5510ae1d'
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (5,6)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from IT_employeeregister where Employeekey=@Employeekey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from it_destination where destinationid='12'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT DISTINCT m.MenuKey, m.MenuName, m.MenuIcon, m.MenuListNo,
+                        m.ParentMenuKey, m.PageName, m.FolderName, m.MenuType,
+                        ISNULL(em.MenuOrder, m.MenuListNo) AS EffectiveOrder
+                        FROM IT_Menus m
+                        INNER JOIN IT_EmployeeMenus em ON m.MenuKey = em.MenuId
+                        WHERE m.Status = 1 AND em.EmployeeKey = @EmployeeKey AND em.ViewPermission = 1
+                        ORDER BY ISNULL(em.MenuOrder, m.MenuListNo); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT TOP 1 intime, outtime 
+                                   FROM IT_Inouttime 
+                                   WHERE Createdby = @userid 
+                                   AND CONVERT(varchar, modifiedon, 103) = @today
+                                   ORDER BY modifiedon DESC; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT TOP 1 breakin, breakout 
+                             FROM IT_Break 
+                             WHERE Createdby = @userid 
+                             AND CONVERT(varchar, modifiedon, 103) = @today
+                             ORDER BY modifiedon DESC; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT TOP 1 lunchin, lunchout 
+                             FROM IT_Lunch 
+                             WHERE Createdby = @userid 
+                             AND CONVERT(varchar, modifiedon, 103) = @today
+                             ORDER BY modifiedon DESC; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT Quote, Author FROM IT_DailyQuote WHERE QuoteDate=@Date; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT TOP 1 Quote, Author FROM IT_Quotes ORDER BY NEWID(); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : INSERT INTO IT_DailyQuote (QuoteDate, Quote, Author) VALUES (@Date, @Quote, @Author); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Affected Records : 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Transaction Commited; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT b.firstname, b.lastname, b.image 
+                       FROM IT_Employeeofthemonth a 
+                       LEFT JOIN IT_EmployeeRegister b ON a.employeekey=b.employeekey 
+                       WHERE a.employeeyear = YEAR(GETUTCDATE()) 
+                       AND a.employeemonth = MONTH(GETUTCDATE()) and Employeestatus=1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT flag 
+                         FROM (
+                            SELECT flag, modifiedon FROM IT_Inouttime WHERE Createdby=@userid AND CONVERT(varchar, modifiedon,103)=@today
+                            UNION ALL
+                            SELECT flag, modifiedon FROM IT_Lunch WHERE Createdby=@userid AND CONVERT(varchar, modifiedon,103)=@today
+                            UNION ALL
+                            SELECT flag, modifiedon FROM IT_Break WHERE Createdby=@userid AND CONVERT(varchar, modifiedon,103)=@today
+                         ) t ORDER BY modifiedon DESC; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select Username,Image,flag from IT_V_Userstatus; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+    SELECT 
+        p.ProjectName,
+        CAST(tc.StartDate AS DATE) AS TaskDate,
+        COUNT(td.TaskDetailID) AS TotalTasks,
+        SUM(CASE WHEN td.Status = 1 THEN 1 ELSE 0 END) AS AssignedTasks,
+        SUM(CASE WHEN td.Status = 2 THEN 1 ELSE 0 END) AS OngoingTasks,
+        SUM(CASE WHEN td.Status = 3 THEN 1 ELSE 0 END) AS PendingTasks,
+        SUM(CASE WHEN td.Status = 4 THEN 1 ELSE 0 END) AS CompletedTasks,
+        SUM(CASE WHEN td.Status = 6 THEN 1 ELSE 0 END) AS OverdueTasks
+    FROM IT_TaskCreation tc
+    INNER JOIN IT_Projects p ON p.ProjectKey = tc.ProjectName
+    LEFT JOIN IT_TaskDescriptiondetails td ON td.TaskKey = tc.TaskKey
+    WHERE 
+        tc.EmployeeList = @EmployeeKey
+        AND CAST(tc.StartDate AS DATE) = CAST(GETDATE() AS DATE)
+    GROUP BY p.ProjectName, CAST(tc.StartDate AS DATE)
+    ORDER BY p.ProjectName; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select WorkDate,InTime,outtime,BreakDuration,LunchDuration,NetWorkingDuration from IT_V_EmployeeDailyWorkSummary WHERE Employeekey =@userid AND WorkDate = CAST(GETDATE() AS DATE); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+        SELECT 
+            Employeekey,
+            SUM(CAST(ISNULL(LeaveDays, 0) AS DECIMAL(5,2))) AS TotalLeaveTaken,
+            CASE 
+                WHEN SUM(CAST(ISNULL(LeaveDays, 0) AS DECIMAL(5,2))) > 12
+                THEN SUM(CAST(ISNULL(LeaveDays, 0) AS DECIMAL(5,2))) - 12
+                ELSE 0
+            END AS LOP
+        FROM IT_EmployeeLeaveDetails
+        WHERE Responsestatus = 2
+          AND Employeekey = @EmpKey
+          AND (
+                (FromDate <= GETDATE() 
+                 AND ToDate >= DATEFROMPARTS(YEAR(GETDATE()), 1, 1))
+                OR
+                (FromDate >= DATEFROMPARTS(YEAR(GETDATE()), 1, 1)
+                 AND FromDate <= DATEFROMPARTS(YEAR(GETDATE()), 12, 31))
+              )
+        GROUP BY Employeekey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+        SELECT 
+            ISNULL(SUM(DATEDIFF(MINUTE, Fromtime, Totime)), 0) AS UsedMinutes
+        FROM IT_EmployeePermissionDetails
+        WHERE Employeekey = @EmpKey
+          AND Responsestatus = 2
+          AND MONTH(Requestdate) = MONTH(GETDATE())
+          AND YEAR(Requestdate) = YEAR(GETDATE())
+          AND Requestdate <= CAST(GETDATE() AS DATE); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select InTime,OutTime from IT_InOutTime where Createdby=@Createdby and Createdon between @createdonfrom and @createdonto; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+        SELECT d.Departmentname FROM IT_EmployeeRegister e
+INNER JOIN IT_Department d
+    ON e.Department = d.Departmentid where e.Employeekey='c5452fb0-ea2b-4395-a058-5fdb5510ae1d'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 intime,outtime,modifiedon 
+                  from IT_Inouttime 
+                  WHERE Createdby='c5452fb0-ea2b-4395-a058-5fdb5510ae1d' 
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (1,2)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 breakin,breakout,modifiedon 
+                  from IT_break 
+                  WHERE Createdby='c5452fb0-ea2b-4395-a058-5fdb5510ae1d'
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (3,4)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 lunchin,lunchout,modifiedon 
+                  from IT_lunch 
+                  WHERE Createdby='c5452fb0-ea2b-4395-a058-5fdb5510ae1d'
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (5,6)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from IT_employeeregister where Employeekey=@Employeekey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from it_destination where destinationid='12'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT DISTINCT m.MenuKey, m.MenuName, m.MenuIcon, m.MenuListNo,
+                        m.ParentMenuKey, m.PageName, m.FolderName, m.MenuType,
+                        ISNULL(em.MenuOrder, m.MenuListNo) AS EffectiveOrder
+                        FROM IT_Menus m
+                        INNER JOIN IT_EmployeeMenus em ON m.MenuKey = em.MenuId
+                        WHERE m.Status = 1 AND em.EmployeeKey = @EmployeeKey AND em.ViewPermission = 1
+                        ORDER BY ISNULL(em.MenuOrder, m.MenuListNo); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT 
+                                ROW_NUMBER() OVER (ORDER BY Holidays ASC) AS Sno,
+                                CONVERT(VARCHAR, Holidays, 103) AS HolidayDate,
+                                Holidays AS HolidayRaw,
+                                description,
+                                Day,
+                                NoOfLeave,
+                                CONVERT(VARCHAR, createdon, 103) AS createdon
+                             FROM IT_Holidays 
+                             ORDER BY Holidays ASC; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select InTime,OutTime from IT_InOutTime where Createdby=@Createdby and Createdon between @createdonfrom and @createdonto; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+        SELECT d.Departmentname FROM IT_EmployeeRegister e
+INNER JOIN IT_Department d
+    ON e.Department = d.Departmentid where e.Employeekey='c5452fb0-ea2b-4395-a058-5fdb5510ae1d'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 intime,outtime,modifiedon 
+                  from IT_Inouttime 
+                  WHERE Createdby='c5452fb0-ea2b-4395-a058-5fdb5510ae1d' 
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (1,2)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 breakin,breakout,modifiedon 
+                  from IT_break 
+                  WHERE Createdby='c5452fb0-ea2b-4395-a058-5fdb5510ae1d'
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (3,4)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 lunchin,lunchout,modifiedon 
+                  from IT_lunch 
+                  WHERE Createdby='c5452fb0-ea2b-4395-a058-5fdb5510ae1d'
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (5,6)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from IT_employeeregister where Employeekey=@Employeekey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from it_destination where destinationid='12'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT DISTINCT m.MenuKey, m.MenuName, m.MenuIcon, m.MenuListNo,
+                        m.ParentMenuKey, m.PageName, m.FolderName, m.MenuType,
+                        ISNULL(em.MenuOrder, m.MenuListNo) AS EffectiveOrder
+                        FROM IT_Menus m
+                        INNER JOIN IT_EmployeeMenus em ON m.MenuKey = em.MenuId
+                        WHERE m.Status = 1 AND em.EmployeeKey = @EmployeeKey AND em.ViewPermission = 1
+                        ORDER BY ISNULL(em.MenuOrder, m.MenuListNo); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from  IT_EmployeeRegister where Username=@Username COLLATE SQL_Latin1_General_CP1_CS_AS and Password=@Password COLLATE SQL_Latin1_General_CP1_CS_AS ; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select  Numberofworkdaysinmonth from IT_EmployeeWorkingDayDetails where Year=Year(GETDATE()) and monthvalue=Month(GETDATE()) ; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from it_inouttime where employeekey='80c3a92a-9821-4e24-8693-8aa0292cac5d' and Month(OutTime) = Month(getdate()) ; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from it_inouttime where employeekey='80c3a92a-9821-4e24-8693-8aa0292cac5d' and Year(OutTime) = Year(getdate()) ; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select sum(cast(numberofworkdaysinmonth as int)) as numberofworkdaysinmonth from IT_EmployeeWorkingDayDetails where  year = year(getdate()); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select sum(cast(Numberofworkdaysinmonth as int)) as Numberofworkdaysinmonth from IT_EmployeeWorkingDayDetails where monthvalue = month(getdate()) and year = year(getdate()); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT ISNULL(Numberofworkdaysinmonth,0) FROM IT_EmployeeWorkingDayDetails WHERE monthvalue = MONTH(GETDATE()) AND year = YEAR(GETDATE()); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT ISNULL(SUM(DATEDIFF(MINUTE,0,WorkingHours)),0)/60 AS Hours,ISNULL(SUM(DATEDIFF(MINUTE,0,WorkingHours)),0)%60 AS Minutes FROM IT_inouttime WHERE Employeekey=@Employeekey AND MONTH(Intime)=MONTH(GETDATE()) AND YEAR(Intime)=YEAR(GETDATE()); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT ISNULL(SUM(CAST(Numberofworkdaysinmonth AS INT)),0) FROM IT_EmployeeWorkingDayDetails WHERE year = YEAR(GETDATE()); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT ISNULL(SUM(DATEDIFF(MINUTE,0,WorkingHours)),0)/60 AS Hours,ISNULL(SUM(DATEDIFF(MINUTE,0,WorkingHours)),0)%60 AS Minutes FROM IT_inouttime WHERE Employeekey=@Employeekey AND YEAR(Intime)=YEAR(GETDATE()); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+    SELECT ISNULL(SUM(CAST(LeaveDays AS DECIMAL(5,2))), 0) AS LeaveDays, Employeekey
+    FROM IT_EmployeeLeaveDetails
+    WHERE Responsestatus = '2'
+      AND Employeekey = @Employeekey
+      AND MONTH(Todate) = MONTH(GETDATE())
+      AND YEAR(Todate) = YEAR(GETDATE())
+    GROUP BY Employeekey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select FORMAT(InTime,'hh:mm tt') AS InTime , FORMAT(OutTime,'hh:mm tt') AS OutTime,CONVERT(Varchar,createdon,103)as Date from IT_InOutTime where Createdby=@Createdby and Createdon between @createdonfrom and @createdonto; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 5 CONVERT(Varchar,Fromdate,103)as Invalue,Reason,Responsestatus,responsereason from IT_EmployeeLeaveDetails where Employeekey=@Employeekey Order by Todate DESC; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : Select top 5 Requestdate,Reason,Responsestatus,responsereason from IT_EmployeePermissionDetails where Employeekey=@Employeekey Order by Requestdate DESC; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select InTime,OutTime from IT_InOutTime where Createdby=@Createdby and Createdon between @createdonfrom and @createdonto; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+        SELECT d.Departmentname FROM IT_EmployeeRegister e
+INNER JOIN IT_Department d
+    ON e.Department = d.Departmentid where e.Employeekey='80c3a92a-9821-4e24-8693-8aa0292cac5d'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 intime,outtime,modifiedon 
+                  from IT_Inouttime 
+                  WHERE Createdby='80c3a92a-9821-4e24-8693-8aa0292cac5d' 
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (1,2)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 breakin,breakout,modifiedon 
+                  from IT_break 
+                  WHERE Createdby='80c3a92a-9821-4e24-8693-8aa0292cac5d'
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (3,4)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 lunchin,lunchout,modifiedon 
+                  from IT_lunch 
+                  WHERE Createdby='80c3a92a-9821-4e24-8693-8aa0292cac5d'
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (5,6)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from IT_employeeregister where Employeekey=@Employeekey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from it_destination where destinationid='23'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT DISTINCT m.MenuKey, m.MenuName, m.MenuIcon, m.MenuListNo,
+                        m.ParentMenuKey, m.PageName, m.FolderName, m.MenuType,
+                        ISNULL(em.MenuOrder, m.MenuListNo) AS EffectiveOrder
+                        FROM IT_Menus m
+                        INNER JOIN IT_EmployeeMenus em ON m.MenuKey = em.MenuId
+                        WHERE m.Status = 1 AND em.EmployeeKey = @EmployeeKey AND em.ViewPermission = 1
+                        ORDER BY ISNULL(em.MenuOrder, m.MenuListNo); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+SELECT
+    p.ProjectKey,
+    p.ProjectName,
+    p.StartDate,
+    p.EndDate,
+    p.EstimatedHours,
+    p.Status AS ProjectStatus,
+    ISNULL(pt.name, 'N/A') AS ProjectType,
+
+    -- All Task counts (from TaskDescriptiondetails)
+    (SELECT COUNT(*) FROM IT_TaskDescriptiondetails td 
+     INNER JOIN IT_TaskCreation tc ON td.TaskKey = tc.TaskKey 
+     WHERE tc.ProjectName = p.ProjectKey) AS AllOverall,
+    (SELECT COUNT(DISTINCT pp.EmployeeKey) 
+     FROM IT_ProjectsParticipants pp 
+     WHERE pp.ProjectKey = p.ProjectKey) AS AllAssignedEmployees,
+    (SELECT COUNT(*) FROM IT_TaskDescriptiondetails td 
+     INNER JOIN IT_TaskCreation tc ON td.TaskKey = tc.TaskKey 
+     WHERE tc.ProjectName = p.ProjectKey AND td.Status = 1) AS AllAssigned,
+    (SELECT COUNT(*) FROM IT_TaskDescriptiondetails td 
+     INNER JOIN IT_TaskCreation tc ON td.TaskKey = tc.TaskKey 
+     WHERE tc.ProjectName = p.ProjectKey AND td.Status = 2) AS AllInProgress,
+    (SELECT COUNT(*) FROM IT_TaskDescriptiondetails td 
+     INNER JOIN IT_TaskCreation tc ON td.TaskKey = tc.TaskKey 
+     WHERE tc.ProjectName = p.ProjectKey AND td.Status = 4) AS AllCompleted,
+    (SELECT COUNT(*) FROM IT_TaskDescriptiondetails td 
+     INNER JOIN IT_TaskCreation tc ON td.TaskKey = tc.TaskKey 
+     WHERE tc.ProjectName = p.ProjectKey AND td.Status <> 4 AND tc.StartDate < CAST(GETDATE() AS DATE)) AS AllOverdue,
+
+    -- My Task counts (from TaskDescriptiondetails for specific employee)
+    (SELECT COUNT(*) FROM IT_TaskDescriptiondetails td 
+     INNER JOIN IT_TaskCreation tc ON td.TaskKey = tc.TaskKey 
+     WHERE tc.ProjectName = p.ProjectKey AND tc.EmployeeList = @UserId) AS MyOverall,
+    (SELECT COUNT(*) FROM IT_TaskDescriptiondetails td 
+     INNER JOIN IT_TaskCreation tc ON td.TaskKey = tc.TaskKey 
+     WHERE tc.ProjectName = p.ProjectKey AND tc.EmployeeList = @UserId AND td.Status = 2) AS MyInProgress,
+    (SELECT COUNT(*) FROM IT_TaskDescriptiondetails td 
+     INNER JOIN IT_TaskCreation tc ON td.TaskKey = tc.TaskKey 
+     WHERE tc.ProjectName = p.ProjectKey AND tc.EmployeeList = @UserId AND td.Status = 4) AS MyCompleted,
+    (SELECT COUNT(*) FROM IT_TaskDescriptiondetails td 
+     INNER JOIN IT_TaskCreation tc ON td.TaskKey = tc.TaskKey 
+     WHERE tc.ProjectName = p.ProjectKey AND tc.EmployeeList = @UserId AND td.Status <> 4 AND tc.StartDate < CAST(GETDATE() AS DATE)) AS MyOverdue,
+    (SELECT COUNT(*) FROM IT_TaskDescriptiondetails td 
+     INNER JOIN IT_TaskCreation tc ON td.TaskKey = tc.TaskKey 
+     WHERE tc.ProjectName = p.ProjectKey AND tc.EmployeeList = @UserId AND td.Status = 1) AS MyAssigned,
+
+    -- Total Hours Spent (from TaskDescriptiondetails)
+    ISNULL((SELECT SUM(CASE WHEN td.ActualHours IS NOT NULL AND td.ActualHours > 0 THEN td.ActualHours ELSE ISNULL(td.AssignedHours,0) END)
+            FROM IT_TaskDescriptiondetails td 
+            INNER JOIN IT_TaskCreation tc ON td.TaskKey = tc.TaskKey 
+            WHERE tc.ProjectName = p.ProjectKey), 0) AS TotalHoursSpent,
+
+    -- Current Month Hours Spent (for Monthly Support Contract)
+    ISNULL((SELECT SUM(CASE WHEN td.ActualHours IS NOT NULL AND td.ActualHours > 0 THEN td.ActualHours ELSE ISNULL(td.AssignedHours,0) END)
+            FROM IT_TaskDescriptiondetails td 
+            INNER JOIN IT_TaskCreation tc ON td.TaskKey = tc.TaskKey 
+            WHERE tc.ProjectName = p.ProjectKey 
+            AND MONTH(tc.CreatedOn) = MONTH(GETDATE()) 
+            AND YEAR(tc.CreatedOn) = YEAR(GETDATE())), 0) AS CurrentMonthHoursSpent,
+
+    -- My Logged Hours (from TaskDescriptiondetails for specific employee)
+    ISNULL((SELECT SUM(CASE WHEN td.ActualHours IS NOT NULL AND td.ActualHours > 0 THEN td.ActualHours ELSE ISNULL(td.AssignedHours,0) END)
+            FROM IT_TaskDescriptiondetails td 
+            INNER JOIN IT_TaskCreation tc ON td.TaskKey = tc.TaskKey 
+            WHERE tc.ProjectName = p.ProjectKey AND tc.EmployeeList = @UserId), 0) AS MyLoggedHours,
+
+    -- My Current Month Hours (for Monthly Support Contract)
+    ISNULL((SELECT SUM(CASE WHEN td.ActualHours IS NOT NULL AND td.ActualHours > 0 THEN td.ActualHours ELSE ISNULL(td.AssignedHours,0) END)
+            FROM IT_TaskDescriptiondetails td 
+            INNER JOIN IT_TaskCreation tc ON td.TaskKey = tc.TaskKey 
+            WHERE tc.ProjectName = p.ProjectKey AND tc.EmployeeList = @UserId 
+            AND MONTH(tc.CreatedOn) = MONTH(GETDATE()) 
+            AND YEAR(tc.CreatedOn) = YEAR(GETDATE())), 0) AS MyCurrentMonthHours,
+
+    (SELECT TOP 1 FilePath FROM IT_ProjectDocuments WHERE ProjectKey = p.ProjectKey AND DocumentName LIKE '%workflow%') AS WorkflowDocumentPath,
+    (SELECT COUNT(*) FROM IT_EmployeeRegister er WHERE er.Employeekey = @UserId AND er.Division = 1) AS IsTeamLead
+
+FROM IT_Projects p
+LEFT JOIN ProjectType pt ON p.ProjectTypeId = pt.id
+WHERE EXISTS (SELECT 1 FROM IT_ProjectsParticipants pp WHERE pp.ProjectKey = p.ProjectKey AND pp.EmployeeKey = @UserId)
+   OR EXISTS (SELECT 1 FROM IT_ProjectTeamLeads tl WHERE tl.ProjectKey = p.ProjectKey AND tl.EmployeeKey = @UserId)
+ORDER BY p.StartDate DESC; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select InTime,OutTime from IT_InOutTime where Createdby=@Createdby and Createdon between @createdonfrom and @createdonto; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+        SELECT d.Departmentname FROM IT_EmployeeRegister e
+INNER JOIN IT_Department d
+    ON e.Department = d.Departmentid where e.Employeekey='80c3a92a-9821-4e24-8693-8aa0292cac5d'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 intime,outtime,modifiedon 
+                  from IT_Inouttime 
+                  WHERE Createdby='80c3a92a-9821-4e24-8693-8aa0292cac5d' 
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (1,2)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 breakin,breakout,modifiedon 
+                  from IT_break 
+                  WHERE Createdby='80c3a92a-9821-4e24-8693-8aa0292cac5d'
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (3,4)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 lunchin,lunchout,modifiedon 
+                  from IT_lunch 
+                  WHERE Createdby='80c3a92a-9821-4e24-8693-8aa0292cac5d'
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (5,6)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from IT_employeeregister where Employeekey=@Employeekey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from it_destination where destinationid='23'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT DISTINCT m.MenuKey, m.MenuName, m.MenuIcon, m.MenuListNo,
+                        m.ParentMenuKey, m.PageName, m.FolderName, m.MenuType,
+                        ISNULL(em.MenuOrder, m.MenuListNo) AS EffectiveOrder
+                        FROM IT_Menus m
+                        INNER JOIN IT_EmployeeMenus em ON m.MenuKey = em.MenuId
+                        WHERE m.Status = 1 AND em.EmployeeKey = @EmployeeKey AND em.ViewPermission = 1
+                        ORDER BY ISNULL(em.MenuOrder, m.MenuListNo); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT Division FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Employeestatus = 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT EmployeeKey, (Firstname + ' ' + Lastname) AS EmployeeName 
+                        FROM IT_EmployeeRegister 
+                        WHERE Employeestatus = 1 AND Destination IN (11, 12, 23, 24)
+                        ORDER BY Firstname; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT Division, Destination FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Employeestatus = 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT ProjectName FROM IT_Projects WHERE ProjectKey = @ProjectKey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT COUNT(d.TaskDetailID) 
+                         FROM IT_TaskCreation a
+                         LEFT JOIN IT_TaskDescriptiondetails d ON a.TaskKey = d.TaskKey WHERE 1=1 AND a.ProjectName = @ProjectKey AND MONTH(a.StartDate) = @Month AND YEAR(a.StartDate) = @Year; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT COUNT( a.TaskKey) 
+                        FROM IT_TaskCreation a
+                        LEFT JOIN IT_TaskDescriptiondetails d ON a.TaskKey = d.TaskKey WHERE d.Status = @StatusId AND a.ProjectName = @ProjectKey AND MONTH(a.StartDate) = @Month AND YEAR(a.StartDate) = @Year; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT COUNT( a.TaskKey) 
+                        FROM IT_TaskCreation a
+                        LEFT JOIN IT_TaskDescriptiondetails d ON a.TaskKey = d.TaskKey WHERE d.Status = @StatusId AND a.ProjectName = @ProjectKey AND MONTH(a.StartDate) = @Month AND YEAR(a.StartDate) = @Year; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT COUNT(DISTINCT a.TaskKey) 
+                        FROM IT_TaskCreation a
+                        LEFT JOIN IT_TaskDescriptiondetails d ON a.TaskKey = d.TaskKey WHERE a.StartDate < @CurrentDate AND d.Status != 4 AND a.ProjectName = @ProjectKey AND MONTH(a.StartDate) = @Month AND YEAR(a.StartDate) = @Year; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT COUNT(DISTINCT a.TaskKey)
+                        FROM IT_TaskCreation a WHERE 1=1 AND a.ProjectName = @ProjectKey AND MONTH(a.StartDate) = @Month AND YEAR(a.StartDate) = @Year
+                        AND NOT EXISTS (
+                            SELECT 1 FROM IT_TaskDescriptiondetails d 
+                            WHERE d.TaskKey = a.TaskKey AND d.Status != 4
+                        )
+                        AND EXISTS (
+                            SELECT 1 FROM IT_TaskDescriptiondetails d 
+                            WHERE d.TaskKey = a.TaskKey
+                        ); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT 
+                            CAST(a.StartDate AS DATE) AS StartDate,
+                            MAX(a.TaskKey) AS TaskKey, 
+                            MAX(a.CreatedBy) AS CreatedBy,
+                            (e.Firstname + ' ' + e.Lastname) AS AssignedTo,
+                            e.Image AS EmpImage,
+                            SUM(ISNULL(d.AssignedHours, 0)) AS AssignedHours, 
+                            SUM(ISNULL(d.ActualHours, 0)) AS ActualHours, 
+                            COUNT(d.TaskDetailID) AS stTotal,
+                            SUM(CASE WHEN d.Status = 1 THEN 1 ELSE 0 END) AS stYetToStart,
+                            SUM(CASE WHEN d.Status = 2 THEN 1 ELSE 0 END) AS stInProgress,
+                            SUM(CASE WHEN d.Status = 4 THEN 1 ELSE 0 END) AS stCompleted,
+                            SUM(CASE WHEN d.Status != 4 AND a.StartDate < @CurrentDate THEN 1 ELSE 0 END) AS stOverdue,
+                            MIN(d.Status) AS Status
+                        FROM IT_TaskCreation a
+                        LEFT JOIN IT_EmployeeRegister e ON a.EmployeeList = e.EmployeeKey
+                        LEFT JOIN IT_TaskDescriptiondetails d ON a.TaskKey = d.TaskKey WHERE 1=1 AND a.ProjectName = @ProjectKey AND MONTH(a.StartDate) = @Month AND YEAR(a.StartDate) = @Year
+                        GROUP BY CAST(a.StartDate AS DATE), a.EmployeeList, e.Firstname, e.Lastname, e.Image
+                        ORDER BY StartDate DESC; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select InTime,OutTime from IT_InOutTime where Createdby=@Createdby and Createdon between @createdonfrom and @createdonto; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+        SELECT d.Departmentname FROM IT_EmployeeRegister e
+INNER JOIN IT_Department d
+    ON e.Department = d.Departmentid where e.Employeekey='80c3a92a-9821-4e24-8693-8aa0292cac5d'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 intime,outtime,modifiedon 
+                  from IT_Inouttime 
+                  WHERE Createdby='80c3a92a-9821-4e24-8693-8aa0292cac5d' 
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (1,2)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 breakin,breakout,modifiedon 
+                  from IT_break 
+                  WHERE Createdby='80c3a92a-9821-4e24-8693-8aa0292cac5d'
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (3,4)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 lunchin,lunchout,modifiedon 
+                  from IT_lunch 
+                  WHERE Createdby='80c3a92a-9821-4e24-8693-8aa0292cac5d'
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (5,6)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from IT_employeeregister where Employeekey=@Employeekey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from it_destination where destinationid='23'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT DISTINCT m.MenuKey, m.MenuName, m.MenuIcon, m.MenuListNo,
+                        m.ParentMenuKey, m.PageName, m.FolderName, m.MenuType,
+                        ISNULL(em.MenuOrder, m.MenuListNo) AS EffectiveOrder
+                        FROM IT_Menus m
+                        INNER JOIN IT_EmployeeMenus em ON m.MenuKey = em.MenuId
+                        WHERE m.Status = 1 AND em.EmployeeKey = @EmployeeKey AND em.ViewPermission = 1
+                        ORDER BY ISNULL(em.MenuOrder, m.MenuListNo); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 intime,outtime,modifiedon 
+                  from IT_Inouttime 
+                  WHERE Createdby='80c3a92a-9821-4e24-8693-8aa0292cac5d' 
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (1,2)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 breakin,breakout,modifiedon 
+                  from IT_break 
+                  WHERE Createdby='80c3a92a-9821-4e24-8693-8aa0292cac5d'
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (3,4)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 lunchin,lunchout,modifiedon 
+                  from IT_lunch 
+                  WHERE Createdby='80c3a92a-9821-4e24-8693-8aa0292cac5d'
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (5,6)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from IT_employeeregister where Employeekey=@Employeekey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from it_destination where destinationid='23'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT COUNT(d.TaskDetailID) 
+                         FROM IT_TaskCreation a
+                         LEFT JOIN IT_TaskDescriptiondetails d ON a.TaskKey = d.TaskKey WHERE 1=1 AND a.EmployeeList = @UserId AND a.ProjectName = @ProjectKey AND MONTH(a.StartDate) = @Month AND YEAR(a.StartDate) = @Year; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT COUNT( a.TaskKey) 
+                        FROM IT_TaskCreation a
+                        LEFT JOIN IT_TaskDescriptiondetails d ON a.TaskKey = d.TaskKey WHERE d.Status = @StatusId AND a.EmployeeList = @UserId AND a.ProjectName = @ProjectKey AND MONTH(a.StartDate) = @Month AND YEAR(a.StartDate) = @Year; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT COUNT( a.TaskKey) 
+                        FROM IT_TaskCreation a
+                        LEFT JOIN IT_TaskDescriptiondetails d ON a.TaskKey = d.TaskKey WHERE d.Status = @StatusId AND a.EmployeeList = @UserId AND a.ProjectName = @ProjectKey AND MONTH(a.StartDate) = @Month AND YEAR(a.StartDate) = @Year; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT COUNT(DISTINCT a.TaskKey) 
+                        FROM IT_TaskCreation a
+                        LEFT JOIN IT_TaskDescriptiondetails d ON a.TaskKey = d.TaskKey WHERE a.StartDate < @CurrentDate AND d.Status != 4 AND a.EmployeeList = @UserId AND a.ProjectName = @ProjectKey AND MONTH(a.StartDate) = @Month AND YEAR(a.StartDate) = @Year; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT COUNT(DISTINCT a.TaskKey)
+                        FROM IT_TaskCreation a WHERE 1=1 AND a.EmployeeList = @UserId AND a.ProjectName = @ProjectKey AND MONTH(a.StartDate) = @Month AND YEAR(a.StartDate) = @Year
+                        AND NOT EXISTS (
+                            SELECT 1 FROM IT_TaskDescriptiondetails d 
+                            WHERE d.TaskKey = a.TaskKey AND d.Status != 4
+                        )
+                        AND EXISTS (
+                            SELECT 1 FROM IT_TaskDescriptiondetails d 
+                            WHERE d.TaskKey = a.TaskKey
+                        ); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT 
+                            CAST(a.StartDate AS DATE) AS StartDate,
+                            MAX(a.TaskKey) AS TaskKey, 
+                            MAX(a.CreatedBy) AS CreatedBy,
+                            (e.Firstname + ' ' + e.Lastname) AS AssignedTo,
+                            e.Image AS EmpImage,
+                            SUM(ISNULL(d.AssignedHours, 0)) AS AssignedHours, 
+                            SUM(ISNULL(d.ActualHours, 0)) AS ActualHours, 
+                            COUNT(d.TaskDetailID) AS stTotal,
+                            SUM(CASE WHEN d.Status = 1 THEN 1 ELSE 0 END) AS stYetToStart,
+                            SUM(CASE WHEN d.Status = 2 THEN 1 ELSE 0 END) AS stInProgress,
+                            SUM(CASE WHEN d.Status = 4 THEN 1 ELSE 0 END) AS stCompleted,
+                            SUM(CASE WHEN d.Status != 4 AND a.StartDate < @CurrentDate THEN 1 ELSE 0 END) AS stOverdue,
+                            MIN(d.Status) AS Status
+                        FROM IT_TaskCreation a
+                        LEFT JOIN IT_EmployeeRegister e ON a.EmployeeList = e.EmployeeKey
+                        LEFT JOIN IT_TaskDescriptiondetails d ON a.TaskKey = d.TaskKey WHERE 1=1 AND a.EmployeeList = @UserId AND a.ProjectName = @ProjectKey AND MONTH(a.StartDate) = @Month AND YEAR(a.StartDate) = @Year
+                        GROUP BY CAST(a.StartDate AS DATE), a.EmployeeList, e.Firstname, e.Lastname, e.Image
+                        ORDER BY StartDate DESC; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT RoleID, RoleName FROM IT_TaskRole;; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT StatusID, StatusName FROM IT_StatusMaster WHERE StatusID NOT IN (5,3,6) ORDER BY StatusOrder; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT AH_Id, AH_Hours FROM IT_AssignedHours WHERE AH_IsActive = 1 ORDER BY AH_Hours; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT Division, Destination FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Employeestatus = 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT ProjectKey, ProjectName FROM IT_Projects 
+                       WHERE leadby = @UserId 
+                       OR EXISTS (SELECT 1 FROM IT_ProjectsParticipants WHERE ProjectKey = IT_Projects.ProjectKey AND EmployeeKey = @UserId)
+                       ORDER BY ProjectName; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+        SELECT DISTINCT
+            e.EmployeeKey,
+            (e.Firstname + ' ' + e.Lastname) AS EmployeeName,
+            e.Firstname
+        FROM IT_EmployeeRegister e
+        WHERE e.Employeestatus = 1
+        AND e.Destination IN (11, 12, 23, 24)
+        ORDER BY e.Firstname; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT StatusID, StatusName FROM IT_StatusMaster WHERE StatusID NOT IN (5,3,6) ORDER BY StatusOrder; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+    SELECT 
+        ProjectName,
+        EmployeeList,
+        StartDate,
+        Role
+    FROM IT_TaskCreation
+    WHERE TaskKey = @TaskKey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+        SELECT DISTINCT
+            e.EmployeeKey, -- GUID column
+            (e.Firstname + ' ' + e.Lastname) AS EmployeeName
+        FROM IT_ProjectsParticipants p
+        INNER JOIN IT_EmployeeRegister e
+            ON e.EmployeeKey = p.TeamLead
+        WHERE p.ProjectKey = @ProjectKey
+          AND p.TeamLead IS NOT NULL; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+        SELECT DISTINCT
+            e.EmployeeKey,
+            (e.Firstname + ' ' + e.Lastname) AS EmployeeName,
+            e.Firstname
+        FROM IT_EmployeeRegister e
+        WHERE e.Employeestatus = 1
+        AND e.Destination IN (11, 12, 23, 24)
+        ORDER BY e.Firstname; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT TaskDetailID, TaskName, TaskDescription, AssignedHours, ActualHours, Status, Remarks FROM IT_TaskDescriptiondetails WHERE TaskKey = @TaskKey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT Division, Destination FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Employeestatus = 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT StatusID, StatusName FROM IT_StatusMaster WHERE StatusID NOT IN (5,3,6) ORDER BY StatusOrder; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT AH_Hours FROM IT_AssignedHours WHERE AH_IsActive = 1 ORDER BY AH_Hours; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT Division, Destination FROM IT_EmployeeRegister 
+                             WHERE Employeekey = @EmpId AND Employeestatus = 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT ProjectName FROM IT_TaskCreation WHERE TaskKey = @TaskKey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select InTime,OutTime from IT_InOutTime where Createdby=@Createdby and Createdon between @createdonfrom and @createdonto; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+        SELECT d.Departmentname FROM IT_EmployeeRegister e
+INNER JOIN IT_Department d
+    ON e.Department = d.Departmentid where e.Employeekey='80c3a92a-9821-4e24-8693-8aa0292cac5d'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 intime,outtime,modifiedon 
+                  from IT_Inouttime 
+                  WHERE Createdby='80c3a92a-9821-4e24-8693-8aa0292cac5d' 
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (1,2)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 breakin,breakout,modifiedon 
+                  from IT_break 
+                  WHERE Createdby='80c3a92a-9821-4e24-8693-8aa0292cac5d'
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (3,4)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 lunchin,lunchout,modifiedon 
+                  from IT_lunch 
+                  WHERE Createdby='80c3a92a-9821-4e24-8693-8aa0292cac5d'
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (5,6)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from IT_employeeregister where Employeekey=@Employeekey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from it_destination where destinationid='23'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT DISTINCT m.MenuKey, m.MenuName, m.MenuIcon, m.MenuListNo,
+                        m.ParentMenuKey, m.PageName, m.FolderName, m.MenuType,
+                        ISNULL(em.MenuOrder, m.MenuListNo) AS EffectiveOrder
+                        FROM IT_Menus m
+                        INNER JOIN IT_EmployeeMenus em ON m.MenuKey = em.MenuId
+                        WHERE m.Status = 1 AND em.EmployeeKey = @EmployeeKey AND em.ViewPermission = 1
+                        ORDER BY ISNULL(em.MenuOrder, m.MenuListNo); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT Division FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Employeestatus = 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT EmployeeKey, (Firstname + ' ' + Lastname) AS EmployeeName 
+                        FROM IT_EmployeeRegister 
+                        WHERE Employeestatus = 1 AND Destination IN (11, 12, 23, 24)
+                        ORDER BY Firstname; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT Division, Destination FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Employeestatus = 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT ProjectName FROM IT_Projects WHERE ProjectKey = @ProjectKey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT COUNT(d.TaskDetailID) 
+                         FROM IT_TaskCreation a
+                         LEFT JOIN IT_TaskDescriptiondetails d ON a.TaskKey = d.TaskKey WHERE 1=1 AND a.ProjectName = @ProjectKey AND MONTH(a.StartDate) = @Month AND YEAR(a.StartDate) = @Year; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT COUNT( a.TaskKey) 
+                        FROM IT_TaskCreation a
+                        LEFT JOIN IT_TaskDescriptiondetails d ON a.TaskKey = d.TaskKey WHERE d.Status = @StatusId AND a.ProjectName = @ProjectKey AND MONTH(a.StartDate) = @Month AND YEAR(a.StartDate) = @Year; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT COUNT( a.TaskKey) 
+                        FROM IT_TaskCreation a
+                        LEFT JOIN IT_TaskDescriptiondetails d ON a.TaskKey = d.TaskKey WHERE d.Status = @StatusId AND a.ProjectName = @ProjectKey AND MONTH(a.StartDate) = @Month AND YEAR(a.StartDate) = @Year; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT COUNT(DISTINCT a.TaskKey) 
+                        FROM IT_TaskCreation a
+                        LEFT JOIN IT_TaskDescriptiondetails d ON a.TaskKey = d.TaskKey WHERE a.StartDate < @CurrentDate AND d.Status != 4 AND a.ProjectName = @ProjectKey AND MONTH(a.StartDate) = @Month AND YEAR(a.StartDate) = @Year; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT COUNT(DISTINCT a.TaskKey)
+                        FROM IT_TaskCreation a WHERE 1=1 AND a.ProjectName = @ProjectKey AND MONTH(a.StartDate) = @Month AND YEAR(a.StartDate) = @Year
+                        AND NOT EXISTS (
+                            SELECT 1 FROM IT_TaskDescriptiondetails d 
+                            WHERE d.TaskKey = a.TaskKey AND d.Status != 4
+                        )
+                        AND EXISTS (
+                            SELECT 1 FROM IT_TaskDescriptiondetails d 
+                            WHERE d.TaskKey = a.TaskKey
+                        ); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT 
+                            CAST(a.StartDate AS DATE) AS StartDate,
+                            MAX(a.TaskKey) AS TaskKey, 
+                            MAX(a.CreatedBy) AS CreatedBy,
+                            (e.Firstname + ' ' + e.Lastname) AS AssignedTo,
+                            e.Image AS EmpImage,
+                            SUM(ISNULL(d.AssignedHours, 0)) AS AssignedHours, 
+                            SUM(ISNULL(d.ActualHours, 0)) AS ActualHours, 
+                            COUNT(d.TaskDetailID) AS stTotal,
+                            SUM(CASE WHEN d.Status = 1 THEN 1 ELSE 0 END) AS stYetToStart,
+                            SUM(CASE WHEN d.Status = 2 THEN 1 ELSE 0 END) AS stInProgress,
+                            SUM(CASE WHEN d.Status = 4 THEN 1 ELSE 0 END) AS stCompleted,
+                            SUM(CASE WHEN d.Status != 4 AND a.StartDate < @CurrentDate THEN 1 ELSE 0 END) AS stOverdue,
+                            MIN(d.Status) AS Status
+                        FROM IT_TaskCreation a
+                        LEFT JOIN IT_EmployeeRegister e ON a.EmployeeList = e.EmployeeKey
+                        LEFT JOIN IT_TaskDescriptiondetails d ON a.TaskKey = d.TaskKey WHERE 1=1 AND a.ProjectName = @ProjectKey AND MONTH(a.StartDate) = @Month AND YEAR(a.StartDate) = @Year
+                        GROUP BY CAST(a.StartDate AS DATE), a.EmployeeList, e.Firstname, e.Lastname, e.Image
+                        ORDER BY StartDate DESC; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select InTime,OutTime from IT_InOutTime where Createdby=@Createdby and Createdon between @createdonfrom and @createdonto; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+        SELECT d.Departmentname FROM IT_EmployeeRegister e
+INNER JOIN IT_Department d
+    ON e.Department = d.Departmentid where e.Employeekey='80c3a92a-9821-4e24-8693-8aa0292cac5d'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 intime,outtime,modifiedon 
+                  from IT_Inouttime 
+                  WHERE Createdby='80c3a92a-9821-4e24-8693-8aa0292cac5d' 
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (1,2)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 breakin,breakout,modifiedon 
+                  from IT_break 
+                  WHERE Createdby='80c3a92a-9821-4e24-8693-8aa0292cac5d'
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (3,4)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 lunchin,lunchout,modifiedon 
+                  from IT_lunch 
+                  WHERE Createdby='80c3a92a-9821-4e24-8693-8aa0292cac5d'
+                  and Convert(varchar, modifiedon, 103)= '11/07/2026'
+                  and flag in (5,6)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from IT_employeeregister where Employeekey=@Employeekey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from it_destination where destinationid='23'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT DISTINCT m.MenuKey, m.MenuName, m.MenuIcon, m.MenuListNo,
+                        m.ParentMenuKey, m.PageName, m.FolderName, m.MenuType,
+                        ISNULL(em.MenuOrder, m.MenuListNo) AS EffectiveOrder
+                        FROM IT_Menus m
+                        INNER JOIN IT_EmployeeMenus em ON m.MenuKey = em.MenuId
+                        WHERE m.Status = 1 AND em.EmployeeKey = @EmployeeKey AND em.ViewPermission = 1
+                        ORDER BY ISNULL(em.MenuOrder, m.MenuListNo); StackTrace:; InnerException:;CustomReference:;

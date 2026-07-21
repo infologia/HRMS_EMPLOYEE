@@ -1,0 +1,10 @@
+﻿   <tr>
+                   <td>%%PolicyDocumentKey%%</td>
+                   <td>%%DocumentName%%</td>
+                   <td>%%ViewDocument%%</td>
+                   <td>%%Download%%</td>
+                   <td>%%ActiveText%%</td>
+                   <td>%%CreatedOn%%</td>   
+                              
+                </tr>
+          

@@ -1,0 +1,9 @@
+﻿<td>%%createdon%%</td>
+									<td>%%Username%%</td>
+										<td>%%divisionname%%</td>
+									<td>%%departmentname%%</td>
+										<td>%%destinationname%%</td>
+									<td><a><span class="label label-info"  onclick="fn_DeleteProject('%%TaskWatcherkey%%')">Remove</span></a></td>
+										
+										
+								</tr>

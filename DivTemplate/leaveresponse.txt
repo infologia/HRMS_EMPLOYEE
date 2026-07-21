@@ -1,0 +1,11 @@
+   <tr>                  <td>%%Employeeid%%</td>
+                    <td>%%username%%</td>
+                    <td>%%fromdate%%</td>
+                    <td>%%Todate%%</td>
+                    <td>%%Leavedays%%</td>
+                    <td>%%ActiveText%% </td>
+                    <td><a href="LeaveView.aspx?key=%%Employeeleavedetailskey%%" <span class="label label-primary">View</span></a></td> 
+                     
+
+                </tr>
+          

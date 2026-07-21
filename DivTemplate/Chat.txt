@@ -1,0 +1,7 @@
+﻿<div class="%%viewchat%%">
+                <div class="panel panel-default">
+          <div class="panel-body">
+           %%Ticketmessage%%        </div>
+          <div class="panel-footer"><i class="icon-clock icons"></i> %%Createdon%%</div>
+        </div>
+              </div>

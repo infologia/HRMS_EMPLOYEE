@@ -1,0 +1,337 @@
+Severity:Information;Source:; Message:Sql : select * from  IT_EmployeeRegister where Username=@Username COLLATE SQL_Latin1_General_CP1_CS_AS and Password=@Password COLLATE SQL_Latin1_General_CP1_CS_AS ; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select count(Employeekey) as Employeekey from IT_EmployeeRegister where roles='1' and Employeestatus='1'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT COUNT(*) FROM IT_InOutTime WHERE InTime IS NOT NULL AND OutTime IS NULL AND Createdon BETWEEN @createdfrom AND @createdto; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select count(Responsestatus) as Responsestatus from IT_EmployeeLeaveDetails where Responsestatus='1' and month(Todate) = month(getdate()) and year(Todate)=Year(getdate()) ; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select count(Responsestatus) as Responsestatus from IT_EmployeePermissionDetails where Responsestatus='1' and month(Createdon) = month(getdate()) and year(Createdon)=year(getdate()); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : Select CONVERT(VARCHAR(10), Createdon, 105) AS Createdon,Reason,Complaintstatus  from IT_Complaint where Complaintstatus='1' order by createdon DESC; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : Select Reason, CONVERT(VARCHAR(10), Createdon, 105) AS Createdon,SuggestionStatus  from IT_Suggestion where SuggestionStatus='1' order by createdon DESC; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select InTime,OutTime from IT_InOutTime where Createdby=@Createdby and Createdon between @createdonfrom and @createdonto; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+        SELECT d.Departmentname FROM IT_EmployeeRegister e
+INNER JOIN IT_Department d
+    ON e.Department = d.Departmentid where e.Employeekey='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 intime,outtime,modifiedon 
+                  from IT_Inouttime 
+                  WHERE Createdby='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd' 
+                  and Convert(varchar, modifiedon, 103)= '19/07/2026'
+                  and flag in (1,2)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 breakin,breakout,modifiedon 
+                  from IT_break 
+                  WHERE Createdby='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd'
+                  and Convert(varchar, modifiedon, 103)= '19/07/2026'
+                  and flag in (3,4)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 lunchin,lunchout,modifiedon 
+                  from IT_lunch 
+                  WHERE Createdby='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd'
+                  and Convert(varchar, modifiedon, 103)= '19/07/2026'
+                  and flag in (5,6)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from IT_employeeregister where Employeekey=@Employeekey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from it_destination where destinationid='10'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT DISTINCT m.MenuKey, m.MenuName, m.MenuIcon, m.MenuListNo,
+                        m.ParentMenuKey, m.PageName, m.FolderName, m.MenuType,
+                        ISNULL(em.MenuOrder, m.MenuListNo) AS EffectiveOrder
+                        FROM IT_Menus m
+                        INNER JOIN IT_EmployeeMenus em ON m.MenuKey = em.MenuId
+                        WHERE m.Status = 1 AND em.EmployeeKey = @EmployeeKey AND em.ViewPermission = 1
+                        ORDER BY ISNULL(em.MenuOrder, m.MenuListNo); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+WITH CTE AS
+(
+    SELECT 
+        Employeekey,
+        EmployeeName,
+        WorkDate,
+        InTime,
+        OutTime,
+        GrossWorkingHours,
+        LunchDuration,
+        BreakDuration,
+        NetWorkingDuration,
+        ROW_NUMBER() OVER (
+            PARTITION BY Employeekey, CAST(WorkDate AS DATE)
+            ORDER BY InTime DESC
+        ) AS RN
+    FROM IT_V_EmployeeDailyWorkSummary
+    WHERE 1=1
+ AND CAST(WorkDate AS DATE) = CAST(GETDATE() AS DATE)
+)
+SELECT 
+    Employeekey,
+    EmployeeName,
+    WorkDate,
+    InTime,
+    OutTime,
+    GrossWorkingHours,
+    LunchDuration,
+    BreakDuration,
+    NetWorkingDuration
+FROM CTE
+WHERE RN = 1
+ORDER BY WorkDate DESC; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select InTime,OutTime from IT_InOutTime where Createdby=@Createdby and Createdon between @createdonfrom and @createdonto; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+        SELECT d.Departmentname FROM IT_EmployeeRegister e
+INNER JOIN IT_Department d
+    ON e.Department = d.Departmentid where e.Employeekey='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 intime,outtime,modifiedon 
+                  from IT_Inouttime 
+                  WHERE Createdby='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd' 
+                  and Convert(varchar, modifiedon, 103)= '19/07/2026'
+                  and flag in (1,2)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 breakin,breakout,modifiedon 
+                  from IT_break 
+                  WHERE Createdby='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd'
+                  and Convert(varchar, modifiedon, 103)= '19/07/2026'
+                  and flag in (3,4)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 lunchin,lunchout,modifiedon 
+                  from IT_lunch 
+                  WHERE Createdby='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd'
+                  and Convert(varchar, modifiedon, 103)= '19/07/2026'
+                  and flag in (5,6)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from IT_employeeregister where Employeekey=@Employeekey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from it_destination where destinationid='10'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT DISTINCT m.MenuKey, m.MenuName, m.MenuIcon, m.MenuListNo,
+                        m.ParentMenuKey, m.PageName, m.FolderName, m.MenuType,
+                        ISNULL(em.MenuOrder, m.MenuListNo) AS EffectiveOrder
+                        FROM IT_Menus m
+                        INNER JOIN IT_EmployeeMenus em ON m.MenuKey = em.MenuId
+                        WHERE m.Status = 1 AND em.EmployeeKey = @EmployeeKey AND em.ViewPermission = 1
+                        ORDER BY ISNULL(em.MenuOrder, m.MenuListNo); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 intime,outtime,modifiedon 
+                  from IT_Inouttime 
+                  WHERE Createdby='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd' 
+                  and Convert(varchar, modifiedon, 103)= '19/07/2026'
+                  and flag in (1,2)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 breakin,breakout,modifiedon 
+                  from IT_break 
+                  WHERE Createdby='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd'
+                  and Convert(varchar, modifiedon, 103)= '19/07/2026'
+                  and flag in (3,4)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 lunchin,lunchout,modifiedon 
+                  from IT_lunch 
+                  WHERE Createdby='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd'
+                  and Convert(varchar, modifiedon, 103)= '19/07/2026'
+                  and flag in (5,6)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from IT_employeeregister where Employeekey=@Employeekey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from it_destination where destinationid='10'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+WITH CTE AS
+(
+    SELECT 
+        Employeekey,
+        EmployeeName,
+        WorkDate,
+        InTime,
+        OutTime,
+        GrossWorkingHours,
+        LunchDuration,
+        BreakDuration,
+        NetWorkingDuration,
+        ROW_NUMBER() OVER (
+            PARTITION BY Employeekey, CAST(WorkDate AS DATE)
+            ORDER BY InTime DESC
+        ) AS RN
+    FROM IT_V_EmployeeDailyWorkSummary
+    WHERE 1=1
+ AND MONTH(WorkDate) = @Month AND YEAR(WorkDate) = @Year
+)
+SELECT 
+    Employeekey,
+    EmployeeName,
+    WorkDate,
+    InTime,
+    OutTime,
+    GrossWorkingHours,
+    LunchDuration,
+    BreakDuration,
+    NetWorkingDuration
+FROM CTE
+WHERE RN = 1
+ORDER BY WorkDate DESC; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 intime,outtime,modifiedon 
+                  from IT_Inouttime 
+                  WHERE Createdby='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd' 
+                  and Convert(varchar, modifiedon, 103)= '19/07/2026'
+                  and flag in (1,2)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 breakin,breakout,modifiedon 
+                  from IT_break 
+                  WHERE Createdby='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd'
+                  and Convert(varchar, modifiedon, 103)= '19/07/2026'
+                  and flag in (3,4)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 lunchin,lunchout,modifiedon 
+                  from IT_lunch 
+                  WHERE Createdby='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd'
+                  and Convert(varchar, modifiedon, 103)= '19/07/2026'
+                  and flag in (5,6)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from IT_employeeregister where Employeekey=@Employeekey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from it_destination where destinationid='10'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+WITH CTE AS
+(
+    SELECT 
+        Employeekey,
+        EmployeeName,
+        WorkDate,
+        InTime,
+        OutTime,
+        GrossWorkingHours,
+        LunchDuration,
+        BreakDuration,
+        NetWorkingDuration,
+        ROW_NUMBER() OVER (
+            PARTITION BY Employeekey, CAST(WorkDate AS DATE)
+            ORDER BY InTime DESC
+        ) AS RN
+    FROM IT_V_EmployeeDailyWorkSummary
+    WHERE 1=1
+ AND MONTH(WorkDate) = @Month AND YEAR(WorkDate) = @Year
+)
+SELECT 
+    Employeekey,
+    EmployeeName,
+    WorkDate,
+    InTime,
+    OutTime,
+    GrossWorkingHours,
+    LunchDuration,
+    BreakDuration,
+    NetWorkingDuration
+FROM CTE
+WHERE RN = 1
+ORDER BY WorkDate DESC; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from  IT_EmployeeRegister where Username=@Username COLLATE SQL_Latin1_General_CP1_CS_AS and Password=@Password COLLATE SQL_Latin1_General_CP1_CS_AS ; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select count(Employeekey) as Employeekey from IT_EmployeeRegister where roles='1' and Employeestatus='1'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT COUNT(*) FROM IT_InOutTime WHERE InTime IS NOT NULL AND OutTime IS NULL AND Createdon BETWEEN @createdfrom AND @createdto; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select count(Responsestatus) as Responsestatus from IT_EmployeeLeaveDetails where Responsestatus='1' and month(Todate) = month(getdate()) and year(Todate)=Year(getdate()) ; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select count(Responsestatus) as Responsestatus from IT_EmployeePermissionDetails where Responsestatus='1' and month(Createdon) = month(getdate()) and year(Createdon)=year(getdate()); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : Select CONVERT(VARCHAR(10), Createdon, 105) AS Createdon,Reason,Complaintstatus  from IT_Complaint where Complaintstatus='1' order by createdon DESC; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : Select Reason, CONVERT(VARCHAR(10), Createdon, 105) AS Createdon,SuggestionStatus  from IT_Suggestion where SuggestionStatus='1' order by createdon DESC; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select InTime,OutTime from IT_InOutTime where Createdby=@Createdby and Createdon between @createdonfrom and @createdonto; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+        SELECT d.Departmentname FROM IT_EmployeeRegister e
+INNER JOIN IT_Department d
+    ON e.Department = d.Departmentid where e.Employeekey='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 intime,outtime,modifiedon 
+                  from IT_Inouttime 
+                  WHERE Createdby='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd' 
+                  and Convert(varchar, modifiedon, 103)= '19/07/2026'
+                  and flag in (1,2)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 breakin,breakout,modifiedon 
+                  from IT_break 
+                  WHERE Createdby='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd'
+                  and Convert(varchar, modifiedon, 103)= '19/07/2026'
+                  and flag in (3,4)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 lunchin,lunchout,modifiedon 
+                  from IT_lunch 
+                  WHERE Createdby='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd'
+                  and Convert(varchar, modifiedon, 103)= '19/07/2026'
+                  and flag in (5,6)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from IT_employeeregister where Employeekey=@Employeekey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from it_destination where destinationid='10'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT DISTINCT m.MenuKey, m.MenuName, m.MenuIcon, m.MenuListNo,
+                        m.ParentMenuKey, m.PageName, m.FolderName, m.MenuType,
+                        ISNULL(em.MenuOrder, m.MenuListNo) AS EffectiveOrder
+                        FROM IT_Menus m
+                        INNER JOIN IT_EmployeeMenus em ON m.MenuKey = em.MenuId
+                        WHERE m.Status = 1 AND em.EmployeeKey = @EmployeeKey AND em.ViewPermission = 1
+                        ORDER BY ISNULL(em.MenuOrder, m.MenuListNo); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : Select a.Employeekey,a.Image,a.Username,a.Firstname+' '+a.Lastname as Name,a.Designation,a.Email,a.Phonenumber,a.EmployeeStatus,a.Gender,a.createdon,d.Divisionname,b.RoleName,c.Departmentname from IT_EmployeeRegister a left outer join IT_Roles b on a.Role=b.RoleId left outer join IT_Department c on a.Department=c.Departmentid left outer join IT_Division d on a.Division=d.Divisionid where a.roles in (0,1,2) order by a.createdon; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select InTime,OutTime from IT_InOutTime where Createdby=@Createdby and Createdon between @createdonfrom and @createdonto; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+        SELECT d.Departmentname FROM IT_EmployeeRegister e
+INNER JOIN IT_Department d
+    ON e.Department = d.Departmentid where e.Employeekey='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 intime,outtime,modifiedon 
+                  from IT_Inouttime 
+                  WHERE Createdby='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd' 
+                  and Convert(varchar, modifiedon, 103)= '19/07/2026'
+                  and flag in (1,2)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 breakin,breakout,modifiedon 
+                  from IT_break 
+                  WHERE Createdby='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd'
+                  and Convert(varchar, modifiedon, 103)= '19/07/2026'
+                  and flag in (3,4)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 lunchin,lunchout,modifiedon 
+                  from IT_lunch 
+                  WHERE Createdby='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd'
+                  and Convert(varchar, modifiedon, 103)= '19/07/2026'
+                  and flag in (5,6)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from IT_employeeregister where Employeekey=@Employeekey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from it_destination where destinationid='10'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT DISTINCT m.MenuKey, m.MenuName, m.MenuIcon, m.MenuListNo,
+                        m.ParentMenuKey, m.PageName, m.FolderName, m.MenuType,
+                        ISNULL(em.MenuOrder, m.MenuListNo) AS EffectiveOrder
+                        FROM IT_Menus m
+                        INNER JOIN IT_EmployeeMenus em ON m.MenuKey = em.MenuId
+                        WHERE m.Status = 1 AND em.EmployeeKey = @EmployeeKey AND em.ViewPermission = 1
+                        ORDER BY ISNULL(em.MenuOrder, m.MenuListNo); StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT Divisionid, Divisionname FROM IT_Division ORDER BY Divisionname ASC; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT Departmentid, Departmentname FROM IT_Department ORDER BY Departmentname ASC; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT RoleId, RoleName, ModuleIds, Description FROM IT_Roles ORDER BY CreatedOn DESC; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT Stateid, Statename FROM IT_State ORDER BY Statename ASC; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT TypeID, TypeName FROM IT_EmployeeType WHERE IsActive = 1 ORDER BY TypeName; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT WM_Id, WM_TypeName FROM IT_Workmode ORDER BY WM_TypeName; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT BloodGroupID, BloodGroupName FROM IT_BloodGroup WHERE IsActive = 1 ORDER BY BloodGroupName; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT Employeekey, Firstname + ' ' + Lastname AS EmployeeName FROM IT_EmployeeRegister WHERE EmployeeStatus = 1 ORDER BY Firstname; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT * FROM IT_EmployeeRegister WHERE Employeekey=@Employeekey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT ModuleIds FROM IT_Roles WHERE RoleId = @RoleId; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT DISTINCT m.MenuKey, m.MenuName, m.MenuIcon, m.MenuListNo, 
+                        m.ParentMenuKey, m.MenuType, m.ModuleId, mod.ModuleName
+                        FROM IT_Menus m
+                        LEFT JOIN IT_Modules mod ON m.ModuleId = mod.ModuleId
+                        WHERE m.Status = 1 AND m.ModuleId IN (5,7)
+                        ORDER BY mod.ModuleName, m.MenuType, m.MenuListNo; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT MenuId, ViewPermission, CreatePermission, EditPermission, DeletePermission,
+                        ISNULL(MenuOrder, 0) AS MenuOrder
+                        FROM IT_EmployeeMenus WHERE EmployeeKey=@EmployeeKey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT DocId, DocumentName, DocumentPath FROM IT_EmployeeDocuments WHERE EmployeeKey=@EmployeeKey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select InTime,OutTime from IT_InOutTime where Createdby=@Createdby and Createdon between @createdonfrom and @createdonto; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : 
+        SELECT d.Departmentname FROM IT_EmployeeRegister e
+INNER JOIN IT_Department d
+    ON e.Department = d.Departmentid where e.Employeekey='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 intime,outtime,modifiedon 
+                  from IT_Inouttime 
+                  WHERE Createdby='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd' 
+                  and Convert(varchar, modifiedon, 103)= '19/07/2026'
+                  and flag in (1,2)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 breakin,breakout,modifiedon 
+                  from IT_break 
+                  WHERE Createdby='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd'
+                  and Convert(varchar, modifiedon, 103)= '19/07/2026'
+                  and flag in (3,4)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select top 1 lunchin,lunchout,modifiedon 
+                  from IT_lunch 
+                  WHERE Createdby='1987df80-f1a7-4efe-a6bb-af04ad6aa9bd'
+                  and Convert(varchar, modifiedon, 103)= '19/07/2026'
+                  and flag in (5,6)
+                  ORDER BY modifiedon desc; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from IT_employeeregister where Employeekey=@Employeekey; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : select * from it_destination where destinationid='10'; StackTrace:; InnerException:;CustomReference:;
+Severity:Information;Source:; Message:Sql : SELECT DISTINCT m.MenuKey, m.MenuName, m.MenuIcon, m.MenuListNo,
+                        m.ParentMenuKey, m.PageName, m.FolderName, m.MenuType,
+                        ISNULL(em.MenuOrder, m.MenuListNo) AS EffectiveOrder
+                        FROM IT_Menus m
+                        INNER JOIN IT_EmployeeMenus em ON m.MenuKey = em.MenuId
+                        WHERE m.Status = 1 AND em.EmployeeKey = @EmployeeKey AND em.ViewPermission = 1
+                        ORDER BY ISNULL(em.MenuOrder, m.MenuListNo); StackTrace:; InnerException:;CustomReference:;

@@ -1,0 +1,7 @@
+   <tr>
+                    <td>%%MenuName%%</td>
+                    <td>%%ModuleName%%</td>
+                    <td>%%MenuListNo%%</td>
+                    <td><a href="CreateParentMenu.aspx?id=%%MenuKey%%"><span class="label label-info">Edit</span></a></td>
+                    <td><a><span class="label label-danger" onclick="fn_DeleteMenu('%%MenuKey%%')">Delete</span></a></td>
+	    </tr>

@@ -1,0 +1,9 @@
+﻿<tr>															
+							<td>%%MenuName%%</td>
+							<td>%%Pagename%%</td>
+							<td>%%menulist%%</td>
+														 
+							<td>%%createdon%%</td>
+							<td><a href="menuupdate.aspx?id=%%MenuKey%%"  class="label label-info">Update</a></td>
+				            <td> <a><span class="label label-danger"  onclick="fn_DeleteProject('%%MenuKey%%')">Delete</span></a></td>
+							</tr>

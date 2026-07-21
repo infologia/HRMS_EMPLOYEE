@@ -1,0 +1,27 @@
+<tr>
+    <td>%%EmployeeName%%</td>
+    <td>%%Employeeid%%</td>
+    <td>%%NoOfDaysInMonth%%</td>
+    <td>%%NoOfWorkingDaysInMonth%%</td>
+    <td>%%NoOfPaidHolidays%%</td>
+    <td>%%InformedLeave%%</td>
+    <td>%%LeaveDaysInYear%%</td>
+    <td>%%CurrentMonthLeaveDays%%</td>
+    <td>%%LOPLeaveDays%%</td>
+    <td>%%UninformedLeave%%</td>
+    <td>%%HRMSHalfDayCount%%</td>
+    <td>%%HRMSHalfDayDeduction%%</td>
+    <td>%%HRMSFullDayDeduction%%</td>
+    <td>%%LateLoginCount%%</td>
+    <td>%%OutTimeNullCount%%</td>
+    <td>%%TotalDeductionDays%%</td>
+    <td>%%MonthlySalary%%</td>
+    <td>%%PerDaySalary%%</td>
+    <td>%%LeaveDaysSalary%%</td>
+    <td>%%TotalEligibleDays%%</td>
+    <td>%%EligibleSalaryAmount%%</td>
+    <td>%%NetPay%%</td>
+    <td>%%AnnualCTC%%</td>
+    <td>%%InTimeAvailableInHRMS%%</td>
+    <td>%%FinalNetPay%%</td>
+</tr>

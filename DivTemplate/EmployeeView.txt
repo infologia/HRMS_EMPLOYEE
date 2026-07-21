@@ -1,0 +1,21 @@
+                <tr>
+                    <td>
+                        <a href="EmployeeRegisterNew.aspx?EmployeeKey=%%Employeekey%%">
+                            <img src="../images/AdminPRofilePictures/%%Image%%" class="img-circle" width="40" height="40" alt="" />
+                        </a>
+                    </td>
+                    <td>%%Username%%</td>
+                    <td><a href="EmployeeRegisterNew.aspx?EmployeeKey=%%Employeekey%%" class="text-semibold">%%Name%%</a></td>
+                    <td>%%Designation%%</td>
+                    <td>%%Email%%</td>
+                    <td>%%Phonenumber%%</td>
+                    <td>%%Departmentname%%</td>
+                    <td>%%RoleName%%</td>
+                    <td>%%ActiveText1%%</td>
+                    <td>%%ActiveText%%</td>
+                    <td class="text-center">
+                        <a href="EmployeeRegisterNew.aspx?EmployeeKey=%%Employeekey%%" class="btn border-primary text-primary btn-flat btn-icon btn-rounded btn-sm" title="Edit Employee">
+                            <i class="icon-pencil"></i>
+                        </a>
+                    </td>
+                </tr>

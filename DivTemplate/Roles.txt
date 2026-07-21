@@ -1,0 +1,7 @@
+   <tr>
+                    <td>%%RoleName%%</td>
+                    <td>%%ModuleNames%%</td>
+                    <td>%%Description%%</td>
+                    <td><a href="javascript:void(0);" onclick="openModal('%%RoleId%%', '%%RoleName%%', '%%ModuleIds%%', '%%Description%%')"><span class="label label-info">Edit</span></a></td>
+                    <td><a href="javascript:void(0);"><span class="label label-danger" onclick="fn_DeleteRole('%%RoleId%%')">Delete</span></a></td>
+	    </tr>

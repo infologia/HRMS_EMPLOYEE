@@ -1,0 +1,11 @@
+   <tr>
+                           <td>%%Complaintid%%</td>
+						   <td>%%Employeeid%%</td>
+                    <td>%%username%%</td>
+                    <td>%%ActiveCategory%%</td>
+               
+				        <td>%%ActiveText%%</td>
+                    <td><a href="Complaintview.aspx?key=%%Complaintkey%%" <span class="label label-primary">View</span></a></td> 
+                      
+                </tr>
+          

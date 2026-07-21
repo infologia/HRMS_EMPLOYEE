@@ -1,0 +1,9 @@
+﻿<tr>
+<td>%%Employeeid%%</td>
+				<td>%%Firstname%%</td>
+                  <td>%%Lastname%%</td>
+                    <td>%%createdon%%</td>
+                    <td>%%time%%</td>
+                    <td>%%times%%</td>
+                    <td>%%Workinghours%%</td>
+                </tr>

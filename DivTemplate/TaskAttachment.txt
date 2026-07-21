@@ -1,0 +1,18 @@
+﻿
+
+
+<li>
+											<span class="mail-attachments-preview">
+												<i class="icon-file-stats icon-2x text-muted"></i>
+											</span>
+
+											<div class="mail-attachments-content">
+												<span class="text-semibold">%%Attachments%%</span><br/>
+												
+												<ul class="list-inline list-inline-condensed no-margin">
+													
+													<li><a href="TaskDetails.aspx?id=%%Taskkey%%" class="label label-info">View</a></td></li>
+												</ul>
+											</div>
+										</li>
+                 

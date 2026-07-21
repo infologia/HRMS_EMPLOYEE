@@ -1,0 +1,11 @@
+   <tr>
+                    <td>%%Employeeid%%</td>
+                    <td>%%Workingdays%%</td>
+                    <td>%%Leavedays%%</td>
+                    <td>%%SalaryMonth%%</td>      
+                    <td>%%LOP%%</td>
+                    <td>%%Totalsalary%%</td>
+	  
+    </tr>
+
+    		

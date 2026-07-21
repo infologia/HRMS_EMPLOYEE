@@ -1,0 +1,7 @@
+﻿   <tr>
+                    <td>%%LeadType%%</td>
+                    
+                    <td>%%PitchinContent%%</td>
+                     
+                        </tr>
+          

@@ -1,0 +1,12 @@
+﻿ <tr>
+                    
+                    <td>%%Name%%</td>
+                    <td>%%Company%%</td>
+                    <td>%%Position%%</td>
+                    <td>%%LeadType%%</td>
+                    <td>%%CreatedOn%%</td>
+                    <td>%%CreatedBy%%</td>
+                     %%ViewText%%
+
+
+</tr>

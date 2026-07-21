@@ -1,0 +1,12 @@
+﻿						<tr>
+									
+							<td>%%name%%</td>
+							<td>%%IP%%</td>
+							<td>%%countryname%%</td>
+						    <td>%%city%%</td>
+							<td>%%timezone%%</td>
+							<td>%%ActiveText%%</td>
+					        <td>%%createdon%%</td>					
+								</tr>
+				
+					

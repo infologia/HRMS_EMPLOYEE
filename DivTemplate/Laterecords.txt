@@ -1,0 +1,14 @@
+   <tr>
+
+   <td>%%Employeeid%%</td>
+                    <td>%%username%%</td>
+                    <td>%%Requestdate%%</td>
+                    <td>%%Fromtime%%</td>
+                    <td>%%ToTime%%</td>
+                    <td>%%Permissionhourse%%</td>
+					<td>%%ActiveText%%</td>
+                    <td><a href="Laterecords.aspx?key=%%LatePermissionDetailskey%%" <span class="label label-primary">View</span></a></td> 
+                    
+
+                </tr>
+        

@@ -1,0 +1,59 @@
+﻿ <tr>
+
+
+
+       <div class="col-md-4">
+	  
+				    		<div class="panel panel-body border-top-teal">
+								<div class="text-center">
+									<h6 class="no-margin text-semibold"></h6>
+									
+								</div>
+                                
+								<div class="dropdown-menu bg-grey" style="display: block; position: static; width: 100%; margin-top: 0; float: none;">
+                                    <ul class="dropdown-menu bg-grey" style="display: block; position: static; width: 100%; margin-top: 0; float: none;">
+                                  <li><a href="#"> <span class="label bg-teal pull-right">%%ActiveCategory%%</span> </a></li>
+                                        </ul>
+                                    <br />
+                             
+                                 <div class="col-md-2"></div>
+                                    <div class="form-group">
+                                     <label>Project Name :</label>
+										<td>%%Pjname%%</td>
+                                        </div>
+                               
+                                    
+                                 <div class="col-md-2"></div>
+                                    <div class="form-group">
+                                     <label>Created Date :</label>
+										<td>%%createdon%%</td>
+                                    </div>
+                                        
+                                    
+                                 <div class="col-md-2"></div>
+                                    <div class="form-group">
+                                     <label>Closed Date :</label>
+										<td>%%createdon%%</td>
+                                </div>
+                                         
+                                     
+                                 <div class="col-md-2"></div>
+                                    <div class="form-group">
+                                         <label>Createdby :</label>
+										<td>%%firstname%%</td>
+                                        </div>
+                                       
+                                     
+                                        <div class="text-right">
+										
+										<td><a href="Project'sSummaryDetails.aspx?key=%%projectkey%%" ><i class="glyphicon glyphicon-log-out" style="color:white;margin-right:30px"></i></a></td>
+										</div>
+                                        
+           </div>
+									
+                                
+								</div>
+        </div>	
+							
+							 
+							</tr>  

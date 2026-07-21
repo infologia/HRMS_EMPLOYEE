@@ -1,0 +1,11 @@
+   <tr>
+                    <td>%%Sno%%</td>
+                    <td>%%Holidays%%</td>
+                    <td>%%description%%</td>
+                    <td>%%Day%%</td>
+                     <td>%%NoOfLeave%%</td>
+                    <td><a href="Holidays.aspx?key=%%Holidayskey%%" <span class="label label-primary">Update</span></a></td>                    
+                    <td><a><span class="label label-info"  onclick="fn_DeleteProject('%%Holidayskey%%')">Remove</span></a></td>  
+                     
+                </tr>
+        

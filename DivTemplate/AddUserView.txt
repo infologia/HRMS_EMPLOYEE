@@ -1,0 +1,11 @@
+﻿<tr>
+									<td>%%Createdon%%</td>
+									<td>%%Username%%</td>
+									<td>%%Destinationname%%</td>
+									<td>%%Departmentname%%</td>
+									<td>%%Divisionname%%</td>
+									
+									<td><a><span class="label label-info"  onclick="fn_DeleteProject('%%AddUserkey%%')">Remove</span></a></td>
+										
+										
+								</tr>

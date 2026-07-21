@@ -1,0 +1,12 @@
+﻿   <tr> 
+                    <td>%%ProjectName%%</td>
+                   <td>%%Lead%%</td>
+                    <td>%%AssignTask%%</td>
+                     <td>%%CompletedTask%%</td>
+                    <td>%%PendingTask%%</td>
+                    <td>%%EmployeeCount%%</td>
+                    <td><a href="Viewtask.aspx?id=%%ProjectKey%%"><span class="label label-info">View</span></a></td> 
+                   
+  </tr>
+           
+         

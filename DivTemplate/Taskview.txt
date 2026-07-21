@@ -1,0 +1,51 @@
+﻿
+				
+				
+
+                             <div class="col-md-8">
+
+
+                                        <ul class="list list-unstyled">
+                                            <li>Type:<span class="status-mark border-danger position-left"></span>%%Categoryname%%</li>
+                                            <li>Status:%%ActiveText%%</li>
+                                            <li>Priority:<span class='label label-info'>%%PriorityName%%</span></li>
+                                            <li>Resolution: <span class="text-semibold">Unsolvable</span></li>
+                                           
+                                            <br />
+
+                                            <br />
+                                          <a class="label bg-purple" onclick="Description();">Enter Descriptions</a><br />  <br />
+                                            <br />
+											  <div id="txt_desc">
+                                            <div class="form-group">
+											  </a></li><textarea id="Textarea1" runat="server" rows="5" cols="5" class="form-control" placeholder="Enter your Description here"></textarea>
+										</div>
+										</div>
+                                            <li><span class="text-semibold">Attachments</span>
+                                            
+                                                    <input type="file" class="file-input" data-show-caption="false" data-show-upload="false" data-browse-class="btn btn-primary btn-xs" data-remove-class="btn btn-default btn-xs" />
+
+                                            </li>
+                                           
+                                        </ul>
+
+                                    </div>
+                                   
+                                    <div class="col-md-4">
+
+                                        <ul class="list list-unstyled">
+                                            <li>
+											Assignee:</li>
+											<li></li>
+                                            <li>Reporters:</li> 
+											<li><span class="badge badge-default">R</span> %%Username%%</li>
+                                            <li>Votes:<span class="badge badge-default">78</span></li>
+                                            <li>Watchers: <span class="badge badge-default">4</span></li>
+                                            <li>Created: <span class="text-semibold">%%Created%%</span></li>
+                                            <li>Updated: <span class="text-semibold">%%Modifiedon%%</span></li>
+                                            <br />
+                                            <br />
+                                            
+                                        </ul>
+
+                                    </div>

@@ -1,0 +1,9 @@
+﻿<tr>															
+							<td>%%menurolekey%%</td>
+							<td>%%rolename%%</td>
+							<td>%%createdon%%</td>
+							<td>%%Firstname%%</td>									 
+							<td>%%createdon%%</td>
+							<td><a href="menuroleupdate.aspx?id=%%menurolekey%%"  class="label label-info">Upadte</a></td>
+				            <td> <a><span class="label label-info"  onclick="fn_DeleteProject('%%menurolekey%%')">Delete</span></a></td>
+							</tr>

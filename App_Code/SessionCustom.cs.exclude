@@ -1,0 +1,109 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Web;
+using System.Web.UI.WebControls;
+/// <summary>
+/// <summary>
+/// Summary description for SessionCustom
+/// </summary>
+public class SessionCustom
+{
+    DataTable dt_Company = null;
+    DataTable dt_Menu = null;
+    DataTable dt_QuickAccess = null;
+    DataTable dt_Provider = null;
+    DataTable dt_Empmanager = null;
+
+
+    public SessionCustom()
+    {
+
+    }
+
+    public SessionCustom(bool bln_SessionCheckRequired)
+    {
+        if (HttpContext.Current.Session["userid"] == null)
+            this.NavigateToLoginPage();
+    }
+
+    public string GetUserid()
+    {
+        return Userid;
+    }
+
+
+    public string BaseUrl()
+    {
+        return HttpContext.Current.Session["httproot"].ToString();
+    }
+
+    public void NavigateToLoginPage()
+    {
+        HttpContext.Current.Response.Redirect("~/Web/Default.aspx");
+    }
+
+    public string Userid
+    {
+        get { return HttpContext.Current.Session["userid"].ToString(); }
+        set { HttpContext.Current.Session["userid"] = value; }
+    }
+    public string Userdesg
+    {
+        get { return HttpContext.Current.Session["Destination"].ToString(); }
+        set { HttpContext.Current.Session["Destination"] = value; }
+    }
+
+    
+    public string AccKey
+    {
+        get { return HttpContext.Current.Session["acckey"].ToString(); }
+        set { HttpContext.Current.Session["acckey"] = value; }
+    }
+
+    public string LogKey
+    {
+        get { return HttpContext.Current.Session["logkey"].ToString(); }
+        set { HttpContext.Current.Session["logkey"] = value; }
+    }
+
+    public string username
+    {
+        get { return HttpContext.Current.Session["Username"].ToString(); }
+        set { HttpContext.Current.Session["Username"] = value; }
+    }
+
+
+
+    public string UserImage
+    {
+        get { return HttpContext.Current.Session["image"].ToString(); }
+        set { HttpContext.Current.Session["image"] = value; }
+    }
+
+    public DataRow UserRecord
+    {
+        get { return (DataRow)HttpContext.Current.Session["userrecord"]; }
+        set { HttpContext.Current.Session["userrecord"] = value; }
+    }
+    public DataTable UserRecordTable
+    {
+        get { return (DataTable)HttpContext.Current.Session["userrecordtable"]; }
+        set { HttpContext.Current.Session["userrecordtable"] = value; }
+    }
+
+    public string UserRole
+    {
+        get { return HttpContext.Current.Session["Roles"].ToString(); }
+        set { HttpContext.Current.Session["Roles"] = value; }
+    }
+
+    public bool SessionExists()
+    {
+        if (HttpContext.Current.Session["userid"] == null || HttpContext.Current.Session["userid"] == "")
+            return false;
+        else
+            return true;
+    }
+}
+

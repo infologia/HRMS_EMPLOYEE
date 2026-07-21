@@ -1,0 +1,10 @@
+   <tr>
+                    <td>%%SuggestionId%%</td>
+					 <td>%%Employeeid%%</td>
+                    <td>%%username%%</td>
+                    <td>%%ActiveText%%</td>
+                    <td>%%ActiveCategory%%</td>
+                     <td><a href="Suggestionstatus.aspx?key=%%Suggestionkey%%" <span class="label label-primary">Update</span></a></td> 
+                       <td><a  style="visibility:%%ViewText%%"><span class="label label-info"  onclick="fn_DeleteProject('%%Suggestionkey%%')">Remove</span></a></td> 
+			   </tr>
+          

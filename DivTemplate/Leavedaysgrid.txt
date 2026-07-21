@@ -1,0 +1,9 @@
+﻿<tr>															
+							<td>%%LeaveReason%%</td>
+							<td>%%leave%%</td>
+							<td>%%LeaveDescription%%</td>
+							<td>%%createdon%%</td>									 
+							<td>%%Firstname%%</td>
+							<td><a href="officeLeavedaysgrid.aspx?id=%%LeavedaysKey%%"  class="label label-info">Upadte</a></td>
+				            <td> <a><span class="label label-info"  onclick="fn_DeleteProject('%%LeavedaysKey%%')">Delete</span></a></td>
+							</tr>

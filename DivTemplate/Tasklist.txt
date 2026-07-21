@@ -1,0 +1,13 @@
+   <tr>
+                    
+							   	   
+                 
+					 <td>%%Taskname%%</td> 
+                    <td>%%Duedate%%</td>              									
+				       <td>%%worktiming%%</td>
+						    <td>%%Username%%</td>
+						    <td>%%ActiveCategory%%</td>
+						    
+						    <td><a href="../Employee/taskcreation.aspx?id=%%TaskKey%%" class="label label-warning" style="visibility:%%Viewtext%%">Update</a></td>
+                </tr>
+          

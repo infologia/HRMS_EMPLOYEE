@@ -1,0 +1,128 @@
+
+            <div class="row">
+                <div class="col-sm-6 content-group">
+                    <img src="../Template/assets/images/bf_logo.png" class="content-group mt-10" alt="" style="width: 120px;">
+                    <ul class="list-condensed list-unstyled">
+                        <li>NO-45, New Colony</li>
+                        <li>Jagath Avenue, Chrompet</li>
+                        <li>Chennai,600044</li>
+                    </ul>
+                </div>
+
+                <div class="col-sm-6 content-group">
+                    <div class="invoice-details">
+                        <h5 class="text-uppercase text-semibold">Infologia Technologies</h5>
+                        <ul class="list-condensed list-unstyled">
+                            <li>Payslip for the month of <span class="text-semibold">%%Salarymonth%%/%%salaryyear%% </span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 col-lg-9 content-group">
+                   <h5 class="text-uppercase text-semibold">Payroll To:</h5>
+                    <ul class="list-condensed list-unstyled">
+                        <li>
+                            <h5>%%firstname%%</h5>
+                        </li>
+                        <li>EmployeeID: <span class="text-semibold"> ILT%%Employeeid%%</span></li>
+                        <li>Phonenumber:<span class="text-semibold"> +91 %%Phonenumber%%</span></li>
+                        <li>EmailID: <span class="text-semibold"> %%Email%%</span></li>
+                        <li>Address:<span class="text-semibold">%%Address%%
+                            </span></li>
+                    </ul>
+                </div>
+                <div class="col-md-6 col-lg-3 content-group">
+                   <h5 class="text-uppercase text-semibold"> Payment Details:</h5>
+                    <ul class="list-condensed list-unstyled invoice-payment-details">
+
+                        <li>Bank name: <span class="text-semibold">Andhra bank</span></li><br/>
+
+                        <li>Address <span class="text-semibold"> No.7/8, A2, 3rd Main Rd, <br/>Pallavapuram, New Colony, <br/>Chromepet, Chennai, <br/>Tamil Nadu-600044</span></li>
+                       
+
+                    </ul>
+                </div>
+
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-3">
+                    <span class="text-muted"></span>
+                    <ul class="list-condensed list-unstyled invoice-payment-details">                        
+                        
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                </div>
+                <div class="col-md-3 pull-right">
+
+                    <ul class="list-condensed list-unstyled invoice-payment-details">
+                        <li>
+                            <h5>Monthly Salary: <span class="text-right text-semibold">%%Empoloyeemonthlysalary%% INR </span></h5>
+                        </li>
+                        <li>Netpay: <span class="text-semibold">%%Netpay%% INR</span></li>
+                        <li>Leavedays <span class="text-semibold">%%Leavedays%% Days</span></li>
+                        <li>WorkingDays <span class="text-semibold">%%workingdays%% Days</span></li>
+                        <li>LOP: <span class="text-semibold">%%Leavedays%% Days</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="panel-body">
+            <div class="row invoice-payment">
+                <div class="col-sm-7">
+                    <div class="content-group">
+                        <h6>Authorized person</h6>
+                        <div class="mb-15 mt-15">
+                            <img src="assets/images/signature.png" class="display-block" style="width: 150px;" alt="">
+                        </div>
+
+                        <ul class="list-condensed list-unstyled text-muted">
+                            <li>DHANARUBAN</li>
+                            <li>NO-45, New Colony</li>
+                            <li>Jagath Avenue, Chrompet</li>
+                            <li>Chennai,600044</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-sm-5">
+                    <div class="content-group">
+                        <h6>Total Salary</h6>
+                        <div class="table-responsive no-border">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <th>Netpay:</th>
+                                        <td class="text-right">%%Netpay%% INR</td>
+                                    </tr>
+                                    <tr>
+                                        <th>LOP: <span class="text-regular"></span></th>
+                                        <td class="text-right">%%LOP%% INR</td>
+                                    </tr>
+                                      
+                                    <tr>
+                                        <th>Total:</th>
+                                        <td class="text-right text-primary">
+                                            <h5 class="text-semibold">%%Netpay%% INR</h5>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <h6>Other information</h6>
+            <p class="text-muted">Thank you for using Internal Tool. This invoice can be paid via Bank transfer,  Company registered in No:45,7th main road,Jagath Avenue, New Colony, Chrompet, Chennai-600044, Tamil Nadu, India. Phone number:(+044)-4852 0063</p>
+        </div>
+   

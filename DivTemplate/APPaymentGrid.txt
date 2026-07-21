@@ -1,0 +1,15 @@
+<tr>
+    <td>%%AP_VendorName%%</td>
+    <td>%%AP_InvoiceNo%%</td>
+    <td>%%AP_InvoiceDate%%</td>
+    <td>%%AP_GrandTotal%%</td>
+    <td>%%AP_Payment%%</td>
+    <td>%%AP_BalanceAmount%%</td>
+    <td><span class="label label-%%AP_Status_Class%%">%%AP_Status%%</span></td>
+    <td class="text-center">
+        <a href="APPaymentEntry.aspx?id=%%AP_Id%%"><i class="icon-pencil"></i></a>
+    </td>
+    <td class="text-center">
+        <a href="javascript:void(0);" onclick="fn_DeleteAPPayment('%%AP_Id%%')"><i class="icon-trash" style="color:red;"></i></a>
+    </td>
+</tr>

@@ -1,0 +1,9 @@
+   <tr>
+                    <td>%%Createdon%%</td>
+                    <td>%%Reason%%</td>
+                 <td><a href="Suggestionresponse.aspx">%%ActiveText%%</a></td> 
+                   
+					
+		
+                </tr>
+          

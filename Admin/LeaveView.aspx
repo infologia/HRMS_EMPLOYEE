@@ -1,0 +1,96 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Masterpage/AdminMaster.master" AutoEventWireup="true" CodeFile="LeaveView.aspx.cs" Inherits="WEB_Admin_LeaveView" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
+    <style>
+        .no-calendar {
+    pointer-events: none;
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+}
+
+    </style>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+    <div class="row">
+         <div class="col-md-2"></div>
+        <div class="col-md-8">
+
+        <div class="panel panel-flat">   
+            <div class="panel-heading">
+                <h5 class="panel-title"> </h5>
+
+            </div>
+
+            <div class="panel-body">
+                <div action="#">
+
+                    <fieldset>
+                        <legend class="text-semibold"><i class="icon-reading position-left"></i> Leave Response</legend>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class=" content-group text-semibold">From Date </label>
+                                <asp:TextBox ID="txt_fromdate" runat="server" class="form-control pickadate no-calendar" ReadOnly="true" placeholder="DD/MM/YYYY"></asp:TextBox><br />
+                            </div>
+                            <div class="col-md-4">
+                                <label class=" content-group text-semibold">To Date </label>
+                                <asp:TextBox ID="txt_todate" runat="server" class="form-control pickadate no-calendar" ReadOnly="true" placeholder="DD/MM/YYYY"></asp:TextBox><br />
+                            </div>
+                            <div class="col-md-4">
+                                <label class=" content-group text-semibold">Status</label>
+                                <asp:DropDownList ID="ddl_category" runat="server" class="form-control">
+                                </asp:DropDownList>
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator2" ControlToValidate="ddl_category" InitialValue="0" runat="server" ErrorMessage="Please select Status" ForeColor="Red"></asp:RequiredFieldValidator>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class=" content-group text-semibold">Leave Category</label>
+                                <asp:TextBox ID="txt_leavecategory" runat="server" class="form-control" ReadOnly="true"></asp:TextBox>
+                            </div>
+                            <div class="col-md-6">
+                                <label class=" content-group text-semibold">Leave Type</label>
+                                <asp:TextBox ID="txt_leavetype" runat="server" class="form-control" ReadOnly="true"></asp:TextBox>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class=" content-group text-semibold">Employee Reason</label>
+                                <textarea id="txt_reason" runat="server" rows="4" cols="4" class="form-control" readonly="readonly" placeholder="Enter a reason"></textarea><br />
+                            </div>
+                            <div class="col-md-6">
+                                <label class=" content-group text-semibold">Admin Reason</label>
+                                <textarea id="txt_reason1" runat="server" rows="4" cols="4" class="form-control" required="required" placeholder="Enter a reason"></textarea>
+                            </div>
+                        </div>
+
+                        <br />
+
+                        <div class="form-group">
+                            <div class="text-right">
+                                <a href="LeaveResponse.aspx" class="btn btn bg-primary" style="margin-right: 15px">Back</a>
+                                <asp:Button ID="btn_request" runat="server" Text="Update" class="btn btn-primary" OnClick="btn_request_Click" Visible="false" style="margin-right: 15px"></asp:Button>
+
+                            </div>
+
+                        </div>
+                    </fieldset>
+                </div>
+
+            </div>
+        </div>
+        </div>
+            <div class="col-md-2"></div>
+
+        </div>
+    <div class="col-md-3"></div>
+     <script>
+     $('.pickadate').pickadate({
+         format: 'dd/mm/yyyy',
+         selectMonths: true,
+         selectYears: true,
+         closeOnSelect: true
+     });
+     </script>
+</asp:Content>
+

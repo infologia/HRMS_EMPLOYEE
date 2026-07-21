@@ -1,0 +1,13 @@
+   <tr>
+                           <td>%%ComplaintId%%</td>
+						    <td>%%EmployeeId%%</td>
+                    <td>%%UserName%%</td>
+                    <td>%%ActiveCategory%%</td>
+               
+           
+				        <td>%%ActiveText%%</td>
+                    <td><a href="ComplaintStatus.aspx?key=%%ComplaintKey%%" <span class="label label-primary">Update</span></a></td> 
+				<td><a style="visibility:%%ViewText%%"><span class="label label-info"  onclick="fn_DeleteProject('%%ComplaintKey%%')">Remove</span></a></td>
+                      
+                </tr>
+          

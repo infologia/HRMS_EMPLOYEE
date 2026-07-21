@@ -1,0 +1,8 @@
+<tr>
+    <td>%%Month%%</td>
+    <td>%%Year%%</td>
+    <td>%%GeneratedBy%%</td>
+    <td>%%GeneratedOn%%</td>
+    <td>%%ViewLink%%</td>
+    <td>%%DownloadLink%%</td>
+</tr>

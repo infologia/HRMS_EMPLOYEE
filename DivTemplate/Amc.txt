@@ -1,0 +1,10 @@
+   <tr>
+                    <td>%%ClientName%%</td>
+                    <td>%%ProjectName%%</td>   
+                    <td>%%GoLiveDate%%</td>
+                    <td>%%ActiveText%%</td>
+                    <td>%%CreatedOn%%</td>
+                     <td><a href="AmcDetails.aspx?id=%%amc%%"><span class="label label-info">Update</span></a></td> 
+                    <td><a><span class="label label-danger"  onclick="fn_DeleteProject('%%amc%%')">Remove</span></a></td> 
+                </tr>
+         

@@ -1,0 +1,40 @@
+﻿<!-- Begin Project Row -->
+<div class="row project-row" style="margin-bottom: 15px;">
+    <div class="col-xs-12">
+        <h6 class=" no-margin">%%ProjectName%%</h6>
+    </div>
+
+    <!-- Assigned -->
+    <div class="col-xs-3 text-right">
+        <span class="text-muted text-size-small">Assigned:</span>
+    </div>
+    <div class="col-xs-3 text-left">
+        <h5 class="text-semibold no-margin">%%AssignedTasks%%</h5>
+    </div>
+
+    <!-- Ongoing -->
+    <div class="col-xs-3 text-right">
+        <span class="text-muted text-size-small">Ongoing:</span>
+    </div>
+    <div class="col-xs-3 text-left">
+        <h5 class="text-semibold no-margin text-primary">%%OngoingTasks%%</h5>
+    </div>
+
+    <!-- Pending -->
+    <div class="col-xs-3 text-right">
+        <span class="text-muted text-size-small">Pending:</span>
+    </div>
+    <div class="col-xs-3 text-left">
+        <h5 class="text-semibold no-margin text-warning">%%PendingTasks%%</h5>
+    </div>
+
+    <!-- Completed -->
+    <div class="col-xs-3 text-right">
+        <span class="text-muted text-size-small">Completed:</span>
+    </div>
+    <div class="col-xs-3 text-left">
+        <h5 class="text-semibold no-margin text-success">%%CompletedTasks%%</h5>
+    </div>
+</div>
+<hr>
+<!-- End Project Row -->

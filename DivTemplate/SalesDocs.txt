@@ -1,0 +1,8 @@
+﻿<tr>
+    <td>%%FileTitle%%</td>
+    <td>%%CreatedBy%%</td>
+    <td>%%CreatedOn%%</td>
+    <td>%%ViewDocument%%</td>
+    <td>%%Download%%</td>
+    <td>%%Delete%%</td>
+</tr>

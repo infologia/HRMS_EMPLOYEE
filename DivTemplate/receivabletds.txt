@@ -1,0 +1,9 @@
+﻿<tr>
+    <td>%%VendorName%%</td>
+    <td>%%InvoiceNumber%%</td>
+    <td>%%InvoiceAmount%%</td>
+    <td>%%TDSAmount%%</td>
+    <td>%%TotalPayableAmount%%</td>
+    <td>%%PaymentStatusText%%</td>
+    <td>%%InvoiceDate%%</td>
+</tr>

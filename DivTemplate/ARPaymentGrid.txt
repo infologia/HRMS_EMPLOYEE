@@ -1,0 +1,15 @@
+<tr>
+    <td>%%AR_ClientName%%</td>
+    <td>%%AR_InvoiceNo%%</td>
+    <td>%%AR_InvoiceDate%%</td>
+    <td>%%AR_GrandTotal%%</td>
+    <td>%%AR_Payment%%</td>
+    <td>%%AR_BalanceAmount%%</td>
+    <td><span class="label label-%%AR_Status_Class%%">%%AR_Status%%</span></td>
+    <td class="text-center">
+        <a href="ARPaymentEntry.aspx?id=%%AR_Id%%"><i class="icon-pencil"></i></a>
+    </td>
+    <td class="text-center">
+        <a href="javascript:void(0);" onclick="fn_DeleteARPayment('%%AR_Id%%')"><i class="icon-trash" style="color:red;"></i></a>
+    </td>
+</tr>

@@ -1,0 +1,10 @@
+﻿
+							<tr>
+						
+									<td><a href="userview.aspx?id=%%userkey%%">%%name%%</a></td>
+									<td>%%moneytype%%</td>
+									<td>%%amount%%</td>
+									<td>%%createdon%%</td>
+							    								</tr>
+				
+					

@@ -1,0 +1,6 @@
+   <tr>
+                    <td>%%AC_Id%%</td>
+                    <td>%%StatusText%%</td>
+                    <td>%%CreatedOn%%</td>
+                    <td><a href="javascript:void(0);" onclick="editAccessControl('%%AC_Id%%', '%%AC_Status%%');"><span class="label label-primary">Edit</span></a></td>
+                </tr>

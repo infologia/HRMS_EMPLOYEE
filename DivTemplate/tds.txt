@@ -1,0 +1,9 @@
+﻿<tr>
+    <td>%%ClientName%%</td>
+    <td>%%InvoiceNumber%%</td>
+    <td>%%InvoiceAmount%%</td>
+    <td>%%TDSAmount%%</td>
+    <td>%%TotalAmount%%</td>
+    <td>%%StatusText%%</td>
+    <td>%%InvoiceDate%%</td>
+</tr>

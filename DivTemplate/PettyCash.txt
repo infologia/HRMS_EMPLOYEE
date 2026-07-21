@@ -1,0 +1,18 @@
+﻿                    <tr>
+                    <td>%%PC_Description%%</td>
+                    <td>%%PC_Amount%%</td>
+                    <td>%%PC_BalanceAmount%%</td>
+                    <td>%%ActiveText%%</td>
+                    <td>%%PC_DateText%%</td>
+                    <td>%%Username%%</td>
+                     <td><a href="CreatePettyCash.aspx?id=%%PC_CashKey%%"><span class="label label-info">Update</span></a></td> 
+<td>
+    <a href="javascript:void(0);">
+        <span class="label label-danger"
+              onclick="fn_DeleteProject('%%PC_CashKey%%')">
+            Remove
+        </span>
+    </a>
+</td>
+                </tr>
+         

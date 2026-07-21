@@ -1,0 +1,343 @@
+﻿.hol-wrap {
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* ── Top bar ── */
+.hol-topbar {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.hol-page-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin: 0;
+}
+
+.hol-page-sub {
+    font-size: 12px;
+    color: #888;
+    margin-top: 3px;
+}
+
+.hol-year-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    font-size: 12px;
+    color: #555;
+    background: #fff;
+}
+
+    .hol-year-pill i {
+        color: #185FA5;
+    }
+
+/* ── Summary cards ── */
+.hol-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.hol-s-card {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border-radius: 10px;
+    padding: 14px 16px;
+    border-left: 4px solid #2196f3;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+    .hol-s-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .hol-s-card.active {
+        box-shadow: 0 6px 16px rgba(33,150,243,0.3);
+    }
+
+    .hol-s-card:nth-child(2) {
+        background: linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%);
+        border-left-color: #5c6bc0;
+    }
+
+        .hol-s-card:nth-child(2).active {
+            box-shadow: 0 6px 16px rgba(92,107,192,0.3);
+        }
+
+    .hol-s-card:nth-child(3) {
+        background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        border-left-color: #66bb6a;
+    }
+
+        .hol-s-card:nth-child(3).active {
+            box-shadow: 0 6px 16px rgba(102,187,106,0.3);
+        }
+
+.hol-s-num {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+    .hol-s-num.blue {
+        color: #1976d2;
+    }
+
+    .hol-s-num.green {
+        color: #388e3c;
+    }
+
+.hol-s-lbl {
+    font-size: 11px;
+    color: #666;
+    margin-top: 2px;
+    font-weight: 600;
+}
+
+.hol-s-sub {
+    font-size: 11px;
+    color: #666;
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+    .hol-s-sub.blue {
+        color: #1976d2;
+    }
+
+    .hol-s-sub.green {
+        color: #388e3c;
+    }
+
+/* ── Table card ── */
+.hol-table-card {
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.hol-month-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: #f7f8fa;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.hol-month-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+.hol-month-count {
+    font-size: 10px;
+    color: #888;
+    background: #efefef;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+    .hol-month-count.upcoming {
+        background: #E6F1FB;
+        color: #0C447C;
+    }
+
+/* ── Upcoming row highlight ── */
+tr.hol-upcoming {
+    background: #EBF4FD !important;
+}
+
+    tr.hol-upcoming:hover {
+        background: #d4e8f8 !important;
+    }
+
+#tbl_all th, #tbl_upcoming th, #tbl_passed th {
+    text-align: center !important;
+}
+
+/* ── Cell elements ── */
+.hol-sno {
+    font-size: 11px;
+    color: #aaa;
+    font-weight: 600;
+    min-width: 28px;
+}
+
+.hol-date-main {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1a1a2e;
+    white-space: nowrap;
+}
+
+    .hol-date-main.upcoming {
+        color: #0C447C;
+    }
+
+.hol-date-weekday {
+    font-size: 10px;
+    color: #aaa;
+    margin-top: 1px;
+}
+
+.hol-name-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 250px;
+}
+
+.hol-cal-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.hol-name-text {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1a1a2e;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hol-name-desc {
+    font-size: 10px;
+    color: #aaa;
+    margin-top: 1px;
+}
+
+.hol-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+    .hol-badge.blue {
+        background: #E6F1FB;
+        color: #0C447C;
+    }
+
+    .hol-badge.green {
+        background: #EAF3DE;
+        color: #27500A;
+    }
+
+    .hol-badge.amber {
+        background: #FAEEDA;
+        color: #633806;
+    }
+
+    .hol-badge.purple {
+        background: #EEEDFE;
+        color: #3C3489;
+    }
+
+    .hol-badge.teal {
+        background: #E1F5EE;
+        color: #085041;
+    }
+
+    .hol-badge.red {
+        background: #FCEBEB;
+        color: #791F1F;
+    }
+
+.hol-past-tag {
+    font-size: 10px;
+    color: #bbb;
+    white-space: nowrap;
+}
+
+.hol-days-away {
+    font-size: 10px;
+    color: #185FA5;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* ── Legend + Footer ── */
+.hol-legend {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 16px;
+    border-top: 1px solid #f0f0f0;
+    background: #f7f8fa;
+    flex-wrap: wrap;
+}
+
+.hol-leg-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    color: #888;
+}
+
+.hol-leg-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+}
+
+/* ── Empty state ── */
+.hol-empty {
+    text-align: center;
+    padding: 48px 20px;
+    color: #aaa;
+}
+
+    .hol-empty i {
+        font-size: 36px;
+        display: block;
+        margin-bottom: 10px;
+        color: #ddd;
+    }
+
+    .hol-empty p {
+        font-size: 13px;
+    }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+    .hol-summary {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .hol-search-wrap {
+        max-width: 100%;
+    }
+}
+

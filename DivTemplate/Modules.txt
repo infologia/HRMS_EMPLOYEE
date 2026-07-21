@@ -1,0 +1,7 @@
+   <tr>
+                    <td>%%ModuleName%%</td>
+                    <td>%%Description%%</td>
+                    <td>%%ActiveText%%</td>
+                    <td><a><span class="label label-info" onclick="openModal('%%ModuleId%%','%%ModuleName%%','%%Description%%','%%IsActive%%')">Edit</span></a></td>
+                    <td><a><span class="label label-danger" onclick="fn_DeleteModule('%%ModuleId%%')">Delete</span></a></td>
+	    </tr>

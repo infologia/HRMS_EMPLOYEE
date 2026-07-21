@@ -1,0 +1,8 @@
+   <tr>
+                    <td>%%blogtitle%%</td>
+                    <td>%%blogcreatername%%</td>
+                    <td>%%StatusBadge%%</td>
+                    <td>%%PublishedBadge%%</td>
+                    <td class="text-center">%%ViewAction%%</td>
+                    <td class="text-center">%%UpdateAction%%</td>
+                </tr>

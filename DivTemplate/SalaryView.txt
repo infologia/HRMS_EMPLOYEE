@@ -1,0 +1,11 @@
+﻿
+							<tr>
+									<td>%%Employeeid%%</td>
+									<td>%%Employeename%%</td>
+									<td>%%Empoloyeemonthlysalary%%</td>
+									<td>%%Netpay%%</td>
+			 <td><a href="EmployeeSalaryResgistraion.aspx?id=%%Employeesalarydetailskey%%"><span class="label label-primary">Update</span></a></td>
+			 <td>%%createdon%%</td>
+								</tr>
+				
+					

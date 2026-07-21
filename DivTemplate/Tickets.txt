@@ -1,0 +1,14 @@
+﻿
+							<tr>
+									
+							<td><a href="TicketChat.aspx?key=%%Ticketid%%">%%Ticketid%%</a></td>
+							<td>%%Category%%</td>
+							<td>%%Ticketsubject%%</td>
+						    <td>%%Createdby%%</td>
+							<td>%%Createdon%%</td>
+							<td>%%ActiveText%%</td>
+					<td><a href="TicketChat.aspx?key=%%Ticketid%%" class="label label-info">Update</a></td>
+					
+								</tr>
+				
+					

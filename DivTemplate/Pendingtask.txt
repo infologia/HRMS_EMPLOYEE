@@ -1,0 +1,15 @@
+  <tr>
+                    <td>%%TaskDescription%%</td>   
+                    <td>%%StartDate%%</td>
+                    <td>%%EndDate%%</td>
+                    <td>%%RoleName%%</td>
+                    <td>%%ActiveCategory%%</td>
+                     %%Lead%%
+                  
+  <td><a href="CreateTask.aspx?id=%%TaskKey%%&backid=%%projectkey%%"><span class="label label-info">Update</span></a></td>
+     <td> <a href="Updatetaskdetails.aspx?projectkey=%%projectkey%%&taskkey=%%TaskKey%%">
+    <span class="label label-info">Assign Testing</span>
+  </a></td> 
+                      %%Delete%% 
+                </tr>
+         

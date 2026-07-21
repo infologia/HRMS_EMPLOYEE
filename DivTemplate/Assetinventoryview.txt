@@ -1,0 +1,13 @@
+﻿
+                    <tr>
+                    <td>%%AssetTag%%</td>
+					<td>%%Category%%</td>
+					<td>%%Brand%%</td>
+					<td>%%PlacedLocation%%</td>
+					<td>%%PurchaseDate%%</td>
+<td data-order="%%StatusOrder%%">%%ActiveText%%</td>
+					<td><a href="AssetInventory.aspx?id=%%AssetKey%%"><span class="label label-info">Update</span></a></td> 
+                    </tr>
+
+
+				

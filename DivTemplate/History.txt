@@ -1,0 +1,15 @@
+﻿
+     
+
+                                 <div class="col-md-4">
+    <div class="panel panel-flat">
+								
+               
+								<div class="panel-body">
+									<div action="#">
+										  <a href="#" class="btn bg-indigo btn-rounded btn-icon"><i class="icon-github"></i></a> %%username%% Made changes%%Modifiedon%%
+
+										</div>
+                                    </div>
+                                    </div>
+					</div>

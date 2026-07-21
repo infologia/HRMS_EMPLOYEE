@@ -1,0 +1,10 @@
+﻿                 <tr>
+   
+                   <td>%%employeeid%%</td>
+                   <td>%%Username%%</td>
+                   <td>%%DocumentName%%</td>
+                   <td>%%ViewDocument%%</td>
+                   <td>%%Download%%</td>   
+                   <td>%%createdon%%</td>              
+                </tr>
+          

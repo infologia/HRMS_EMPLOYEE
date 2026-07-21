@@ -1,0 +1,30 @@
+   <tr>
+                    
+							   	   
+                    <td>%%pjname%%</td>
+					<td>%%Categoryname%%</td>
+                     <td>%%username%%</td>
+                    <td>%%createdon%%</td>
+              									
+				       <td>%%memebers%%</td>
+						    <td>%%ActiveCategory%%</td>
+						   
+						
+										<td>
+											<div class="btn-group">
+												<a href="#" class="badge badge-primary dropdown-toggle" data-toggle="dropdown">Action<span class="caret"></span></a>
+
+												<ul class="dropdown-menu dropdown-menu-right">
+												  
+													<li><a  href="Createproject.aspx?id=%%projectkey%%"><span class="status-mark position-left border-danger"></span>Edit</a></li>
+													
+													<li><a  href="AddUserView.aspx?id=%%projectkey%%"><span class="status-mark position-left border-danger"></span>Add User</a></li>
+                                                 
+																									</ul>
+											</div>
+										</td>
+
+                 
+                      
+                </tr>
+          

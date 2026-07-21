@@ -1,0 +1,9 @@
+   <tr>
+                    <td>%%TaskDescription%%</td>   
+                    <td>%%StartDate%%</td>
+                    <td>%%EndDate%%</td>
+                    <td>%%taskrole%%</td>
+                    <td>%%ActiveCategory%%</td>
+                     %%Lead%%
+                </tr>
+         

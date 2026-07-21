@@ -1,0 +1,13 @@
+   <tr>
+                     <td>%%SuggestionId%%</td>
+					 <td>%%Employeeid%%</td>
+                    <td>%%username%%</td>
+                   
+                    <td>%%ActiveText%%</td>
+					   <td>%%ActiveCategory%%</td>
+              
+                    <td><a href="Suggestionview.aspx?key=%%Suggestionkey%%" <span class="label label-primary">View</span></a></td> 
+
+
+                </tr>
+          

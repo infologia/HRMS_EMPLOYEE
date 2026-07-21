@@ -1,0 +1,7 @@
+﻿	<li>
+									<a href="#"><i class="%%MenuIcon%%"></i> <span>%%ParentMenuName%%</span></a>
+									<ul>
+										%%ChildMenu%%
+									</ul>
+								</li>
+ 

@@ -1,0 +1,15 @@
+﻿<tr>
+   <td>%%AssetTag%%</td>
+    <td>%%Category%%</td>
+    <td>%%EquipmentName%%</td>
+    <td>%%Brand%%</td>
+    <td>%%Username%%</td>
+    <td>%%AssignedDate%%</td>
+    <td>%%AssignmentText%%</td>
+    <td>%%AssetCondition%%</td>
+    <td>%%PlacedLocation%%</td>
+    <td>%%Quantity%%</td>
+    <td>%%ModelSerialNumber%%</td>
+    <td>%%PurchaseCost%%</td>
+    <td>%%PurchaseDate%%</td>
+</tr>

@@ -1,0 +1,6 @@
+﻿<tr>
+
+                    <td>%%Requestdate%%</td>
+                    <td>%%Reason%%</td>
+				<td><a href="PermissionRequestView.aspx" >%%ActiveText%%</a></td>
+					 </tr>

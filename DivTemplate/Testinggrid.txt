@@ -1,0 +1,15 @@
+﻿<tr>
+    <td>%%ProjectName%%</td>
+    <td>%%AssignedByName%%</td>
+    <td>%%StartDate%%</td>
+    <td>%%EndDate%%</td>
+   
+    <td>%%ModifiedByName%%</td>
+     <td>%%StatusName%%</td>
+    <td>
+        <a href="Updatetaskdetails.aspx?TaskTestingKey=%%TaskTestingKey%%">
+            <span class="label label-info">Update</span>
+        </a>
+    </td>
+                    <td><a style="visibility:%%DeleteVisible%%"><span class="label label-danger"  onclick="fn_DeleteProject('%%TaskTestingKey%%')">Remove</span></a></td> 
+</tr>

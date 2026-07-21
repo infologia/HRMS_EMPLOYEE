@@ -1,0 +1,9 @@
+   <tr>
+                    <td>%%EmployeeName%%</td>
+                    <td>%%EmployeeYear%%</td>
+                    <td>%%MonthName%%</td>
+                    <td>
+                        <button type='button' class='btn btn-primary btn-xs' onclick='updateRecord("%%Employeeofthemonthkey%%","%%EmployeeYear%%","%%EmployeeMonth%%","%%employeekey%%")' style='margin-right:5px;'><i class='glyphicon glyphicon-edit'></i> </button>
+                        <button type='button' class='btn btn-danger btn-xs' onclick='deleteRecord("%%Employeeofthemonthkey%%")'><i class='glyphicon glyphicon-trash'></i> </button>
+                    </td>
+                </tr>

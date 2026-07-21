@@ -1,0 +1,11 @@
+<tr>
+    <td>%%ProjectName%%</td>
+    <td>%%TaskName%%</td>
+    <td><img src="%%AssignedByImg%%" class="img-circle" title="%%AssignedBy%%" alt="%%AssignedBy%%" style="width:35px;height:35px;object-fit:cover;"></td>
+    <td><img src="%%AssignedToImg%%" class="img-circle" title="%%AssignedTo%%" alt="%%AssignedTo%%" style="width:35px;height:35px;object-fit:cover;"></td>
+    <td>%%StartDate%%</td>
+    <td>%%AssignedHours%%</td>
+    <td>%%StatusText%%</td>
+    <td><a href="Assigntesting.aspx?id=%%TaskTestingkey%%"><span class="label label-info">Update</span></a></td>
+    <td><button type="button" class="btn btn-xs btn-danger" onclick="fn_DeleteTesting('%%TaskTestingkey%%')" %%RemoveDisabled%%>Remove</button></td>
+</tr>

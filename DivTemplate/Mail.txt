@@ -1,0 +1,13 @@
+   <tr>
+                    <td>%%Header%%</td>
+                    <td>%%MailSubject%%</td>
+                    <td>%%Content%%</td>
+                    <td>%%Image%%</td>
+                    <td>%%Footer%%</td>
+					
+					
+                    <td><a href="Mailtemplatesend.aspx?key=%%Mailtemplatekey%%" <span class="label label-info">Send</span></a></td> 
+                    <td><a href="Mailtemplateedit.aspx?key=%%Mailtemplatekey%%" <span class="label label-primary">Edit</span></a></td> 
+                      <td><a><span class="label label-info"  onclick="fn_DeleteProject('%%Mailtemplatekey%%')">Remove</span></a></td>
+                </tr>
+          

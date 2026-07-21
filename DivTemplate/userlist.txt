@@ -1,0 +1,12 @@
+﻿
+							<tr>
+									
+									<td><a href="userview.aspx?id=%%userkey%%">%%username%%</a></td>
+									<td>%%name%%</td>
+									<td>%%email%%</td>
+									<td>%%phone%%</td>
+							<td>%%createdon%%</td>
+															    <td>%%ActiveText%%</td>
+								</tr>
+				
+					

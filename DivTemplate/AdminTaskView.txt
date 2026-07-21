@@ -1,0 +1,14 @@
+﻿
+<tr>
+                    <td>%%PjName%%</td>
+					<td>%%Taskname%%</td>
+                    <td>%%Duedate%%</td>
+                    <td>%%ActiveText%%</td>
+					 <td>%%worktiming%%</td>
+					 <td>%%Days%% Days %%Hours%% Hours %%Minutes%% Minutes</td>
+					  <td>%%Taskstarttime%%</td>
+					   <td>%%Taskendtime%%</td>
+					</tr>
+
+
+				

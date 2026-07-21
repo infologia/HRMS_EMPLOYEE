@@ -1,0 +1,10 @@
+   <tr>
+                    <td>%%ProjectCode%%</td>
+                    <td>%%ProjectName%%</td>
+                    <td>%%ClientName%%</td>
+                    <td>%%StartDate%%</td>
+                    <td>%%EndDate%%</td>
+                    <td>%%Status%%</td>
+                    <td>%%ActionText%%</td>
+  </tr>
+          

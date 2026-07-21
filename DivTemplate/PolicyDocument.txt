@@ -1,0 +1,7 @@
+﻿<tr>  <td>%%createdOn%%</td>                
+                    <td>%%DocumentName%%</td>
+                    <td>%%PolicyDocument%%</td>
+                    <td>%%ActiveText%%</td>
+                 <td><a href="PolicyDocumentSend.aspx?id=%%PolicyDocumentkey%%"  class="label label-info">Upadte</a></td>
+				 <td><a href="PolicyDocument.aspx?id=%%PolicyDocumentkey%%"  class="label label-info">Delete</a></td>	 
+                </tr>

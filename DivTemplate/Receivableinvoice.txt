@@ -1,0 +1,16 @@
+﻿    <tr> 
+                    <td>%%Company_Name%%</td>
+                    <td>%%ProjectName%%</td>
+                    <td>%%Invoice_Number%%</td>
+                    <td>%%Invoice_Date%%</td>
+                    <td>%%Due_Date%%</td>
+                    <td>%%ActiveText%%</td>
+                    <td>%%Download%%</td>
+                    <td>%%Created_Date%%</td>
+                    <td><a href="createinvoice.aspx?id=%%InvoiceKey%%"><span class="label label-info">Update</span></a></td> 
+                   
+  </tr>
+           
+         
+           
+         

@@ -1,0 +1,19 @@
+    <tr>
+        <td>%%request%%</td>
+        <td>%%Fromtime%% - %%Totime%%</td>
+        <td>%%Permissionhourse%%</td>
+        <td class="pr-reason-cell" title="%%ReasonFull%%">%%ReasonDisplay%%</td>
+        <td>%%ActiveText%%</td>
+        <td>%%AppliedDate%%</td>
+        <td>
+            <a class="pr-action-btn view-btn" title="View" onclick="openUpdateModal('%%employeepermissiondetailskey%%', 'view')" style="%%HideViewBtn%% cursor:pointer;">
+                <i class="icon-eye"></i>
+            </a>
+            <a class="pr-action-btn edit-btn" style="%%ViewText%% cursor:pointer;" title="Update" onclick="openUpdateModal('%%employeepermissiondetailskey%%', 'edit')">
+                <i class="icon-pencil7"></i>
+            </a>
+            <a class="pr-action-btn delete-btn" style="%%ViewText%%" title="Remove" onclick="fn_DeleteProject('%%employeepermissiondetailskey%%')">
+                <i class="icon-trash"></i>
+            </a>
+        </td>
+    </tr>

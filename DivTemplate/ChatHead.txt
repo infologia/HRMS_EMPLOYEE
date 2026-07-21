@@ -1,0 +1,36 @@
+﻿  <div class="col-md-12">
+        <div class="panel panel-flat">
+        <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-md-4 col-xs-6">
+                            <div class="form-group">
+                                <label>ID ticket</label>
+                                <p class="form-control-static">%%Ticketid%%</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-xs-6">
+                            <div class="form-group">
+                                <label>Create date</label>
+                                <p class="form-control-static">%%createdon%%</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-xs-6">
+                            <div class="form-group">
+                                <label>Status</label>
+                                <p class="form-control-static">
+                                   <td>%%ActiveText%%</td>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <h4 class="title">Message        </h4>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                   %%Ticketmessage%%       
+                </div>
+            </div>
+        </div>
