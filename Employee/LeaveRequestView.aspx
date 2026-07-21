@@ -1,11 +1,6 @@
 <%@ Page Title="" Language="C#" MasterPageFile="~/Masterpage/AdminMaster.master" AutoEventWireup="true" CodeFile="LeaveRequestView.aspx.cs" Inherits="WEB_Employee_LeaveRequestView" %>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="head" runat="Server">
-    <link href="../Template/assets/css/PermissionRequestView.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="../Template/assets/js/plugins/tables/datatables/datatables.min.js"></script>
-    <script type="text/javascript" src="../Template/assets/js/plugins/forms/selects/select2.min.js"></script>
-    <script type="text/javascript" src="../Template/assets/js/plugins/tables/datatables/extensions/buttons.min.js"></script>
-    <script type="text/javascript" src="../Template/assets/js/pages/datatables_extension_buttons_init.js"></script>
     <script type="text/javascript">
         var deleteLeaveKey = "";
         function fn_DeleteProject(employeeleavedetailskey) {
@@ -88,7 +83,7 @@
         <div class="pr-grid-card" id="grid_all">
             <div style="padding: 15px 20px; border-bottom: 1px solid #eee; font-weight: 600; font-size: 15px; color: #333;"><i class="icon-users4" style="margin-right: 8px; color: #888;"></i>All Leaves</div>
             <div class="pr-grid-scroll">
-                <table class="table datatable-basic table-xxs text-size-small pr-datatable" id="tbl_all">
+                <table class="table datatable-basic table-xxs text-size-small pr-datatable" id="tbl_all_i">
                     <thead>
                         <tr>
                             <th>User Name</th>
@@ -420,7 +415,7 @@
             };
 
             // Initialize DataTables manually (prevents issues with hidden tables)
-            tableAll = $('#tbl_all').DataTable(dtOptions);
+            tableAll = $('#tbl_all_i').DataTable(dtOptions);
             tablePending = $('#tbl_pending').DataTable(dtOptions);
             tableApproved = $('#tbl_approved').DataTable(dtOptions);
             tableRejected = $('#tbl_rejected').DataTable(dtOptions);
