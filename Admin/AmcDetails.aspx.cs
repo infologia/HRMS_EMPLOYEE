@@ -27,22 +27,23 @@ public partial class Admin_AmcDetails : System.Web.UI.Page
             if (control1 != null)
                 control1.Text = "AMC";
             BindClients();
+
+            SqlCommand cmdRole = new SqlCommand("SELECT role FROM IT_EmployeeRegister WHERE Employeekey = @Employeekey AND role = 11");
+            cmdRole.Parameters.AddWithValue("@Employeekey", SC.Userid);
+            DataTable dtRole = DA.GetDataTable(cmdRole);
+            bool isRole11 = dtRole.Rows.Count > 0;
+
             if (!string.IsNullOrEmpty(Request.QueryString["id"]))
             {
                 int AmcKey;
-
                 if (int.TryParse(Request.QueryString["id"], out AmcKey))
                 {
-                    // success – valid integer
                     hfProjectKey.Value = AmcKey.ToString();
                     PopulateProjectData(AmcKey);
                     btn_request.Visible = false;
-                    btn_update.Visible = true;
+                    btn_update.Visible = isRole11;
                 }
-
             }
-
-
             else
             {
                 btn_request.Visible = true;
@@ -138,13 +139,11 @@ public partial class Admin_AmcDetails : System.Web.UI.Page
                 sb.AppendFormat("<td><select class='form-control' name='rowStatus[]'>{0}</select></td>", statusOptions);
                 sb.AppendFormat("<td><div class='input-group'><span class='input-group-addon'><i class='icon-calendar22'></i></span><input type='text' class='form-control pickadate-doc' name='rowAmcDate[]' value='{0}' /></div></td>", r["AMCDate"]);
                 sb.AppendFormat("<td><div class='input-group'><span class='input-group-addon'><i class='icon-calendar22'></i></span><input type='text' class='form-control pickadate-doc' name='rowNextDate[]' value='{0}' /></div></td>", r["NextAMCDate"]);
-                sb.Append("<td style='text-align:center;'><button type='button' class='btn-remove-inv removeDocRow'>Remove</button></td>");
+                sb.Append("<td style='text-align:center;'><button type='button' class='btn btn-xs btn-danger removeDocRow'><i class='icon-trash'></i></button></td>");
                 sb.Append("</tr>");
             }
             tBodyDocs.InnerHtml = sb.ToString();
         }
-
-       
 
     }
 
@@ -155,7 +154,7 @@ public partial class Admin_AmcDetails : System.Web.UI.Page
             return;
 
         Guid userId = new Guid(SC.Userid.ToString());
-
+        decimal amcAmount = 0;
         string insertProject = @"
     INSERT INTO IT_AMC
     (ClientKey, ProjectKey, GoLiveDate, AMCStartDate, AMCEndDate, Status, ProjectCost, INRAmount, AMCAmount, Description, CreatedOn, CreatedBy)
@@ -171,7 +170,8 @@ public partial class Admin_AmcDetails : System.Web.UI.Page
         cmdProject.Parameters.AddWithValue("@Status", DD_Status.SelectedValue);
         cmdProject.Parameters.AddWithValue("@ProjectCost", string.IsNullOrEmpty(txt_PP_Cost.Text) ? 0 : decimal.Parse(txt_PP_Cost.Text));
         cmdProject.Parameters.AddWithValue("@INRAmount", string.IsNullOrEmpty(txt_INRAmount.Text) ? 0 : decimal.Parse(txt_INRAmount.Text));
-        cmdProject.Parameters.AddWithValue("@AMCAmount", string.IsNullOrEmpty(txt_AmcAmount.Text) ? 0 : decimal.Parse(txt_AmcAmount.Text));
+        decimal.TryParse(txt_AmcAmount.Text.Trim(), out amcAmount);
+        cmdProject.Parameters.AddWithValue("@AMCAmount", amcAmount);
         cmdProject.Parameters.AddWithValue("@Description", txt_Description.Text.Trim());
         cmdProject.Parameters.Add("@CreatedBy", SqlDbType.UniqueIdentifier).Value = userId;
 
@@ -194,7 +194,13 @@ public partial class Admin_AmcDetails : System.Web.UI.Page
                 SqlCommand cmdRow = new SqlCommand(@"INSERT INTO IT_AMCSubTable (AMCKey, AMCAmount, Description, Status, AMCDate, NextAMCDate, CreatedOn, CreatedBy)
                     VALUES (@AMCKey, @AMCAmount, @Description, @Status, @AMCDate, @NextAMCDate, GETDATE(), @CreatedBy)");
                 cmdRow.Parameters.AddWithValue("@AMCKey", AmcKey2);
-                cmdRow.Parameters.AddWithValue("@AMCAmount", string.IsNullOrEmpty(rowAmcAmounts[i]) ? (object)DBNull.Value : decimal.Parse(rowAmcAmounts[i]));
+
+                cmdRow.Parameters.AddWithValue(
+                    "@AMCAmount",
+                    decimal.TryParse(rowAmcAmounts[i], out amcAmount)
+                        ? (object)amcAmount
+                        : DBNull.Value
+                );
                 cmdRow.Parameters.AddWithValue("@Description", rowDescriptions != null && rowDescriptions.Length > i ? rowDescriptions[i] : "");
                 cmdRow.Parameters.AddWithValue("@Status", rowStatuses != null && rowStatuses.Length > i && rowStatuses[i] == "Live" ? 1 : 0);
                 cmdRow.Parameters.AddWithValue("@AMCDate", rowAmcDates != null && rowAmcDates.Length > i && !string.IsNullOrEmpty(rowAmcDates[i]) ? (object)DateTime.ParseExact(rowAmcDates[i], new string[]{"dd/MM/yyyy","d MMMM, yyyy","dd MMMM, yyyy"}, CultureInfo.InvariantCulture, DateTimeStyles.None) : DBNull.Value);
@@ -213,28 +219,20 @@ public partial class Admin_AmcDetails : System.Web.UI.Page
             true
         );
     }
-
-
     protected void btn_update_Click(object sender, EventArgs e)
     {
         if (string.IsNullOrEmpty(DD_Client.SelectedValue) || string.IsNullOrEmpty(hfProjectKey.Value))
             return;
-
-
         Guid userId = new Guid(SC.Userid.ToString());
         int AmcKey = int.Parse(hfProjectKey.Value);
-
         // Update Project
-
         string updateProject = @"
         UPDATE IT_AMC
         SET ClientKey=@ClientKey, ProjectKey=@ProjectKey, GoLiveDate=@GoLiveDate,
             AMCStartDate=@AMCStartDate, AMCEndDate=@AMCEndDate, Status=@Status,
             ProjectCost=@ProjectCost,INRAmount=@INRAmount,AMCAmount=@AMCAmount, Description=@Description, ModifiedOn=GETDATE(), ModifiedBy=@ModifiedBy
         WHERE AMCKey=@AmcKey";
-
         SqlCommand cmdUpdate = new SqlCommand(updateProject);
-
         cmdUpdate.Parameters.AddWithValue("@ClientKey", Guid.Parse(DD_Client.SelectedValue));
         cmdUpdate.Parameters.AddWithValue("@ProjectKey", DD_Project.SelectedValue);
         cmdUpdate.Parameters.AddWithValue("@GoLiveDate", string.IsNullOrEmpty(txt_livedate.Text) ? (object)DBNull.Value : DateTime.ParseExact(txt_livedate.Text.Trim(), new string[]{"dd/MM/yyyy","d MMMM, yyyy","dd MMMM, yyyy"}, CultureInfo.InvariantCulture, DateTimeStyles.None));
@@ -247,9 +245,7 @@ public partial class Admin_AmcDetails : System.Web.UI.Page
         cmdUpdate.Parameters.AddWithValue("@Description", txt_Description.Text.Trim());
         cmdUpdate.Parameters.AddWithValue("@ModifiedBy", userId);
         cmdUpdate.Parameters.AddWithValue("@AmcKey", AmcKey);
-
         this.DA.ExecuteNonQuery(cmdUpdate);
-
         // Delete old rows and re-insert
         SqlCommand cmdDelRows = new SqlCommand("DELETE FROM IT_AMCSubTable WHERE AMCKey=@AMCKey");
         cmdDelRows.Parameters.AddWithValue("@AMCKey", AmcKey);
@@ -293,13 +289,11 @@ true
     protected void DD_Client_SelectedIndexChanged(object sender, EventArgs e)
     {
         DD_Project.Items.Clear();
-
         if (string.IsNullOrEmpty(DD_Client.SelectedValue))
         {
             DD_Project.Items.Insert(0, new ListItem("-- Select Project --", ""));
             return;
         }
-
         BindProjectByClient(DD_Client.SelectedValue);
     }
 }

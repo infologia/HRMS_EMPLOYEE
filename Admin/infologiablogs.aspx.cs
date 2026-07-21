@@ -70,7 +70,7 @@ public partial class Admin_infologiablogs : System.Web.UI.Page
 
     private void LoadBlogList()
     {
-        string query = "SELECT bd_id, blogtitle, blogcreatername, status, ispublished FROM IT_InfologiaBlogcreation ORDER BY createdon DESC";
+        string query = "SELECT bd_id, blogtitle, blogcreatername, status, ispublished, dbo.fn_Slug(blogtitle) AS Header FROM IT_InfologiaBlogcreation ORDER BY createdon DESC";
 
         SqlCommand cmd = new SqlCommand(query);
         DataTable dt = DA.GetDataTable(cmd);
@@ -96,11 +96,9 @@ public partial class Admin_infologiablogs : System.Web.UI.Page
                 ? "<span class=\"label label-success\">Yes</span>"
                 : "<span class=\"label label-danger\">No</span>";
 
-            dr["ViewAction"] = "<a href=\"infologiablog.aspx?action=edit&key=" + blId + "\" class=\"blog-view-btn\"><i class=\"icon-eye\"></i></a>";
+            dr["ViewAction"] = "<a href=\"https://infologia.in/blogs/" + dr["Header"].ToString() + "\" target=\"_blank\" class=\"blog-view-btn\"><i class=\"icon-eye\"></i></a>";
 
-            dr["UpdateAction"] = isActive
-                ? "<span class=\"blog-update-btn is-disabled\" title=\"Approved blogs are read-only\"><i class=\"icon-pencil\"></i></span>"
-                : "<a href=\"infologiablog.aspx?action=edit&key=" + blId + "\" class=\"blog-update-btn\"><i class=\"icon-pencil\"></i></a>";
+            dr["UpdateAction"] = "<a href=\"infologiablog.aspx?action=edit&key=" + blId + "\" class=\"blog-update-btn\"><i class=\"icon-pencil\"></i></a>";
         }
 
         DataSet ds = new DataSet();

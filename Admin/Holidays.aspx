@@ -254,14 +254,34 @@
 
         function fn_EditHoliday(key, date, day, desc, type, status, noofleave) {
             document.getElementById('<%= hf_holidayKey.ClientID %>').value = key;
-            document.getElementById('<%= txt_date.ClientID %>').value = date;
             document.getElementById('<%= txt_day.ClientID %>').value = day;
             document.getElementById('<%= txt_desc.ClientID %>').value = desc;
             document.getElementById('<%= txt_nofday.ClientID %>').value = noofleave;
             document.getElementById('<%= ddl_holidayType.ClientID %>').value = type;
             document.getElementById('<%= ddl_holidayStatus.ClientID %>').value = status;
             $('.modal-title').html('<i class="icon-pencil7"></i> Edit Holiday Details');
-            
+
+            // Set pickadate value correctly
+            var $txt = $('#<%= txt_date.ClientID %>');
+            var picker = $txt.pickadate('picker');
+            if (picker && date) {
+                var parts = date.split('/');
+                if (parts.length === 3) {
+                    // dd/MM/yyyy → [year, month-1, day]
+                    picker.set('select', [parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0])]);
+                } else {
+                    parts = date.split('-');
+                    if (parts.length === 3) {
+                        // yyyy-MM-dd → [year, month-1, day]
+                        picker.set('select', [parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2])]);
+                    } else {
+                        $txt.val(date);
+                    }
+                }
+            } else {
+                $txt.val(date);
+            }
+
             $('#myModal_AddHoliday').modal('show');
         }
     </script>
@@ -456,7 +476,7 @@
             try {
                 if ($('.pickadate').length > 0) {
                     $('.pickadate').pickadate({
-                        format: 'dd/mm/yyyy',
+                        format: 'yyyy-mm-dd',
                         selectMonths: true,
                         selectYears: true,
                         closeOnSelect: true

@@ -37,7 +37,10 @@ public partial class Admin_Clientsdetails : System.Web.UI.Page
                 assignvalues();
             }
 
-            btn_update.Visible = true;
+            SqlCommand cmdRole = new SqlCommand("SELECT role FROM IT_EmployeeRegister WHERE Employeekey = @Employeekey AND role = 11");
+            cmdRole.Parameters.AddWithValue("@Employeekey", SC.Userid);
+            bool isRole11 = DA.GetDataTable(cmdRole).Rows.Count > 0;
+            btn_update.Visible = isRole11;
             btn_request.Visible = false;
         }
         else

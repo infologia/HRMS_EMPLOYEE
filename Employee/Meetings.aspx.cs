@@ -67,7 +67,7 @@ FROM IT_Meetings a
 LEFT JOIN IT_EmployeeRegister b 
     ON a.CreatedBy = b.EmployeeKey
 LEFT JOIN IT_MeetingParticipants c 
-    ON a.MeetingKey = c.MeetingKey WHERE CAST(a.MeetingDate AS DATE) < CAST(GETDATE() AS DATE)";
+    ON a.MeetingKey = c.MeetingKey WHERE a.Status = 2";
 
             SqlCommand cmd = new SqlCommand(str_query);
             dt_dashboard = DA.GetDataTable(cmd);
@@ -96,14 +96,13 @@ LEFT JOIN IT_EmployeeRegister b
     ON a.CreatedBy = b.EmployeeKey
 LEFT JOIN IT_MeetingParticipants c 
     ON a.MeetingKey = c.MeetingKey
-    WHERE CAST(a.MeetingDate AS DATE) < CAST(GETDATE() AS DATE) and
+    WHERE a.Status = 2 and
         (c.EmployeeKey = @UserId
         OR a.CreatedBy = @UserId )";
 
             SqlCommand cmd = new SqlCommand(str_query);
             cmd.Parameters.AddWithValue("@UserId", str_userid);
             dt_dashboard = DA.GetDataTable(cmd);
-            ;
             ds.Merge(dt_dashboard);
         }
 
@@ -156,7 +155,7 @@ FROM IT_Meetings a
 LEFT JOIN IT_EmployeeRegister b 
     ON a.CreatedBy = b.EmployeeKey
 LEFT JOIN IT_MeetingParticipants c 
-    ON a.MeetingKey = c.MeetingKey where CAST(a.MeetingDate AS DATE) >= CAST(GETDATE() AS DATE)";
+    ON a.MeetingKey = c.MeetingKey where a.Status != 2";
 
             SqlCommand cmd = new SqlCommand(str_query);
             dt_dashboard = DA.GetDataTable(cmd);
@@ -181,7 +180,7 @@ LEFT JOIN IT_EmployeeRegister b
     ON a.CreatedBy = b.EmployeeKey
 LEFT JOIN IT_MeetingParticipants c 
     ON a.MeetingKey = c.MeetingKey
-    WHERE CAST(a.MeetingDate AS DATE) >= CAST(GETDATE() AS DATE) and
+    WHERE a.Status != 2 and
        ( c.EmployeeKey = @UserId
         OR a.CreatedBy = @UserId )";
 
