@@ -54,6 +54,8 @@ public partial class WEB_TimeMonitoring : System.Web.UI.Page
 
     protected void ddlDate_SelectedIndexChanged(object sender, EventArgs e)
     {
+        if (ddlDate.SelectedValue == "0")
+            SE_date.Text = "";
         Load_WorkedHoursData();
     }
     protected void SE_date_TextChanged(object sender, EventArgs e)

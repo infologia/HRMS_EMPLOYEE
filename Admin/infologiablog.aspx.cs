@@ -82,7 +82,7 @@ public partial class Admin_infologiablog : System.Web.UI.Page
             ddlFlag.SelectedValue = dr["flag"].ToString();
     }
 
-    private const string UploadDir = @"C:\inetpub\wwwroot\Production build\Infologia_PRD\Infologia_Website\Infologia\assets\Blog\";
+    private const string UploadDir = @"C:\inetpub\wwwroot\Production build\Infologia_PRD\Infologia_Website\Infologia\browser\assets\Blog\";
 
     private string SaveImage(HtmlInputFile fileInput, string existingPath)
     {
@@ -142,12 +142,6 @@ public partial class Admin_infologiablog : System.Web.UI.Page
         if (!Page.IsValid || string.IsNullOrEmpty(hfBlogKey.Value)) return;
 
         int blId = int.Parse(hfBlogKey.Value);
-
-        if (IsAlreadyApproved(blId))
-        {
-            Response.Redirect("infologiablogs.aspx?msg=readonly");
-            return;
-        }
 
         string smallImage = SaveImage(fuSmallImage, hfSmallImagePath.Value);
         string blogImage  = SaveImage(fuBlogImage,  hfBlogImagePath.Value);

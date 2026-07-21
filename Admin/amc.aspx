@@ -8,7 +8,7 @@
 
  <script type="text/javascript">
      function fn_DeleteProject(leadKey) {
-         if (!confirm("Are you sure you want to remove this lead?")) return;
+         if (!confirm("Are you sure you want to remove this AMC?")) return;
 
          $.ajax({
              type: "POST",
@@ -54,8 +54,7 @@
                 <th>Live Date</th>
                 <th>Status</th>
                 <th>Created Date</th>
-                <th>Update</th>
-                <th>Delete</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -83,8 +82,7 @@
                 <th>Live Date</th>
                 <th>Status</th>
                 <th>Created Date</th>                   
-                <th>Update</th>
-                <th>Delete</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>

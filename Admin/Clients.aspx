@@ -6,7 +6,10 @@
     <script type="text/javascript" src="../Template/assets/js/plugins/tables/datatables/extensions/buttons.min.js"></script>
     <script type="text/javascript" src="../Template/assets/js/pages/datatables_extension_buttons_init.js"></script>
     <style>
-        #tbl_active th, #tbl_inactive th { white-space: nowrap; }
+        #tbl_active th, #tbl_inactive th { white-space: nowrap; font-size: 12px; }
+        #tbl_active td, #tbl_inactive td { font-size: 12px; }
+        .panel-heading { margin-bottom: 0; padding-bottom: 10px; border-bottom: 1px solid #ddd; }
+        .panel .panel-heading + div { margin-top: 0; }
     </style>
 
     <script type="text/javascript">

@@ -852,41 +852,84 @@
                 }
             }
 
-            // Toolbar button clicks
             toolbar.querySelectorAll('.editor-btn[data-cmd]').forEach(function (btn) {
+               
+                btn.addEventListener('mousedown', function (e) {
+                    e.preventDefault();
+                    saveSelection();
+                });
                 btn.addEventListener('click', function () {
                     var cmd = btn.getAttribute('data-cmd');
                     editor.focus();
+                    restoreSelection();
                     document.execCommand(cmd, false, null);
                     syncContent();
                     updateActiveStates();
+                   
+                    saveSelection();
                 });
             });
 
-            // Format block (Paragraph / H1 / H2 / H3 / Quote)
+         
+            formatSelect.addEventListener('mousedown', saveSelection);
             formatSelect.addEventListener('change', function () {
                 editor.focus();
+                restoreSelection();
                 document.execCommand('formatBlock', false, formatSelect.value);
+
+                
+                var sel = window.getSelection();
+                if (sel.rangeCount > 0) {
+                    var node = sel.getRangeAt(0).commonAncestorContainer;
+                    var blockEl = (node.nodeType === 1) ? node : node.parentElement;
+                    blockEl = blockEl ? blockEl.closest('h1,h2,h3,h4,h5,h6,p,blockquote,div') : null;
+                    if (blockEl && editor.contains(blockEl)) {
+                        blockEl.querySelectorAll('[style]').forEach(function (el) {
+                            if (el.style.fontSize) {
+                                el.style.fontSize = '';
+                                if (el.getAttribute('style') === '') {
+                                    el.removeAttribute('style');
+                                }
+                            }
+                        });
+                        
+                        fontSizeInput.value = '';
+                    }
+                }
+
                 syncContent();
+                saveSelection();
             });
 
-            // Insert link
+            
+            linkBtn.addEventListener('mousedown', function (e) {
+                e.preventDefault();
+                saveSelection();
+            });
             linkBtn.addEventListener('click', function () {
                 var url = prompt('Enter URL:', 'https://');
                 if (url) {
                     editor.focus();
+                    restoreSelection();
                     document.execCommand('createLink', false, url);
                     syncContent();
+                    saveSelection();
                 }
             });
 
-            // Sync contenteditable HTML -> hidden field, on every change
             editor.addEventListener('input', syncContent);
             editor.addEventListener('blur', syncContent);
 
             function syncContent() {
                 if (hiddenField) {
-                    hiddenField.value = btoa(unescape(encodeURIComponent(editor.innerHTML)));
+                   
+                    var clone = editor.cloneNode(true);
+                    clone.querySelectorAll('span').forEach(function (el) {
+                        if (el.textContent === '​') {
+                            el.remove();
+                        }
+                    });
+                    hiddenField.value = btoa(unescape(encodeURIComponent(clone.innerHTML)));
                 }
             }
             //for font
@@ -894,12 +937,87 @@
             var fontNameSelect = document.getElementById('blogFontName');
             var fontSizeSelect = document.getElementById('blogFontSize');
 
-            fontNameSelect.addEventListener('change', function () {
-                if (fontNameSelect.value) {
-                    editor.focus();
-                    document.execCommand('fontName', false, fontNameSelect.value);
-                    syncContent();
+            
+            var savedRange = null;
+
+            function saveSelection() {
+                var sel = window.getSelection();
+                if (sel && sel.rangeCount > 0 && editor.contains(sel.anchorNode)) {
+                    savedRange = sel.getRangeAt(0).cloneRange();
                 }
+            }
+
+            function restoreSelection() {
+                if (!savedRange) return;
+                var sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(savedRange);
+            }
+
+            editor.addEventListener('mouseup', saveSelection);
+            editor.addEventListener('keyup', saveSelection);
+
+            fontNameSelect.addEventListener('mousedown', saveSelection);
+            fontNameSelect.addEventListener('change', function () {
+                var fontValue = fontNameSelect.value;
+                if (!fontValue) return;
+
+                editor.focus();
+
+                var range = (savedRange && editor.contains(savedRange.startContainer))
+                    ? savedRange.cloneRange()
+                    : null;
+                if (!range) {
+                    range = document.createRange();
+                    range.selectNodeContents(editor);
+                    range.collapse(false);
+                }
+
+                var sel = window.getSelection();
+
+                if (range.collapsed) {
+                    
+                    var span = document.createElement('span');
+                    span.style.fontFamily = fontValue;
+                    span.appendChild(document.createTextNode('​'));
+                    range.insertNode(span);
+
+                    var caretRange = document.createRange();
+                    caretRange.setStart(span.firstChild, 1);
+                    caretRange.setEnd(span.firstChild, 1);
+                    sel.removeAllRanges();
+                    sel.addRange(caretRange);
+                    savedRange = caretRange.cloneRange();
+                } else {
+                    var span2 = document.createElement('span');
+                    span2.style.fontFamily = fontValue;
+
+                    var frag = range.extractContents();
+
+                    
+                    frag.querySelectorAll('*').forEach(function (el) {
+                        if (el.style && el.style.fontFamily) {
+                            el.style.fontFamily = '';
+                            if (el.getAttribute('style') === '') {
+                                el.removeAttribute('style');
+                            }
+                        }
+                        if (el.tagName === 'FONT' && el.hasAttribute('face')) {
+                            el.removeAttribute('face');
+                        }
+                    });
+
+                    span2.appendChild(frag);
+                    range.insertNode(span2);
+
+                    var selectRange = document.createRange();
+                    selectRange.selectNodeContents(span2);
+                    sel.removeAllRanges();
+                    sel.addRange(selectRange);
+                    savedRange = selectRange.cloneRange();
+                }
+
+                syncContent();
             });
 
            
@@ -912,17 +1030,64 @@
 
                 fontSizeInput.value = size;
                 editor.focus();
-                document.execCommand('fontSize', false, '7'); // temp marker
-                var fontElements = editor.querySelectorAll('font[size="7"]');
-                fontElements.forEach(function (el) {
-                    el.removeAttribute('size');
-                    el.style.fontSize = size + 'px';
-                });
+
+              
+                var range = (savedRange && editor.contains(savedRange.startContainer))
+                    ? savedRange.cloneRange()
+                    : null;
+
+                if (!range) {
+                    range = document.createRange();
+                    range.selectNodeContents(editor);
+                    range.collapse(false);
+                }
+
+                var sel = window.getSelection();
+
+                if (range.collapsed) {
+                    var span = document.createElement('span');
+                    span.style.fontSize = size + 'px';
+                    span.appendChild(document.createTextNode('\u200b'));
+                    range.insertNode(span);
+
+                    var caretRange = document.createRange();
+                    caretRange.setStart(span.firstChild, 1);
+                    caretRange.setEnd(span.firstChild, 1);
+                    sel.removeAllRanges();
+                    sel.addRange(caretRange);
+                    savedRange = caretRange.cloneRange();
+                } else {
+                    var span2 = document.createElement('span');
+                    span2.style.fontSize = size + 'px';
+
+                    var frag = range.extractContents();
+
+                    frag.querySelectorAll('*').forEach(function (el) {
+                        if (el.style && el.style.fontSize) {
+                            el.style.fontSize = '';
+                            if (el.getAttribute('style') === '') {
+                                el.removeAttribute('style');
+                            }
+                        }
+                        if (el.tagName === 'FONT' && el.hasAttribute('size')) {
+                            el.removeAttribute('size');
+                        }
+                    });
+
+                    span2.appendChild(frag);
+                    range.insertNode(span2);
+
+                    var selectRange = document.createRange();
+                    selectRange.selectNodeContents(span2);
+                    sel.removeAllRanges();
+                    sel.addRange(selectRange);
+                    savedRange = selectRange.cloneRange();
+                }
+
                 syncContent();
                 fontSizeDropdown.classList.remove('show');
             }
-
-            // Input click pannumbodhu dropdown open aagum
+            fontSizeInput.addEventListener('mousedown', saveSelection);
             fontSizeInput.addEventListener('click', function (e) {
                 e.stopPropagation();
                 fontSizeDropdown.classList.add('show');
@@ -936,19 +1101,20 @@
                 }
             });
 
-            // Dropdown la ஒரு option click pannumbodhu apply aagum
+            
             fontSizeDropdown.querySelectorAll('.font-size-option').forEach(function (opt) {
+                opt.addEventListener('mousedown', function (e) {
+                    e.preventDefault();
+                });
                 opt.addEventListener('click', function (e) {
                     e.stopPropagation();
                     applyFontSize(opt.getAttribute('data-size'));
                 });
             });
 
-            // Vera edhavadhu click pannaa dropdown close aagum
             document.addEventListener('click', function () {
                 fontSizeDropdown.classList.remove('show');
             });
-            // Highlight active formatting (bold/italic/underline) based on cursor position
             function updateActiveStates() {
                 toolbar.querySelectorAll('.editor-btn[data-cmd]').forEach(function (btn) {
                     var cmd = btn.getAttribute('data-cmd');
