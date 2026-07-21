@@ -13,25 +13,36 @@
     </style>
 
     <script type="text/javascript">
-        function fn_DeleteProject(leadKey) {
-            if (!confirm("Are you sure you want to remove this client?")) return;
+        var deleteClientKey = null;
 
+        function fn_DeleteProject(leadKey) {
+            if (!leadKey) { toastr.error("Invalid Client Key"); return; }
+            deleteClientKey = leadKey;
+            $('#confirmDeleteModal').modal('show');
+        }
+
+        function confirmDeleteClient() {
+            if (!deleteClientKey) { toastr.error("Client Key missing. Please try again."); return; }
+            $('#confirmDeleteModal').modal('hide');
             $.ajax({
                 type: "POST",
                 url: "Clients.aspx/DeleteProject",
-                data: JSON.stringify({ str_leadkey: leadKey }),
+                data: JSON.stringify({ str_leadkey: deleteClientKey }),
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (response) {
-                    if (response.d == "1") {
-                        alert("Client has been removed successfully.");
-                        location.reload();
+                    if (response && response.d === "1") {
+                        toastr.success("Organization has been removed successfully!");
+                        setTimeout(function () { location.reload(); }, 1500);
                     } else {
-                        alert("Sorry, unable to remove this client. Please try again.");
+                        toastr.warning("Sorry, unable to remove this Organization. Please try again.");
                     }
+                    deleteClientKey = null;
                 },
                 error: function (xhr, status, error) {
-                    alert("An error occurred while removing the client. Please try again.");
+                    console.error(error);
+                    toastr.error("An error occurred while removing the Organization.");
+                    deleteClientKey = null;
                 }
             });
         }
@@ -96,6 +107,26 @@
                 <asp:PlaceHolder ID="PH_InactiveClients" runat="server"></asp:PlaceHolder>
             </tbody>
         </table>
+        </div>
+    </div>
+
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Confirm Delete</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="mb-0">Are you sure you want to remove this Organization?</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmDeleteClient()">Yes, Remove</button>
+                </div>
+            </div>
         </div>
     </div>
 

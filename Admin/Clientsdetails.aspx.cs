@@ -182,7 +182,9 @@ public partial class Admin_Clientsdetails : System.Web.UI.Page
         AddContractParams(cmd);
 
         DA.ExecuteNonQuery(cmd);
-        Response.Redirect("Clients.aspx");
+        Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_redirect",
+            "showToastr('success','Organization Created Successfully!');" +
+            "setTimeout(function(){ window.location.href = 'Clients.aspx'; }, 2000);", true);
     }
     protected void btn_update_Click(object sender, EventArgs e)
     {
@@ -231,7 +233,9 @@ public partial class Admin_Clientsdetails : System.Web.UI.Page
         cmd.Parameters.Add("@ClientKey", SqlDbType.UniqueIdentifier).Value = new Guid(this.str_id);
 
         DA.ExecuteNonQuery(cmd);
-        Response.Redirect("Clients.aspx");
+        Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_redirect",
+            "showToastr('success','Organization Updated Successfully!');" +
+            "setTimeout(function(){ window.location.href = 'Clients.aspx'; }, 2000);", true);
     }
     public void assignvalues()
     {

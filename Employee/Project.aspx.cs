@@ -27,9 +27,12 @@ public partial class Employee_Project : System.Web.UI.Page
             BindProjectManagers();
             BindTeamLead();
             BindEmployees();
-            string userRoleId = SC.UserRecordTable != null && SC.UserRecordTable.Rows.Count > 0
-                ? SC.UserRecordTable.Rows[0]["Role"].ToString() : "";
-            pnlBudget.Visible = userRoleId == "11";
+
+            SqlCommand cmdRole = new SqlCommand("SELECT role FROM IT_EmployeeRegister WHERE Employeekey = @Employeekey AND role = 11");
+            cmdRole.Parameters.AddWithValue("@Employeekey", SC.Userid);
+            bool isRole11 = DA.GetDataTable(cmdRole).Rows.Count > 0;
+
+            pnlBudget.Visible = isRole11;
             Label control1 = this.Master.FindControl("lbl_bread") as Label;
             if (control1 != null)
                 control1.Text = "Project";
@@ -37,11 +40,8 @@ public partial class Employee_Project : System.Web.UI.Page
             {
                 int projectKey = int.Parse(Request.QueryString["id"]);
                 hfProjectKey.Value = projectKey.ToString();
-                PopulateProjectData(projectKey);
-
+                PopulateProjectData(projectKey, isRole11);
                 btnSave.Visible = false;
-
-               
             }
             else
             {
@@ -162,7 +162,7 @@ private DateTime? ParseDate(string dateText)
         }
     }
 
-    private void PopulateProjectData(int projectKey)
+    private void PopulateProjectData(int projectKey, bool isRole11)
     {
         string query = "SELECT ProjectKey, ClientKey, ProjectName, ProjectCode, Description, CONVERT(varchar(10), StartDate, 103) AS StartDate, CONVERT(varchar(10), EndDate, 103) AS EndDate, Status, Budget, EstimatedHours, ProjectTypeId, ProjectManagerKey FROM IT_projects WHERE ProjectKey = @ProjectKey";
         SqlCommand cmd = new SqlCommand(query);
@@ -179,25 +179,12 @@ private DateTime? ParseDate(string dateText)
             txtStartDate.Text = row["StartDate"].ToString();
             txtEndDate.Text = row["EndDate"].ToString();
             ddlStatus.SelectedValue = row["Status"].ToString();
-            string str_ddlStatus = ddlStatus.SelectedValue;
-            if (str_ddlStatus == "Planned")
-            {
-                btnUpdate.Visible = true;
-                txtBudget.Text = row["Budget"].ToString();
-            }
+            txtBudget.Text = row["Budget"].ToString();
+
+            if (isRole11)
+                btnUpdate.Visible = row["Status"].ToString() != "Completed";
             else
-            {
-                
-                if (str_ddlStatus == "Completed")
-                { btnUpdate.Visible = false;
-                }
-                else
-                {
-                    btnUpdate.Visible = true;
-                }
-                    txtBudget.Text = row["Budget"].ToString();
-                // txtBudget.ReadOnly = true;
-            }
+                btnUpdate.Visible = false;
 
             txtEstimatedHours.Text = row["EstimatedHours"] != DBNull.Value ? row["EstimatedHours"].ToString() : "";
 

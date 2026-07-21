@@ -44,33 +44,6 @@
         });
     }
 </script>
-<%--<script>
-    $(document).ready(function () {
-
-        if ($.fn.DataTable.isDataTable('#tablecash')) {
-            $('#tablecash').DataTable().destroy();
-        }
-        $('#tablecash').DataTable({
-            autoWidth: false,
-            ordering: false,        
-            paging: true,
-            searching: true,
-            lengthChange: true,
-            pageLength: 10,
-            dom: '<"datatable-header"fl><"datatable-scroll"t><"datatable-footer"ip>',
-            language: {
-                search: '<span>Filter:</span> _INPUT_',
-                searchPlaceholder: 'Type to filter...',
-                lengthMenu: '<span>Show:</span> _MENU_',
-                paginate: {
-                    'next': '&rarr;',
-                    'previous': '&larr;'
-                }
-            }
-        });
-
-    });
-</script>--%>
 
     <style>
 .filter-row {
