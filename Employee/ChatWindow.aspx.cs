@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -142,7 +142,7 @@ public partial class Employee_ChatWindow : System.Web.UI.Page
 {
     if (Request.UrlReferrer != null)
     {
-            Response.Redirect("~/Employee/Dashboard.aspx");
+            Response.Redirect("~/Employee/Timings.aspx");
         }
     else
     {
