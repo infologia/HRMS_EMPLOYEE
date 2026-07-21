@@ -162,23 +162,33 @@ public partial class Employee_Meetingdetails : System.Web.UI.Page
     {
         Guid userId = new Guid(SC.Userid.ToString());
 
-        DateTime meetingDate = DateTime.ParseExact(
-         txt_MeetingDate.Text,
-         "dd/MM/yyyy",
-         CultureInfo.InvariantCulture
-     );
+        string[] dateFormats = { "dd/MM/yyyy", "dd-MM-yyyy", "MM/dd/yyyy", "yyyy-MM-dd", "d/M/yyyy", "d-M-yyyy" };
+        string[] timeFormats = {
+            "dd/MM/yyyy h:mm tt", "dd/MM/yyyy hh:mm tt", "dd-MM-yyyy h:mm tt", "dd-MM-yyyy hh:mm tt",
+            "dd/MM/yyyy H:mm", "dd-MM-yyyy H:mm", "MM/dd/yyyy h:mm tt", "MM/dd/yyyy hh:mm tt",
+            "d/M/yyyy h:mm tt", "d/M/yyyy hh:mm tt", "d-M-yyyy h:mm tt", "d-M-yyyy hh:mm tt"
+        };
 
-        DateTime startTime = DateTime.ParseExact(
-            txt_MeetingDate.Text + " " + txt_starttime.Text,
-            "dd/MM/yyyy h:mm tt",
-            CultureInfo.InvariantCulture
-        );
+        DateTime meetingDate;
+        if (!DateTime.TryParseExact(txt_MeetingDate.Text.Trim(), dateFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out meetingDate))
+        {
+            ScriptManager.RegisterStartupScript(this, GetType(), "err", "showToastr('error','Invalid meeting date format.');", true);
+            return;
+        }
 
-        DateTime endTime = DateTime.ParseExact(
-            txt_MeetingDate.Text + " " + txt_endtime.Text,
-            "dd/MM/yyyy h:mm tt",
-            CultureInfo.InvariantCulture
-        );
+        DateTime startTime;
+        if (!DateTime.TryParseExact(txt_MeetingDate.Text.Trim() + " " + txt_starttime.Text.Trim(), timeFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out startTime))
+        {
+            ScriptManager.RegisterStartupScript(this, GetType(), "err", "showToastr('error','Invalid start time format.');", true);
+            return;
+        }
+
+        DateTime endTime;
+        if (!DateTime.TryParseExact(txt_MeetingDate.Text.Trim() + " " + txt_endtime.Text.Trim(), timeFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out endTime))
+        {
+            ScriptManager.RegisterStartupScript(this, GetType(), "err", "showToastr('error','Invalid end time format.');", true);
+            return;
+        }
 
         string sqlMeetingInsert = @"
         DECLARE @MeetingKey TABLE (MeetingKey INT);
@@ -357,24 +367,16 @@ WHERE P.EmployeeKey = @EmployeeKey
     {
         CultureInfo culture = CultureInfo.InvariantCulture;
 
-        DateTime meetingDateOnly = DateTime.ParseExact(
-            meetingDate,
-            "dd/MM/yyyy",
-            culture
-        );
-
-        DateTime startDateTime = DateTime.ParseExact(
-            startTime,
-            "dd/MM/yyyy h:mm tt",
-            culture
-        );
-
-        DateTime endDateTime = DateTime.ParseExact(
-            endTime,
-            "dd/MM/yyyy h:mm tt",
-            culture
-        );
-
+        string[] dateFormats = { "dd/MM/yyyy", "dd-MM-yyyy", "MM/dd/yyyy", "yyyy-MM-dd", "d/M/yyyy", "d-M-yyyy" };
+        string[] timeFormats = {
+            "dd/MM/yyyy h:mm tt", "dd/MM/yyyy hh:mm tt", "dd-MM-yyyy h:mm tt", "dd-MM-yyyy hh:mm tt",
+            "dd/MM/yyyy H:mm", "dd-MM-yyyy H:mm", "MM/dd/yyyy h:mm tt", "MM/dd/yyyy hh:mm tt",
+            "d/M/yyyy h:mm tt", "d/M/yyyy hh:mm tt", "d-M-yyyy h:mm tt", "d-M-yyyy hh:mm tt"
+        };
+        
+        DateTime meetingDateOnly = DateTime.ParseExact(meetingDate.Trim(), dateFormats, CultureInfo.InvariantCulture, DateTimeStyles.None);
+        DateTime startDateTime = DateTime.ParseExact(startTime.Trim(), timeFormats, CultureInfo.InvariantCulture, DateTimeStyles.None);
+        DateTime endDateTime = DateTime.ParseExact(endTime.Trim(), timeFormats, CultureInfo.InvariantCulture, DateTimeStyles.None);
         SqlCommand cmd = new SqlCommand(@"
         SELECT TOP 1 
             M.MeetingTitle,
@@ -623,26 +625,36 @@ WHERE P.EmployeeKey = @EmployeeKey
             throw new Exception("Invalid MeetingKey value: " + this.str_id);
         }
 
+        string[] dateFormats = { "dd/MM/yyyy", "dd-MM-yyyy", "MM/dd/yyyy", "yyyy-MM-dd", "d/M/yyyy", "d-M-yyyy" };
+        string[] timeFormats = {
+            "dd/MM/yyyy h:mm tt", "dd/MM/yyyy hh:mm tt", "dd-MM-yyyy h:mm tt", "dd-MM-yyyy hh:mm tt",
+            "dd/MM/yyyy H:mm", "dd-MM-yyyy H:mm", "MM/dd/yyyy h:mm tt", "MM/dd/yyyy hh:mm tt",
+            "d/M/yyyy h:mm tt", "d/M/yyyy hh:mm tt", "d-M-yyyy h:mm tt", "d-M-yyyy hh:mm tt"
+        };
+
         // Parse Meeting Date
-        DateTime meetingDate = DateTime.ParseExact(
-            txt_MeetingDate.Text,
-            "dd/MM/yyyy",
-            CultureInfo.InvariantCulture
-        );
+        DateTime meetingDate;
+        if (!DateTime.TryParseExact(txt_MeetingDate.Text.Trim(), dateFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out meetingDate))
+        {
+            ScriptManager.RegisterStartupScript(this, GetType(), "err", "showToastr('error','Invalid meeting date format.');", true);
+            return;
+        }
 
         // Parse Start Time (AM / PM)
-        DateTime startTime = DateTime.ParseExact(
-            txt_MeetingDate.Text + " " + txt_starttime.Text,
-            "dd/MM/yyyy h:mm tt",
-            CultureInfo.InvariantCulture
-        );
+        DateTime startTime;
+        if (!DateTime.TryParseExact(txt_MeetingDate.Text.Trim() + " " + txt_starttime.Text.Trim(), timeFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out startTime))
+        {
+            ScriptManager.RegisterStartupScript(this, GetType(), "err", "showToastr('error','Invalid start time format.');", true);
+            return;
+        }
 
         // Parse End Time (AM / PM)
-        DateTime endTime = DateTime.ParseExact(
-            txt_MeetingDate.Text + " " + txt_endtime.Text,
-            "dd/MM/yyyy h:mm tt",
-            CultureInfo.InvariantCulture
-        );
+        DateTime endTime;
+        if (!DateTime.TryParseExact(txt_MeetingDate.Text.Trim() + " " + txt_endtime.Text.Trim(), timeFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out endTime))
+        {
+            ScriptManager.RegisterStartupScript(this, GetType(), "err", "showToastr('error','Invalid end time format.');", true);
+            return;
+        }
 
         SqlCommand cmdUpdateMeeting = new SqlCommand(@"
         UPDATE IT_Meetings
@@ -813,23 +825,16 @@ ProjectKey=@ProjectKey
     {
         CultureInfo culture = CultureInfo.InvariantCulture;
 
-        DateTime meetingDateOnly = DateTime.ParseExact(
-            meetingDate,
-            "MM/dd/yyyy",
-            culture
-        );
+        string[] dateFormats = { "dd/MM/yyyy", "dd-MM-yyyy", "MM/dd/yyyy", "yyyy-MM-dd", "d/M/yyyy", "d-M-yyyy" };
+        string[] timeFormats = {
+            "dd/MM/yyyy h:mm tt", "dd/MM/yyyy hh:mm tt", "dd-MM-yyyy h:mm tt", "dd-MM-yyyy hh:mm tt",
+            "dd/MM/yyyy H:mm", "dd-MM-yyyy H:mm", "MM/dd/yyyy h:mm tt", "MM/dd/yyyy hh:mm tt",
+            "d/M/yyyy h:mm tt", "d/M/yyyy hh:mm tt", "d-M-yyyy h:mm tt", "d-M-yyyy hh:mm tt"
+        };
 
-        DateTime startDateTime = DateTime.ParseExact(
-            startTime,
-            "dd/MM/yyyy h:mm tt",
-            culture
-        );
-
-        DateTime endDateTime = DateTime.ParseExact(
-            endTime,
-            "dd/MM/yyyy h:mm tt",
-            culture
-        );
+        DateTime meetingDateOnly = DateTime.ParseExact(meetingDate.Trim(), dateFormats, culture, DateTimeStyles.None);
+        DateTime startDateTime = DateTime.ParseExact(startTime.Trim(), timeFormats, culture, DateTimeStyles.None);
+        DateTime endDateTime = DateTime.ParseExact(endTime.Trim(), timeFormats, culture, DateTimeStyles.None);
 
         foreach (string empKey in employeeKey)
         {

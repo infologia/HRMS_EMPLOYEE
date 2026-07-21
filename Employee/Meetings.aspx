@@ -1,31 +1,47 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Masterpage/AdminMaster.master" AutoEventWireup="true" CodeFile="Meetings.aspx.cs" Inherits="Employee_Meetings" %>
+<%@ Page Title="" Language="C#" MasterPageFile="~/Masterpage/AdminMaster.master" AutoEventWireup="true" CodeFile="Meetings.aspx.cs" Inherits="Employee_Meetings" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
     <script type="text/javascript" src="../Template/assets/js/plugins/tables/datatables/datatables.min.js"></script>
     <script type="text/javascript" src="../Template/assets/js/plugins/forms/selects/select2.min.js"></script>
     <script type="text/javascript" src="../Template/assets/js/plugins/tables/datatables/extensions/buttons.min.js"></script>
     <script type="text/javascript" src="../Template/assets/js/pages/datatables_extension_buttons_init.js"></script>
+    <script>
+        var deleteMeetingKey = null;
 
-    <script type="text/javascript">
         function fn_DeleteProject(leadKey) {
-            if (!confirm("Are you sure you want to remove this lead?")) return;
+            if (!leadKey) {
+                toastr.error("Invalid Meeting Key");
+                return;
+            }
+            deleteMeetingKey = leadKey;
+            $('#confirmDeleteModal').modal('show');
+        }
 
+        function confirmDeleteProject() {
+            if (!deleteMeetingKey) {
+                toastr.error("Meeting Key missing. Please try again.");
+                return;
+            }
+            $('#confirmDeleteModal').modal('hide');
             $.ajax({
                 type: "POST",
                 url: "Meetings.aspx/DeleteProject",
-                data: JSON.stringify({ str_leadkey: leadKey }),
+                data: JSON.stringify({ str_leadkey: deleteMeetingKey }),
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (response) {
-                    if (response.d == "1") {
-                        alert("Lead has been removed successfully.");
-                        location.reload(); // Refresh the page to reflect deletion
+                    if (response && response.d === "1") {
+                        toastr.success("Meeting has been removed successfully!");
+                        setTimeout(function () { location.reload(); }, 1500);
                     } else {
-                        alert("Sorry, unable to remove this Meeting. Please try again.");
+                        toastr.warning("Sorry, unable to remove this Meeting. Please try again.");
                     }
+                    deleteMeetingKey = null;
                 },
                 error: function (xhr, status, error) {
-                    alert("An error occurred while removing the Meeting. Please try again.");
+                    console.error(error);
+                    toastr.error("An error occurred while removing the Meeting.");
+                    deleteMeetingKey = null;
                 }
             });
         }
@@ -102,6 +118,27 @@
                 <asp:PlaceHolder ID="PH_Completed" runat="server"></asp:PlaceHolder>
             </tbody>
         </table>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Confirm Delete</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="mb-0">Are you sure you want to remove this Meeting?</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmDeleteProject()">Yes, Remove</button>
+                </div>
+            </div>
+        </div>
     </div>
 </asp:Content>
 

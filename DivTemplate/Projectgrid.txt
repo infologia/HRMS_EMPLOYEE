@@ -5,6 +5,6 @@
                     <td>%%StartDate%%</td>
                     <td>%%EndDate%%</td>
                     <td>%%Status%%</td>
-                    <td>%%ActionText%%</td>
+                    <td style="white-space:nowrap;">%%ActionText%%</td>
   </tr>
           

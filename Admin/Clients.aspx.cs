@@ -49,12 +49,12 @@ public partial class Admin_Clients : System.Web.UI.Page
                 
             if (isRole11)
             {
-                dr["ActionText"] = "<a href=\"Clientsdetails.aspx?id=" + dr["ClientKey"].ToString() + "\" style=\"margin-right: 5px;\" title=\"Update\"><span class=\"label label-info\"><i class=\"icon-pencil\"></i></span></a>" + 
-                                   "<a style=\"cursor:pointer;\" title=\"Delete\"><span class=\"label label-danger\" onclick=\"fn_DeleteProject('" + dr["ClientKey"].ToString() + "')\"><i class=\"icon-trash\"></i></span></a>";
+                dr["ActionText"] = "<a href=\"Clientsdetails.aspx?id=" + dr["ClientKey"].ToString() + "\" class=\"btn btn-xs btn-info\" style=\"margin-right:3px; border-radius:4px;\" title=\"Update\"><i class=\"icon-pencil7\"></i></a>" +
+                                   "<a class=\"btn btn-xs btn-danger\" style=\"border-radius:4px; cursor:pointer;\" title=\"Delete\" onclick=\"fn_DeleteProject('" + dr["ClientKey"].ToString() + "')\"><i class=\"icon-trash\"></i></a>";
             }
             else
             {
-                dr["ActionText"] = "<a href=\"Clientsdetails.aspx?id=" + dr["ClientKey"].ToString() + "\" title=\"View\"><span class=\"label label-info\"><i class=\"icon-eye\"></i></span></a>";
+                dr["ActionText"] = "<a href=\"Clientsdetails.aspx?id=" + dr["ClientKey"].ToString() + "\" class=\"btn btn-xs btn-info\" style=\"border-radius:4px;\" title=\"View\"><i class=\"icon-eye\"></i></a>";
             }
         }
 

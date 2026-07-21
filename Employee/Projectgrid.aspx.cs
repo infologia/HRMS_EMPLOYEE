@@ -127,12 +127,12 @@ public partial class Employee_Projectgrid : System.Web.UI.Page
             
             if (userRoleId == "11")
             {
-                dr["ActionText"] = "<a href=\"Project.aspx?id=" + dr["ProjectKey"].ToString() + "\" style=\"margin-right: 5px;\" title=\"Update\"><span class=\"label label-info\"><i class=\"icon-pencil\"></i></span></a>" + 
-                                   "<a style=\"cursor:pointer;\" title=\"Remove\"><span class=\"label label-danger\" onclick=\"fn_DeleteProject('" + dr["ProjectKey"].ToString() + "')\"><i class=\"icon-trash\"></i></span></a>";
+                dr["ActionText"] = "<a href=\"Project.aspx?id=" + dr["ProjectKey"].ToString() + "\" class=\"btn btn-xs btn-info\" style=\"margin-right:3px; border-radius:4px;\" title=\"Update\"><i class=\"icon-pencil7\"></i></a>" +
+                                   "<a class=\"btn btn-xs btn-danger\" style=\"border-radius:4px; cursor:pointer;\" title=\"Remove\" onclick=\"fn_DeleteProject('" + dr["ProjectKey"].ToString() + "')\"><i class=\"icon-trash\"></i></a>";
             }
             else
             {
-                dr["ActionText"] = "<a href=\"Project.aspx?id=" + dr["ProjectKey"].ToString() + "\" title=\"View\"><span class=\"label label-info\"><i class=\"icon-eye\"></i></span></a>";
+                dr["ActionText"] = "<a href=\"Project.aspx?id=" + dr["ProjectKey"].ToString() + "\" class=\"btn btn-xs btn-info\" style=\"border-radius:4px;\" title=\"View\"><i class=\"icon-eye\"></i></a>";
             }
         }
 
@@ -162,12 +162,12 @@ public partial class Employee_Projectgrid : System.Web.UI.Page
             
             if (userRoleId == "11")
             {
-                dr["ActionText"] = "<a href=\"Project.aspx?id=" + dr["ProjectKey"].ToString() + "\" style=\"margin-right: 5px;\" title=\"Update\"><span class=\"label label-info\"><i class=\"icon-pencil\"></i></span></a>" + 
-                                   "<a href=\"javascript:void(0);\" title=\"Remove\"><span class=\"label label-default\" style=\"cursor:not-allowed; opacity:0.6;\"><i class=\"icon-trash\"></i></span></a>";
+                dr["ActionText"] = "<a href=\"Project.aspx?id=" + dr["ProjectKey"].ToString() + "\" class=\"btn btn-xs btn-info\" style=\"margin-right:3px; border-radius:4px;\" title=\"Update\"><i class=\"icon-pencil7\"></i></a>" +
+                                   "<a class=\"btn btn-xs btn-default\" style=\"border-radius:4px; cursor:not-allowed; opacity:0.6;\" title=\"Remove\"><i class=\"icon-trash\"></i></a>";
             }
             else
             {
-                dr["ActionText"] = "<a href=\"Project.aspx?id=" + dr["ProjectKey"].ToString() + "\" title=\"View\"><span class=\"label label-info\"><i class=\"icon-eye\"></i></span></a>";
+                dr["ActionText"] = "<a href=\"Project.aspx?id=" + dr["ProjectKey"].ToString() + "\" class=\"btn btn-xs btn-info\" style=\"border-radius:4px;\" title=\"View\"><i class=\"icon-eye\"></i></a>";
             }
         }
 
