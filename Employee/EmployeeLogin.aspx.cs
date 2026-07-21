@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -42,7 +42,7 @@ public partial class WEB_Employee_EmployeeLogin : System.Web.UI.Page
                 Sc.UserImage = dt_login.Rows[0]["image"].ToString();
                 Sc.username = str_Admin;
                 Sc.UserRecordTable = dt_login;
-                Response.Redirect(@"~/Employee/Dashboard.aspx");
+                Response.Redirect(@"~/Employee/Timings.aspx");
             }
            
         }
