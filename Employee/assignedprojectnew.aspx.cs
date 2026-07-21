@@ -91,8 +91,8 @@ SELECT
             FROM IT_TaskDescriptiondetails td 
             INNER JOIN IT_TaskCreation tc ON td.TaskKey = tc.TaskKey 
             WHERE tc.ProjectName = p.ProjectKey 
-            AND MONTH(tc.CreatedOn) = MONTH(GETDATE()) 
-            AND YEAR(tc.CreatedOn) = YEAR(GETDATE())), 0) AS CurrentMonthHoursSpent,
+            AND MONTH(tc.StartDate) = MONTH(GETDATE()) 
+            AND YEAR(tc.StartDate) = YEAR(GETDATE())), 0) AS CurrentMonthHoursSpent,
 
     -- My Logged Hours (from TaskDescriptiondetails for specific employee)
     ISNULL((SELECT SUM(CASE WHEN td.ActualHours IS NOT NULL AND td.ActualHours > 0 THEN td.ActualHours ELSE ISNULL(td.AssignedHours,0) END)
@@ -105,8 +105,8 @@ SELECT
             FROM IT_TaskDescriptiondetails td 
             INNER JOIN IT_TaskCreation tc ON td.TaskKey = tc.TaskKey 
             WHERE tc.ProjectName = p.ProjectKey AND tc.EmployeeList = @UserId 
-            AND MONTH(tc.CreatedOn) = MONTH(GETDATE()) 
-            AND YEAR(tc.CreatedOn) = YEAR(GETDATE())), 0) AS MyCurrentMonthHours,
+            AND MONTH(tc.StartDate) = MONTH(GETDATE()) 
+            AND YEAR(tc.StartDate) = YEAR(GETDATE())), 0) AS MyCurrentMonthHours,
 
     (SELECT TOP 1 FilePath FROM IT_ProjectDocuments WHERE ProjectKey = p.ProjectKey AND DocumentName LIKE '%workflow%') AS WorkflowDocumentPath,
     (SELECT COUNT(*) FROM IT_EmployeeRegister er WHERE er.Employeekey = @UserId AND er.Division = 1) AS IsTeamLead
@@ -154,7 +154,16 @@ ORDER BY p.StartDate DESC";
         if (pnlHoursWarning != null)
         {
             decimal estimatedHours = row["EstimatedHours"] != DBNull.Value ? Convert.ToDecimal(row["EstimatedHours"]) : 0;
-            decimal usedHours = row["TotalHoursSpent"] != DBNull.Value ? Convert.ToDecimal(row["TotalHoursSpent"]) : 0;
+            decimal usedHours = 0;
+            
+            if (projectType == "Monthly Support Contract")
+            {
+                usedHours = row["CurrentMonthHoursSpent"] != DBNull.Value ? Convert.ToDecimal(row["CurrentMonthHoursSpent"]) : 0;
+            }
+            else
+            {
+                usedHours = row["TotalHoursSpent"] != DBNull.Value ? Convert.ToDecimal(row["TotalHoursSpent"]) : 0;
+            }
             
             if (usedHours > estimatedHours && estimatedHours > 0)
             {

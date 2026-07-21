@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -60,7 +60,7 @@ public partial class Login : System.Web.UI.Page
                     SC.username = str_Admin;
                     SC.Userdesg = dt_login.Rows[0]["Destination"].ToString();
                     SC.UserRecordTable = dt_login;
-                    Response.Redirect(@"~/Employee/Dashboard.aspx");
+                    Response.Redirect(@"~/Employee/Timings.aspx");
                 }
             }
             else if (str_role == "2")
