@@ -10,7 +10,10 @@
                 <h5 class="panel-title">Receivable Invoices Details</h5>
             </div>
             <div class="col-lg-8">
-                <a href="createinvoice.aspx"  runat="server" class="btn btn-primary  pull-right"><i class="icon-plus-circle2"></i> Create Invoice</a>
+                <div style="display: flex; gap: 10px; justify-content: flex-end; align-items: center;">
+                    <asp:DropDownList ID="ddlFinancialYear" runat="server" CssClass="form-control" AutoPostBack="true" OnSelectedIndexChanged="ddlFinancialYear_SelectedIndexChanged" style="width: 200px;"></asp:DropDownList>
+                    <a href="createinvoice.aspx"  runat="server" class="btn btn-primary"><i class="icon-plus-circle2"></i> Create Invoice</a>
+                </div>
             </div>
         </div>
     </div>
