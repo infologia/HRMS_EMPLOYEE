@@ -80,11 +80,26 @@ public partial class Admin_createinvoice : System.Web.UI.Page
             return;
         }
 
-        string str_view = @"SELECT b.ProjectName As ProjectName, a.InvoiceKey, a.InvoiceNumber, a.TotalAmount, CONVERT(VARCHAR(10), a.InvoiceDate, 105) AS InvoiceDate, CONVERT(VARCHAR(10), a.ReceivedDate, 105) AS ReceivedDate, CONVERT(VARCHAR(10), a.CreatedOn, 105) AS CreatedOn FROM IT_Invoices a left join IT_Projects b on a.ProjectKey = b.ProjectKey where a.ClientKey='" + clientId + "' and a.ProjectKey='" + projectId + "'";
+        DateTime currentDate = DateTime.Now;
+        DateTime fyStart, fyEnd;
+        if (currentDate.Month >= 4)
+        {
+            fyStart = new DateTime(currentDate.Year, 4, 1);
+            fyEnd = new DateTime(currentDate.Year + 1, 3, 31, 23, 59, 59);
+        }
+        else
+        {
+            fyStart = new DateTime(currentDate.Year - 1, 4, 1);
+            fyEnd = new DateTime(currentDate.Year, 3, 31, 23, 59, 59);
+        }
+
+        string str_view = @"SELECT b.ProjectName As ProjectName, a.InvoiceKey, a.InvoiceNumber, a.TotalAmount, CONVERT(VARCHAR(10), a.InvoiceDate, 105) AS InvoiceDate, CONVERT(VARCHAR(10), a.ReceivedDate, 105) AS ReceivedDate, CONVERT(VARCHAR(10), a.CreatedOn, 105) AS CreatedOn FROM IT_Invoices a left join IT_Projects b on a.ProjectKey = b.ProjectKey where a.ClientKey=@ClientKey and a.ProjectKey=@ProjectKey AND ISNULL(a.InvoiceDate, a.CreatedOn) >= @FYStart AND ISNULL(a.InvoiceDate, a.CreatedOn) <= @FYEnd";
 
         SqlCommand cmd = new SqlCommand(str_view);
         cmd.Parameters.AddWithValue("@ClientKey", clientId);
         cmd.Parameters.AddWithValue("@ProjectKey", projectId);
+        cmd.Parameters.AddWithValue("@FYStart", fyStart);
+        cmd.Parameters.AddWithValue("@FYEnd", fyEnd);
         DataTable dt = DA.GetDataTable(cmd);
         PH_invoice.Controls.Clear();
 
@@ -757,9 +772,24 @@ WHERE
         cmdproject.Parameters.AddWithValue("@ProjectKey", client_Id);
         DataSet ds_project = this.DA.GetDataSet(cmdproject);
 
-        string str_projectAmount = "select count(InvoiceKey) as invoiceCount, sum(InvoiceAmount) as amount from IT_Invoices where ProjectKey = @ProjectKey";
+        DateTime currentDate = DateTime.Now;
+        DateTime fyStart, fyEnd;
+        if (currentDate.Month >= 4)
+        {
+            fyStart = new DateTime(currentDate.Year, 4, 1);
+            fyEnd = new DateTime(currentDate.Year + 1, 3, 31, 23, 59, 59);
+        }
+        else
+        {
+            fyStart = new DateTime(currentDate.Year - 1, 4, 1);
+            fyEnd = new DateTime(currentDate.Year, 3, 31, 23, 59, 59);
+        }
+
+        string str_projectAmount = "select count(InvoiceKey) as invoiceCount, sum(InvoiceAmount) as amount from IT_Invoices where ProjectKey = @ProjectKey AND ISNULL(InvoiceDate, CreatedOn) >= @FYStart AND ISNULL(InvoiceDate, CreatedOn) <= @FYEnd";
         SqlCommand cmdprojectAmount = new SqlCommand(str_projectAmount);
         cmdprojectAmount.Parameters.AddWithValue("@ProjectKey", client_Id);
+        cmdprojectAmount.Parameters.AddWithValue("@FYStart", fyStart);
+        cmdprojectAmount.Parameters.AddWithValue("@FYEnd", fyEnd);
         DataSet ds_projectAmount = this.DA.GetDataSet(cmdprojectAmount);
 
         if (ds_project.Tables[0].Rows.Count > 0 &&

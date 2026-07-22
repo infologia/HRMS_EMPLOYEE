@@ -48,6 +48,7 @@
 <div class="col-md-6 pull-left">
 <h5 class="panel-title">Payable Invoices Details</h5></div><div class="col-md-6  pull-right">
 <div style="display: flex; gap: 10px; justify-content: flex-end; align-items: center;">
+<asp:DropDownList ID="ddlFinancialYear" runat="server" CssClass="form-control" AutoPostBack="true" OnSelectedIndexChanged="ddlFinancialYear_SelectedIndexChanged" style="width: 200px;"></asp:DropDownList>
 <asp:DropDownList ID="ddlVendor" runat="server" CssClass="form-control" AutoPostBack="true" OnSelectedIndexChanged="ddlVendor_SelectedIndexChanged" style="width: 200px;"></asp:DropDownList>
 <a href="Payableinvoice.aspx"  runat="server" class="btn btn-primary"><i class="icon-plus-circle2"></i> Create Invoice</a>
 </div>

@@ -34,12 +34,42 @@ public partial class Admin_ReceivableInvoiceGrid : System.Web.UI.Page
             Label control1 = this.Master.FindControl("lbl_bread") as Label;
             if (control1 != null)
                 control1.Text = "Receivable Invoice";
+            BindFinancialYearDropdown();
             BindGrid();
         }
         }
 
+    private void BindFinancialYearDropdown()
+    {
+        ddlFinancialYear.Items.Clear();
+        int currentYear = DateTime.Now.Year;
+        int currentMonth = DateTime.Now.Month;
+        int startYear = currentMonth >= 4 ? currentYear : currentYear - 1;
+
+        for (int y = startYear; y >= 2020; y--)
+        {
+            string fyText = "FY " + y + "-" + (y + 1).ToString().Substring(2, 2);
+            string fyValue = y.ToString();
+            ddlFinancialYear.Items.Add(new System.Web.UI.WebControls.ListItem(fyText, fyValue));
+        }
+    }
+
+    protected void ddlFinancialYear_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        BindGrid();
+    }
+
+    private void GetFinancialYearDates(out DateTime startDate, out DateTime endDate)
+    {
+        int startYear = Convert.ToInt32(ddlFinancialYear.SelectedValue);
+        startDate = new DateTime(startYear, 4, 1);
+        endDate = new DateTime(startYear + 1, 3, 31, 23, 59, 59);
+    }
+
     private void BindGrid()
     {
+        DateTime fyStart, fyEnd;
+        GetFinancialYearDates(out fyStart, out fyEnd);
 
         string query1 = @"SELECT   a.InvoiceKey,
     b.CompanyName,
@@ -49,8 +79,11 @@ public partial class Admin_ReceivableInvoiceGrid : System.Web.UI.Page
     CAST(a.CreatedOn AS DATE)    AS CreatedOn,a.Status
 FROM IT_Invoices a
 INNER JOIN IT_ClientDetails b  ON a.ClientKey = b.ClientKey
-inner join IT_Projects c on a.ProjectKey=c.ProjectKey";
+inner join IT_Projects c on a.ProjectKey=c.ProjectKey
+WHERE ISNULL(a.InvoiceDate, a.CreatedOn) >= @FYStart AND ISNULL(a.InvoiceDate, a.CreatedOn) <= @FYEnd";
         SqlCommand cmd1 = new SqlCommand(query1);
+        cmd1.Parameters.AddWithValue("@FYStart", fyStart);
+        cmd1.Parameters.AddWithValue("@FYEnd", fyEnd);
         DataTable dt_dashboard = DA.GetDataTable(cmd1);
 
         DataSet ds = new DataSet();
