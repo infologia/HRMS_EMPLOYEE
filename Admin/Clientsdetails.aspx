@@ -47,6 +47,40 @@
                 padding: 4px 10px;
                 font-size: 12px;
             }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+        }
+        .invoice-table thead tr { background-color: #f0f4f8; }
+        .invoice-table > thead > tr > th {
+            padding: 10px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid #dde3ea;
+            text-align: left;
+            color: #444;
+        }
+        .invoice-table > tbody > tr > td {
+            padding: 7px 10px;
+            border: 1px solid #dde3ea;
+            vertical-align: middle;
+        }
+        .invoice-table .form-control { margin-bottom: 0; height: 34px; }
+        .invoice-table input[type='file'] { width: 200px; display: inline-block; }
+        .invoice-table > tbody > tr:hover { background-color: #fafbfc; }
+        .btn-add-row {
+            background: #3a7bd5; color: #fff; border: none; border-radius: 4px;
+            padding: 7px 16px; font-size: 13px; font-weight: 500; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 5px;
+        }
+        .btn-add-row:hover { background: #2a5fb5; }
+        .btn-remove-inv {
+            background: #e53935; color: #fff; border: none; border-radius: 4px;
+            padding: 5px 12px; font-size: 12px; cursor: pointer;
+        }
+        .btn-remove-inv:hover { background: #b71c1c; }
     </style>
 </asp:Content>
 
@@ -76,7 +110,7 @@
                         <div class="row">
                             <div class="col-md-4" id="div_ClientCode">
                                 <label>Organization Code<span style="color: red"> *</span></label>
-                                <asp:TextBox ID="txt_ClientCode" runat="server" Class="form-control" placeholder="MM_YYYY_01"></asp:TextBox>
+                                <asp:TextBox ID="txt_ClientCode" runat="server" Class="form-control" ></asp:TextBox>
                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator_name" runat="server" ControlToValidate="txt_ClientCode" ErrorMessage="Organization Code is a required field." ForeColor="Red"></asp:RequiredFieldValidator>
                             </div>
                             <div class="col-md-4" id="div_ClientName">
@@ -90,7 +124,7 @@
                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="txt_CompanyName" ErrorMessage="Company Name is a required field." ForeColor="Red"></asp:RequiredFieldValidator>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row mt-10">
                             <div class="col-md-4">
                                 <label>Type<span style="color: red"> *</span></label>
                                 <asp:DropDownList ID="ddl_Type" runat="server" CssClass="form-control"></asp:DropDownList>
@@ -106,8 +140,7 @@
                                 <asp:TextBox ID="txt_ContactPerson" runat="server" Class="form-control" placeholder="Primary contact person name"></asp:TextBox>
                             </div>
                         </div>
-                        <br />
-                        <div class="row">
+                        <div class="row mt-10">
                             <div class="col-md-4">
                                 <label>Designation</label>
                                 <asp:TextBox ID="txt_Designation" runat="server" Class="form-control" placeholder="Contact person role/designation"></asp:TextBox>
@@ -120,7 +153,7 @@
                             <div class="col-md-4">
                                 <label>Alternate Email</label>
                                 <asp:TextBox ID="txt_AlternateEmail" runat="server" Class="form-control" placeholder="Enter Alternate Email"></asp:TextBox>
-                                <asp:RegularExpressionValidator ID="RegularExpressionValidator2" runat="server" ControlToValidate="txt_AlternateEmail" ErrorMessage="Optional secondary email" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*" ForeColor="Red"></asp:RegularExpressionValidator>
+                                <asp:RegularExpressionValidator ID="RegularExpressionValidator2" runat="server" ControlToValidate="txt_AlternateEmail" ErrorMessage="Enter a Valid Alternate Email" ValidationExpression="^[\w\.\-]+@[\w\.\-]+\.[a-zA-Z]{2,}$" ForeColor="Red"></asp:RegularExpressionValidator>
                             </div>
                         </div>
                         <div class="row">
@@ -132,7 +165,7 @@
                             <div class="col-md-4">
                                 <label>Alternate Mobile</label>
                                 <asp:TextBox ID="txt_AlternateMobile" runat="server" Class="form-control" placeholder="Enter Alternate Mobile"></asp:TextBox>
-                                <asp:RegularExpressionValidator ID="RegularExpressionValidator4" runat="server" Style="color: red" ControlToValidate="txt_AlternateMobile" ErrorMessage="Secondary mobile number" ValidationExpression="[0-9]{10}"></asp:RegularExpressionValidator>
+                                <asp:RegularExpressionValidator ID="RegularExpressionValidator4" runat="server" Style="color: red" ControlToValidate="txt_AlternateMobile" ErrorMessage="Enter a Valid Alternate Mobile Number" ValidationExpression="[0-9]{10}"></asp:RegularExpressionValidator>
                             </div>
                             <div class="col-md-4">
                                 <label>Industry</label>
@@ -154,8 +187,7 @@
                                 <asp:TextBox ID="txt_AddressLine2" runat="server" Class="form-control" placeholder="Company branch address"></asp:TextBox>
                             </div>
                         </div>
-                        <br />
-                        <div class="row">
+                        <div class="row mt-10">
                             <div class="col-md-4">
                                 <label>Country<span style="color: red"> *</span></label>
                                 <asp:DropDownList ID="ddl_Country" runat="server" Class="form-control"></asp:DropDownList>
@@ -304,62 +336,22 @@
                     <!--  TAB 5: DOCUMENTS -->
                     <div class="tab-pane" id="tab-documents">
                         <p class="section-legend">Documents</p>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Document Name</th>
-                                            <th>Upload File</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Contract Copy</td>
-                                            <td>
-                                                <asp:FileUpload ID="fu_ContractCopy" runat="server" CssClass="form-control" />
-                                            </td>
-                                            <td>
-                                                <asp:LinkButton ID="lnk_RemoveContractCopy" runat="server" CssClass="btn btn-danger btn-xs" OnClick="lnk_RemoveContractCopy_Click">Remove</asp:LinkButton>
-                                                <asp:HyperLink ID="hl_ContractCopy" runat="server" Target="_blank" Visible="false" CssClass="btn btn-info btn-xs">View</asp:HyperLink>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>NDA</td>
-                                            <td>
-                                                <asp:FileUpload ID="fu_NDA" runat="server" CssClass="form-control" />
-                                            </td>
-                                            <td>
-                                                <asp:LinkButton ID="lnk_RemoveNDA" runat="server" CssClass="btn btn-danger btn-xs" OnClick="lnk_RemoveNDA_Click">Remove</asp:LinkButton>
-                                                <asp:HyperLink ID="hl_NDA" runat="server" Target="_blank" Visible="false" CssClass="btn btn-info btn-xs">View</asp:HyperLink>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>SOW (Statement of Work)</td>
-                                            <td>
-                                                <asp:FileUpload ID="fu_SOW" runat="server" CssClass="form-control" />
-                                            </td>
-                                            <td>
-                                                <asp:LinkButton ID="lnk_RemoveSOW" runat="server" CssClass="btn btn-danger btn-xs" OnClick="lnk_RemoveSOW_Click">Remove</asp:LinkButton>
-                                                <asp:HyperLink ID="hl_SOW" runat="server" Target="_blank" Visible="false" CssClass="btn btn-info btn-xs">View</asp:HyperLink>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Other Supporting Documents</td>
-                                            <td>
-                                                <asp:FileUpload ID="fu_OtherDocs" runat="server" CssClass="form-control" />
-                                            </td>
-                                            <td>
-                                                <asp:LinkButton ID="lnk_RemoveOtherDocs" runat="server" CssClass="btn btn-danger btn-xs" OnClick="lnk_RemoveOtherDocs_Click">Remove</asp:LinkButton>
-                                                <asp:HyperLink ID="hl_OtherDocs" runat="server" Target="_blank" Visible="false" CssClass="btn btn-info btn-xs">View</asp:HyperLink>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                        <div style="margin-bottom: 12px; margin-top: 10px; text-align: right;">
+                            <button type="button" class="btn-add-row" onclick="addClientDocRow()">
+                                <i class="icon-plus2"></i> Add Row
+                            </button>
                         </div>
-                        <%-- Hidden fields to store existing file paths --%>
+                        <table class="invoice-table" id="clientDocTable">
+                            <thead>
+                                <tr>
+                                    <th style="width:220px;">Document Name</th>
+                                    <th style="width:300px;">Upload File</th>
+                                    <th style="width:100px;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tBodyClientDocs" runat="server">
+                            </tbody>
+                        </table>
                         <asp:HiddenField ID="hf_ContractCopyPath" runat="server" />
                         <asp:HiddenField ID="hf_NDAPath" runat="server" />
                         <asp:HiddenField ID="hf_SOWPath" runat="server" />
@@ -455,8 +447,64 @@
             closeOnSelect: true
         });
 
-
         $('#<%= ddl_Type.ClientID %>').on('change', toggleTypeFields);
         $(document).ready(function () { toggleTypeFields(); });
+
+        var clientDocRowIdx = 0;
+
+        function addClientDocRow() {
+            var row = `<tr class="doc-row">
+                <td>
+                    <select class="form-control" name="clientDocId_${clientDocRowIdx}">
+                        ${docOptionsHtml}
+                    </select>
+                </td>
+                <td>
+                    <input type="hidden" name="clientExistingPath_${clientDocRowIdx}" value="" />
+                    <input type="file" class="form-control" name="clientDocFile_${clientDocRowIdx}" accept=".pdf,.jpg,.jpeg,.png,.gif,.webp" />
+                </td>
+                <td style="text-align:center;">
+                    <input type="hidden" name="clientDocRowIndex[]" value="${clientDocRowIdx}" />
+                    <button type="button" class="btn-remove-inv removeClientDocRow" title="Remove" onclick="removeClientDocRow(this)"><i class="icon-cross2"></i></button>
+                </td>
+            </tr>`;
+            $('#clientDocTable tbody').append(row);
+            clientDocRowIdx++;
+        }
+
+        var rowToRemove = null;
+
+        function removeClientDocRow(btn) {
+            rowToRemove = $(btn).closest('tr');
+            $('#confirmDeleteDocModal').modal('show');
+        }
+
+        function confirmDeleteDoc() {
+            if (rowToRemove) {
+                rowToRemove.remove();
+                rowToRemove = null;
+                toastr.success("Document has been removed successfully!");
+            }
+            $('#confirmDeleteDocModal').modal('hide');
+        }
     </script>
+
+    <!-- Delete Document Confirmation Modal -->
+    <div class="modal fade" id="confirmDeleteDocModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Confirm Delete</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="mb-0">Are you sure you want to delete this document?</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmDeleteDoc()">Yes, Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </asp:Content>
