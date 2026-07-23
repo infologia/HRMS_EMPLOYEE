@@ -65,11 +65,17 @@ public partial class Admin_tds : System.Web.UI.Page
         i.InvoiceAmount,
         i.TDSAmount,
         i.TotalAmount,
-        i.Status,
+        i.InvoiceStatus,
+        s.name as StatusName,
         CONVERT(VARCHAR(10), i.InvoiceDate, 103) AS InvoiceDate
     FROM IT_Invoices i
     INNER JOIN IT_ClientDetails c ON i.ClientKey = c.ClientKey
-    WHERE i.TDSAmount > 0 AND ISNULL(i.InvoiceDate, i.CreatedOn) >= @FYStart AND ISNULL(i.InvoiceDate, i.CreatedOn) <= @FYEnd
+    LEFT JOIN IT_Countries cnt ON cnt.CountryKey = c.Country
+    LEFT JOIN IT_InvoiceStatus s ON i.InvoiceStatus = s.id
+    WHERE i.TDSAmount > 0 
+      AND ISNULL(i.InvoiceDate, i.CreatedOn) >= @FYStart 
+      AND ISNULL(i.InvoiceDate, i.CreatedOn) <= @FYEnd
+      AND cnt.Country = 'India'
     ORDER BY i.InvoiceDate DESC;";
 
         using (SqlCommand cmd = new SqlCommand(str_query))
@@ -85,15 +91,29 @@ public partial class Admin_tds : System.Web.UI.Page
             if (!ds.Tables[0].Columns.Contains("StatusText"))
                 ds.Tables[0].Columns.Add("StatusText");
 
-            // 🔹 Status logic (Paid / Unpaid)
+            // 🔹 Status logic (Given / Received / Cancelled)
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
-                int status = Convert.ToInt32(dr["Status"]);
+                int invoiceStatus = dr["InvoiceStatus"] != DBNull.Value ? Convert.ToInt32(dr["InvoiceStatus"]) : 0;
+                string statusName = dr["StatusName"] != DBNull.Value ? dr["StatusName"].ToString() : "Pending";
 
-                if (status == 0) // Pending
-                    dr["StatusText"] = "<span class='label label-danger'>Pending</span>";
-                else // Received
-                    dr["StatusText"] = "<span class='label label-success'>Received</span>";
+                string labelClass = "label-warning"; 
+                if (invoiceStatus == 1)
+                {
+                    labelClass = "label-primary"; 
+                }
+                else if (invoiceStatus == 2)
+                {
+                    labelClass = "label-success"; 
+                }
+                else if (invoiceStatus == 3)
+                {
+                    labelClass = "label-danger"; 
+                }
+                
+                if(string.IsNullOrEmpty(statusName)) statusName = "Pending";
+
+                dr["StatusText"] = "<span class='label label-sm " + labelClass + "'>" + statusName + "</span>";
             }
 
             // 🔹 Load to grid

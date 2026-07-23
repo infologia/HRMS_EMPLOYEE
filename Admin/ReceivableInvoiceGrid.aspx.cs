@@ -124,10 +124,12 @@ public partial class Admin_ReceivableInvoiceGrid : System.Web.UI.Page
     a.InvoiceNumber,c.ProjectName,
     CAST(a.InvoiceDate AS DATE)  AS InvoiceDate,
     CAST(a.ReceivedOn AS DATE)   AS ReceivedOn,
-    CAST(a.CreatedOn AS DATE)    AS CreatedOn,a.Status
+    CAST(a.CreatedOn AS DATE)    AS CreatedOn,
+    a.InvoiceStatus, s.name as StatusName
 FROM IT_Invoices a
 INNER JOIN IT_ClientDetails b  ON a.ClientKey = b.ClientKey
-inner join IT_Projects c on a.ProjectKey=c.ProjectKey
+INNER JOIN IT_Projects c ON a.ProjectKey=c.ProjectKey
+LEFT JOIN IT_InvoiceStatus s ON a.InvoiceStatus = s.id
 WHERE ISNULL(a.InvoiceDate, a.CreatedOn) >= @FYStart AND ISNULL(a.InvoiceDate, a.CreatedOn) <= @FYEnd";
         SqlCommand cmd1 = new SqlCommand(query1);
         cmd1.Parameters.AddWithValue("@FYStart", fyStart);
@@ -142,7 +144,7 @@ WHERE ISNULL(a.InvoiceDate, a.CreatedOn) >= @FYStart AND ISNULL(a.InvoiceDate, a
 
         {
 
-            if (ds.Tables[0].Columns.Contains("Status"))
+            if (ds.Tables[0].Columns.Contains("InvoiceStatus"))
 
             ds.Tables[0].Columns.Add("ActiveText");
             ds.Tables[0].Columns.Add("Company_Name");
@@ -161,14 +163,11 @@ WHERE ISNULL(a.InvoiceDate, a.CreatedOn) >= @FYStart AND ISNULL(a.InvoiceDate, a
                 dr["Download"] =
    "<a href='ReceivableInvoiceGrid.aspx?InvoiceKey=" + dr["InvoiceKey"] + "'>" +
    "<button type='button' class='label label-sm label-success'>Download</button></a>";
-                String str_Status = dr["Status"].ToString();
+                String str_StatusName = dr["StatusName"] != DBNull.Value ? dr["StatusName"].ToString() : "Pending";
                 String str_Employee = dr["CompanyName"].ToString();
                 String str_InvoiceNumber = dr["InvoiceNumber"].ToString();
-                //String str_InvoiceDate = dr["InvoiceDate"].ToString();
-                //String str_ReceivedOn = dr["ReceivedOn"].ToString();
-                //String str_CreatedOn = dr["CreatedOn"].ToString();
 
-                int activetype = Convert.ToInt32(str_Status);
+                int invoiceStatus = dr["InvoiceStatus"] != DBNull.Value ? Convert.ToInt32(dr["InvoiceStatus"]) : 0;
                 if (dr["InvoiceDate"] != DBNull.Value)
                 {
                     str_InvoiceDate = Convert.ToDateTime(dr["InvoiceDate"])
@@ -190,14 +189,24 @@ WHERE ISNULL(a.InvoiceDate, a.CreatedOn) >= @FYStart AND ISNULL(a.InvoiceDate, a
                 dr["Invoice_Date"] = str_InvoiceDate;
                 dr["Due_Date"] = str_ReceivedOn;
                 dr["Created_Date"] = str_CreatedOn;
-                if (activetype == 1)
+
+                string labelClass = "label-warning"; 
+                if (invoiceStatus == 1)
                 {
-                    dr["ActiveText"] = "<span class='label label-info' title='" + str_Status + "'>Received</span>";
+                    labelClass = "label-primary"; 
                 }
-                else 
+                else if (invoiceStatus == 2)
                 {
-                    dr["ActiveText"] = "<span class='label label-sm label-warning' title='" + str_Status + "'>Pending</span>";
+                    labelClass = "label-success"; 
                 }
+                else if (invoiceStatus == 3)
+                {
+                    labelClass = "label-danger"; 
+                }
+                
+                if(string.IsNullOrEmpty(str_StatusName)) str_StatusName = "Pending";
+
+                dr["ActiveText"] = "<span class='label label-sm " + labelClass + "' title='" + str_StatusName + "'>" + str_StatusName + "</span>";
             }
             this.PH.LoadGridItem(ds, PH_RECEIVABLEINVOICE, "Receivableinvoice.txt", "");
         }

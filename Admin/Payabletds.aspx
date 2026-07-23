@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Masterpage/AdminMaster.master" AutoEventWireup="true" CodeFile="Receivabletds.aspx.cs" Inherits="Admin_Receivabletds" %>
+<%@ Page Title="" Language="C#" MasterPageFile="~/Masterpage/AdminMaster.master" AutoEventWireup="true" CodeFile="Payabletds.aspx.cs" Inherits="Admin_Payabletds" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
 </asp:Content>
@@ -8,6 +8,11 @@
      <div class="row">
          <div class="col-lg-4">
              <h5 class="panel-title">Payable TDS Details</h5>
+         </div>
+         <div class="col-lg-8">
+             <div style="display: flex; gap: 10px; justify-content: flex-end; align-items: center;">
+                 <asp:DropDownList ID="ddlFinancialYear" runat="server" CssClass="form-control" AutoPostBack="true" OnSelectedIndexChanged="ddlFinancialYear_SelectedIndexChanged" style="width: 200px;"></asp:DropDownList>
+             </div>
          </div>
      </div>
  </div>

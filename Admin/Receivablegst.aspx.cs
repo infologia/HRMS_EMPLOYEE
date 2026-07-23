@@ -66,17 +66,21 @@ public partial class Admin_gst : System.Web.UI.Page
 
         string str_query = @"
     SELECT 
-        InvoiceKey,
-        InvoiceNumber,
- CONVERT(varchar(10), InvoiceDate, 23) AS InvoiceDate, 
-GSTAmount,
- CONVERT(varchar(10), GSTpaiddate, 23) AS GSTpaiddate, 
-        InvoiceAmount,
-        Status,
-        GSTstatus
-    FROM IT_Invoices
-    WHERE ISNULL(InvoiceDate, CreatedOn) >= @FYStart AND ISNULL(InvoiceDate, CreatedOn) <= @FYEnd
-    ORDER BY CreatedOn DESC";
+        i.InvoiceKey,
+        i.InvoiceNumber,
+        CONVERT(varchar(10), i.InvoiceDate, 23) AS InvoiceDate, 
+        i.GSTAmount,
+        CONVERT(varchar(10), i.GSTpaiddate, 23) AS GSTpaiddate, 
+        i.InvoiceAmount,
+        i.Status,
+        i.GSTstatus
+    FROM IT_Invoices i
+    INNER JOIN IT_ClientDetails c ON i.ClientKey = c.ClientKey
+    LEFT JOIN IT_Countries cnt ON cnt.CountryKey = c.Country
+    WHERE ISNULL(i.InvoiceDate, i.CreatedOn) >= @FYStart 
+      AND ISNULL(i.InvoiceDate, i.CreatedOn) <= @FYEnd
+      AND cnt.Country = 'India'
+    ORDER BY i.CreatedOn DESC";
 
         SqlCommand cmd = new SqlCommand(str_query);
         cmd.Parameters.AddWithValue("@FYStart", fyStart);

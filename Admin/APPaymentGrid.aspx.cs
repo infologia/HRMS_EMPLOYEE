@@ -23,16 +23,47 @@ public partial class Admin_APPaymentGrid : System.Web.UI.Page
             {
                 lblBread.Text = "Payable Payment Details ";
             }
+            this.BindFinancialYearDropdown();
             this.BindAPPaymentGrid();
         }
     }
 
+    private void BindFinancialYearDropdown()
+    {
+        ddlFinancialYear.Items.Clear();
+        int currentYear = DateTime.Now.Year;
+        int currentMonth = DateTime.Now.Month;
+        int startYear = currentMonth >= 4 ? currentYear : currentYear - 1;
+
+        for (int y = startYear; y >= 2020; y--)
+        {
+            string fyText = "FY " + y + "-" + (y + 1).ToString().Substring(2, 2);
+            string fyValue = y.ToString();
+            ddlFinancialYear.Items.Add(new System.Web.UI.WebControls.ListItem(fyText, fyValue));
+        }
+    }
+
+    protected void ddlFinancialYear_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        BindAPPaymentGrid();
+    }
+
+    private void GetFinancialYearDates(out DateTime startDate, out DateTime endDate)
+    {
+        int startYear = Convert.ToInt32(ddlFinancialYear.SelectedValue);
+        startDate = new DateTime(startYear, 4, 1);
+        endDate = new DateTime(startYear + 1, 3, 31, 23, 59, 59);
+    }
+
     private void BindAPPaymentGrid()
     {
+        DateTime fyStart, fyEnd;
+        GetFinancialYearDates(out fyStart, out fyEnd);
+
         string query = @"
         SELECT 
             a.AP_Id,
-            b.VendorName AS AP_VendorName,
+            b.ClientName AS AP_VendorName,
             c.InvoiceNumber AS AP_InvoiceNo,
             CONVERT(VARCHAR(10), a.AP_InvoiceDate, 120) AS AP_InvoiceDate,
             a.AP_GrandTotal,
@@ -47,11 +78,15 @@ public partial class Admin_APPaymentGrid : System.Web.UI.Page
                 ELSE 'warning'
             END AS AP_Status_Class
         FROM IT_APPaymentEntry a 
-        LEFT JOIN IT_Vendors b ON a.AP_VendorId = b.VendorKey
+        LEFT JOIN IT_ClientDetails b ON a.AP_VendorId = b.ClientKey
         LEFT JOIN IT_PayableInvoices c ON a.AP_InvoiceId = c.PayableInvoiceKey
+        WHERE ISNULL(a.AP_InvoiceDate, a.AP_CreatedOn) >= @FYStart 
+          AND ISNULL(a.AP_InvoiceDate, a.AP_CreatedOn) <= @FYEnd
         ORDER BY a.AP_CreatedOn DESC";
 
         SqlCommand cmd = new SqlCommand(query);
+        cmd.Parameters.AddWithValue("@FYStart", fyStart);
+        cmd.Parameters.AddWithValue("@FYEnd", fyEnd);
         DataTable dt = da.GetDataTable(cmd);
 
         if (dt.Rows.Count > 0)
