@@ -21106,6 +21106,8 @@ thead .htCollapseButton
 {
     position: relative;
     clear: both;
+    width: 100%;
+    overflow-x: hidden;
 }
 
     .dataTables_wrapper:after
@@ -21177,12 +21179,17 @@ thead .htCollapseButton
 
 .datatable-header
 {
-    border-bottom: 1px solid #ddd;
+    /* Border removed to fix horizontal scroll issue; moved to .dataTable */
 }
 
 .datatable-footer
 {
-    border-top: 1px solid #bbb;
+    /* Border removed to fix horizontal scroll issue; moved to .dataTable */
+}
+
+.dataTable {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #bbb;
 }
 
 .dataTables_length
@@ -21426,7 +21433,7 @@ thead .htCollapseButton
 
 .panel-flat > .panel-heading + .dataTables_wrapper > .datatable-header
 {
-    padding-top: 0;
+    padding-top: 15px;
 }
 
 .panel > .dataTables_wrapper .table-bordered
@@ -21452,6 +21459,8 @@ thead .htCollapseButton
 .datatable-scroll, .datatable-scroll-lg, .datatable-scroll-sm
 {
     min-height: .01%;
+    width: 100%;
+    overflow-x: auto;
 }
 
 .datatable-scroll-wrap

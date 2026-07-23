@@ -141,7 +141,7 @@
                     <asp:TextBox ID="txtProjectCode" runat="server"
                         CssClass="form-control" placeholder="Enter Project Code" onkeyup="onProjectCodeKeyup();" onchange="onProjectCodeKeyup();"></asp:TextBox>
                     <span id="lblProjectCodeError" style="color:red; font-size:12px; display:none;">
-                        <i class="icon-warning2"></i> Project Code already exists.
+                       Project Code already exists.
                     </span>
                     <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server"
     ControlToValidate="txtProjectCode"

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -24,6 +24,7 @@ public partial class Admin_gst : System.Web.UI.Page
             if (control1 != null)
                 control1.Text = "Payable GST";
 
+            BindFinancialYearDropdown();
             LoadInvoiceGrid();
         }
         if (Request["__EVENTTARGET"] == "PayInvoice")
@@ -31,22 +32,59 @@ public partial class Admin_gst : System.Web.UI.Page
             PayInvoice();
         }
     }
+
+    private void BindFinancialYearDropdown()
+    {
+        ddlFinancialYear.Items.Clear();
+        int currentYear = DateTime.Now.Year;
+        int currentMonth = DateTime.Now.Month;
+        int startYear = currentMonth >= 4 ? currentYear : currentYear - 1;
+
+        for (int y = startYear; y >= 2020; y--)
+        {
+            string fyText = "FY " + y + "-" + (y + 1).ToString().Substring(2, 2);
+            string fyValue = y.ToString();
+            ddlFinancialYear.Items.Add(new System.Web.UI.WebControls.ListItem(fyText, fyValue));
+        }
+    }
+
+    protected void ddlFinancialYear_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        LoadInvoiceGrid();
+    }
+
+    private void GetFinancialYearDates(out DateTime startDate, out DateTime endDate)
+    {
+        int startYear = Convert.ToInt32(ddlFinancialYear.SelectedValue);
+        startDate = new DateTime(startYear, 4, 1);
+        endDate = new DateTime(startYear + 1, 3, 31, 23, 59, 59);
+    }
+
     private void LoadInvoiceGrid()
     {
+        DateTime fyStart, fyEnd;
+        GetFinancialYearDates(out fyStart, out fyEnd);
+
         string str_query = @"
     SELECT 
-        InvoiceKey,
-        InvoiceNumber,
- CONVERT(varchar(10), InvoiceDate, 23) AS InvoiceDate, 
-GSTAmount,
- CONVERT(varchar(10), GSTpaiddate, 23) AS GSTpaiddate, 
-        InvoiceAmount,
-        Status,
-        GSTstatus
-    FROM IT_Invoices
-    ORDER BY CreatedOn DESC";
+        i.PayableInvoiceKey AS InvoiceKey,
+        i.InvoiceNumber,
+        CONVERT(varchar(10), i.InvoiceDate, 23) AS InvoiceDate, 
+        i.GSTAmount,
+        CONVERT(varchar(10), i.PaymentDate, 23) AS GSTpaiddate, 
+        i.InvoiceAmount,
+        i.PaymentStatus AS GSTstatus
+    FROM IT_PayableInvoices i
+    LEFT JOIN IT_ClientDetails c ON i.VendorNameNew = c.ClientKey
+    LEFT JOIN IT_Countries cnt ON cnt.CountryKey = c.Country
+    WHERE cnt.Country = 'India'
+      AND ISNULL(i.InvoiceDate, i.CreatedOn) >= @FYStart 
+      AND ISNULL(i.InvoiceDate, i.CreatedOn) <= @FYEnd
+    ORDER BY i.CreatedOn DESC";
 
         SqlCommand cmd = new SqlCommand(str_query);
+        cmd.Parameters.AddWithValue("@FYStart", fyStart);
+        cmd.Parameters.AddWithValue("@FYEnd", fyEnd);
 
         DataTable dt_invoice = DA.GetDataTable(cmd);
         DataSet ds = new DataSet();
@@ -81,13 +119,13 @@ GSTAmount,
         string description = txtDescription.Text.Trim();
 
         string str_query = @"
-UPDATE IT_Invoices
+UPDATE IT_PayableInvoices
 SET
-    GSTstatus = 1,
-    GSTpaiddate = GETDATE(),
+    PaymentStatus = 1,
+    PaymentDate = GETDATE(),
     GSTDescription = @Description,
     ModifiedOn = GETDATE()
-WHERE InvoiceKey = @InvoiceKey";
+WHERE PayableInvoiceKey = @InvoiceKey";
 
         SqlCommand cmd = new SqlCommand(str_query);
         cmd.Parameters.AddWithValue("@InvoiceKey", invoiceKey);

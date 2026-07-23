@@ -14,7 +14,7 @@
     <link href="../Template/assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css" />
     <link href="../Template/assets/css/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="../Template/assets/css/core.css" rel="stylesheet" type="text/css" />
-    <link href="../Template/assets/css/components.css" rel="stylesheet" type="text/css" />
+    <link href="../Template/assets/css/components.css?v=1.3" rel="stylesheet" type="text/css" />
     <link href="../Template/assets/css/colors.css" rel="stylesheet" type="text/css" />
     <link href="../Template/assets/css/holidays.css" rel="stylesheet" type="text/css" />
     <link href="../Template/Toastr/toastr.min.css" rel="stylesheet" />
@@ -412,6 +412,15 @@
         @media (min-width: 768px) {
             .page-title .title-left { text-align: left !important; }
             .page-title .title-right { text-align: right !important; }
+            
+            /* Sticky sidebar fix */
+            .sidebar-main {
+                position: -webkit-sticky; /* For Safari */
+                position: sticky;
+                top: 56px; /* Navbar height offset */
+                height: calc(100vh - 56px);
+                overflow-y: auto;
+            }
         }
     </style>
 
@@ -431,6 +440,17 @@
             function myFunction() {
                 window.location.reload();
             }
+
+            $(document).ready(function() {
+                // Fix for datatable search/pagination scrolling issue
+                setTimeout(function() {
+                    $('.dataTables_wrapper').each(function() {
+                        if ($(this).parent().hasClass('table-responsive')) {
+                            $(this).unwrap();
+                        }
+                    });
+                }, 500);
+            });
         </script>
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>

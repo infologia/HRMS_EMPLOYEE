@@ -23,12 +23,43 @@ public partial class Admin_ARPaymentGrid : System.Web.UI.Page
             {
                 lblBread.Text = "AR Payment Grid";
             }
+            this.BindFinancialYearDropdown();
             this.BindARPaymentGrid();
         }
     }
 
+    private void BindFinancialYearDropdown()
+    {
+        ddlFinancialYear.Items.Clear();
+        int currentYear = DateTime.Now.Year;
+        int currentMonth = DateTime.Now.Month;
+        int startYear = currentMonth >= 4 ? currentYear : currentYear - 1;
+
+        for (int y = startYear; y >= 2020; y--)
+        {
+            string fyText = "FY " + y + "-" + (y + 1).ToString().Substring(2, 2);
+            string fyValue = y.ToString();
+            ddlFinancialYear.Items.Add(new System.Web.UI.WebControls.ListItem(fyText, fyValue));
+        }
+    }
+
+    protected void ddlFinancialYear_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        BindARPaymentGrid();
+    }
+
+    private void GetFinancialYearDates(out DateTime startDate, out DateTime endDate)
+    {
+        int startYear = Convert.ToInt32(ddlFinancialYear.SelectedValue);
+        startDate = new DateTime(startYear, 4, 1);
+        endDate = new DateTime(startYear + 1, 3, 31, 23, 59, 59);
+    }
+
     private void BindARPaymentGrid()
     {
+        DateTime fyStart, fyEnd;
+        GetFinancialYearDates(out fyStart, out fyEnd);
+
         string query = @"
         SELECT 
             a.AR_Id,
@@ -49,9 +80,13 @@ public partial class Admin_ARPaymentGrid : System.Web.UI.Page
         FROM IT_ARPaymentEntry a 
         LEFT JOIN IT_ClientDetails b ON a.AR_ClientId = b.ClientKey
         LEFT JOIN IT_Invoices c ON a.AR_InvoiceId = c.InvoiceKey
+        WHERE ISNULL(a.AR_InvoiceDate, a.AR_CreatedOn) >= @FYStart 
+          AND ISNULL(a.AR_InvoiceDate, a.AR_CreatedOn) <= @FYEnd
         ORDER BY a.AR_CreatedOn DESC";
 
         SqlCommand cmd = new SqlCommand(query);
+        cmd.Parameters.AddWithValue("@FYStart", fyStart);
+        cmd.Parameters.AddWithValue("@FYEnd", fyEnd);
         DataTable dt = da.GetDataTable(cmd);
 
         if (dt.Rows.Count > 0)
