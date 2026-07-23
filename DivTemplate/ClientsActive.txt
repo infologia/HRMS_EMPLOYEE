@@ -6,5 +6,5 @@
                     <td>%%ContactPerson%%</td>
                     <td>%%ActiveText%%</td>
                     <td>%%CreatedOn%%</td>
-                    <td>%%ActionText%%</td>
+                    <td style="white-space:nowrap;">%%ActionText%%</td>
                 </tr>

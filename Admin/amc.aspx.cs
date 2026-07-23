@@ -22,7 +22,11 @@ public partial class Admin_amc : System.Web.UI.Page
                 control1.Text = "AMC";
         }
 
-        if (SC.UserRole == "0")
+        SqlCommand cmdRole = new SqlCommand("SELECT role FROM IT_EmployeeRegister WHERE Employeekey = @Employeekey AND role = 11");
+        cmdRole.Parameters.AddWithValue("@Employeekey", SC.Userid);
+        DataTable dtRole = DA.GetDataTable(cmdRole);
+        bool isRole11 = dtRole.Rows.Count > 0;
+        if (isRole11)
         {
             a_createlead.Visible = true;
         }
@@ -41,6 +45,12 @@ public partial class Admin_amc : System.Web.UI.Page
             if (ds.Tables[0].Columns.Contains("Status"))
                 ds.Tables[0].Columns.Add("ActiveText");
 
+            string updateBtn = isRole11
+                ? "<a href='AmcDetails.aspx?id={0}' title='Update' class='btn btn-xs btn-info'><i class='icon-pencil7'></i></a> <a href='javascript:void(0);' title='Delete' class='btn btn-xs btn-danger' onclick=\"fn_DeleteProject('{0}')\"><i class='icon-trash'></i></a>"
+                : "<a href='AmcDetails.aspx?id={0}' title='View' class='btn btn-xs btn-info'><i class='icon-eye'></i></a>";
+
+            ds.Tables[0].Columns.Add("UpdateBtn");
+
             // Two tables that share the exact same schema as ds.Tables[0]
             DataTable dt_completed = ds.Tables[0].Clone();
             DataTable dt_incompleted = ds.Tables[0].Clone();
@@ -48,6 +58,7 @@ public partial class Admin_amc : System.Web.UI.Page
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
                 int activetype = Convert.ToInt16(dr["Status"].ToString());
+                dr["UpdateBtn"] = string.Format(updateBtn, dr["amc"]);
                 if (activetype == 1)
                 {
                     dr["ActiveText"] = "<span class='label label-sm label-success'>Closed</span>";
@@ -87,8 +98,13 @@ public partial class Admin_amc : System.Web.UI.Page
             DA1 = new DataAccess();
             SaveQuery SAQ = new SaveQuery();
             SessionCustom SC = new SessionCustom();
-            string str_Sql = "DELETE FROM IT_AMC WHERE AMCKey=@AMCKey";
-            SqlCommand cmd = new SqlCommand(str_Sql);
+            string str_Sql = "DELETE FROM IT_AMCSubTable WHERE AMCKey=@AMCKey";
+            SqlCommand cmdSub = new SqlCommand(str_Sql);
+            cmdSub.Parameters.AddWithValue("@AMCKey", str_leadkey);
+            DA1.ExecuteNonQuery(cmdSub);
+
+            string str_Sql2 = "DELETE FROM IT_AMC WHERE AMCKey=@AMCKey";
+            SqlCommand cmd = new SqlCommand(str_Sql2);
             cmd.Parameters.AddWithValue("@AMCKey", str_leadkey);
             DA1.ExecuteNonQuery(cmd);
                  

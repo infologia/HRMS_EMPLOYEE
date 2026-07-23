@@ -127,12 +127,16 @@ public partial class Employee_Projectgrid : System.Web.UI.Page
             
             if (userRoleId == "11")
             {
-                dr["ActionText"] = "<a href=\"Project.aspx?id=" + dr["ProjectKey"].ToString() + "\" style=\"margin-right: 5px;\" title=\"Update\"><span class=\"label label-info\"><i class=\"icon-pencil\"></i></span></a>" + 
-                                   "<a style=\"cursor:pointer;\" title=\"Remove\"><span class=\"label label-danger\" onclick=\"fn_DeleteProject('" + dr["ProjectKey"].ToString() + "')\"><i class=\"icon-trash\"></i></span></a>";
+                dr["ActionText"] = "<ul class=\"icons-list\">" +
+                                   "<li><a href=\"Project.aspx?id=" + dr["ProjectKey"].ToString() + "\" class=\"text-primary\" data-popup=\"tooltip\" title=\"Edit\"><i class=\"icon-pencil7\"></i></a></li>" +
+                                   "<li><a href=\"javascript:void(0);\" class=\"text-danger\" onclick=\"fn_DeleteProject('" + dr["ProjectKey"].ToString() + "')\" data-popup=\"tooltip\" title=\"Delete\"><i class=\"icon-trash\"></i></a></li>" +
+                                   "</ul>";
             }
             else
             {
-                dr["ActionText"] = "<a href=\"Project.aspx?id=" + dr["ProjectKey"].ToString() + "\" title=\"View\"><span class=\"label label-info\"><i class=\"icon-eye\"></i></span></a>";
+                dr["ActionText"] = "<ul class=\"icons-list\">" +
+                                   "<li><a href=\"Project.aspx?id=" + dr["ProjectKey"].ToString() + "\" class=\"text-primary\" data-popup=\"tooltip\" title=\"View\"><i class=\"icon-eye\"></i></a></li>" +
+                                   "</ul>";
             }
         }
 
@@ -162,12 +166,16 @@ public partial class Employee_Projectgrid : System.Web.UI.Page
             
             if (userRoleId == "11")
             {
-                dr["ActionText"] = "<a href=\"Project.aspx?id=" + dr["ProjectKey"].ToString() + "\" style=\"margin-right: 5px;\" title=\"Update\"><span class=\"label label-info\"><i class=\"icon-pencil\"></i></span></a>" + 
-                                   "<a href=\"javascript:void(0);\" title=\"Remove\"><span class=\"label label-default\" style=\"cursor:not-allowed; opacity:0.6;\"><i class=\"icon-trash\"></i></span></a>";
+                dr["ActionText"] = "<ul class=\"icons-list\">" +
+                                   "<li><a href=\"Project.aspx?id=" + dr["ProjectKey"].ToString() + "\" class=\"text-primary\" data-popup=\"tooltip\" title=\"Edit\"><i class=\"icon-pencil7\"></i></a></li>" +
+                                   "<li><a href=\"javascript:void(0);\" class=\"text-danger\" style=\"cursor:not-allowed; opacity:0.6;\" data-popup=\"tooltip\" title=\"Delete Disabled\"><i class=\"icon-trash\"></i></a></li>" +
+                                   "</ul>";
             }
             else
             {
-                dr["ActionText"] = "<a href=\"Project.aspx?id=" + dr["ProjectKey"].ToString() + "\" title=\"View\"><span class=\"label label-info\"><i class=\"icon-eye\"></i></span></a>";
+                dr["ActionText"] = "<ul class=\"icons-list\">" +
+                                   "<li><a href=\"Project.aspx?id=" + dr["ProjectKey"].ToString() + "\" class=\"text-primary\" data-popup=\"tooltip\" title=\"View\"><i class=\"icon-eye\"></i></a></li>" +
+                                   "</ul>";
             }
         }
 

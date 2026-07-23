@@ -18,6 +18,10 @@ public partial class Employee_taskgrids : System.Web.UI.Page
 
         if (!IsPostBack)
         {
+            Label control1 = this.Master.FindControl("lbl_bread") as Label;
+            if (control1 != null)
+                control1.Text = "Tasks";
+
             if (Request.QueryString["action"] == "delete" && !string.IsNullOrEmpty(Request.QueryString["taskkey"]))
             {
                 DeleteTask(Request.QueryString["taskkey"]);
@@ -140,22 +144,34 @@ public partial class Employee_taskgrids : System.Web.UI.Page
         string projectKey = Request.QueryString["id"];
         string userid = this.SC.Userid;
         
-        // Check if user is Division 1 (Team Lead) or Destination 24/11
         bool showCreateButton = false;
         
         if (!string.IsNullOrEmpty(userid))
         {
-            SqlCommand cmdCheck = new SqlCommand("SELECT Division, Destination FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Employeestatus = 1");
-            cmdCheck.Parameters.AddWithValue("@EmpId", userid);
-            DataTable dtCheck = DA.GetDataTable(cmdCheck);
-            
-            if (dtCheck != null && dtCheck.Rows.Count > 0)
+            if (!string.IsNullOrEmpty(projectKey))
             {
-                int userDivision = dtCheck.Rows[0]["Division"] != DBNull.Value ? Convert.ToInt32(dtCheck.Rows[0]["Division"]) : 0;
-                int destination = dtCheck.Rows[0]["Destination"] != DBNull.Value ? Convert.ToInt32(dtCheck.Rows[0]["Destination"]) : 0;
+                // Check if the user is explicitly assigned as a Team Lead for this specific project
+                SqlCommand cmdCheckTL = new SqlCommand("SELECT 1 FROM IT_ProjectTeamLeads WHERE ProjectKey = @ProjectKey AND EmployeeKey = @EmpId");
+                cmdCheckTL.Parameters.AddWithValue("@ProjectKey", projectKey);
+                cmdCheckTL.Parameters.AddWithValue("@EmpId", userid);
+                DataTable dtCheckTL = DA.GetDataTable(cmdCheckTL);
                 
-                // Show button for Division 1 OR Destination 11, 23, 24
-                showCreateButton = (userDivision == 1) || (destination == 11) || (destination == 23) || (destination == 24);
+                if (dtCheckTL != null && dtCheckTL.Rows.Count > 0)
+                {
+                    showCreateButton = true;
+                }
+            }
+            else
+            {
+                // If viewing All Projects, check if they are a team lead in ANY project
+                SqlCommand cmdCheckTL = new SqlCommand("SELECT 1 FROM IT_ProjectTeamLeads WHERE EmployeeKey = @EmpId");
+                cmdCheckTL.Parameters.AddWithValue("@EmpId", userid);
+                DataTable dtCheckTL = DA.GetDataTable(cmdCheckTL);
+                
+                if (dtCheckTL != null && dtCheckTL.Rows.Count > 0)
+                {
+                    showCreateButton = true;
+                }
             }
         }
         
@@ -237,6 +253,11 @@ public partial class Employee_taskgrids : System.Web.UI.Page
             {
                 ddlEmployee.Items.Add(new ListItem(dr["EmployeeName"].ToString(), dr["EmployeeKey"].ToString()));
             }
+        }
+        
+        if (ddlEmployee.Items.FindByValue(this.SC.Userid) != null)
+        {
+            ddlEmployee.SelectedValue = this.SC.Userid;
         }
     }
 
@@ -595,9 +616,9 @@ public partial class Employee_taskgrids : System.Web.UI.Page
             
             string createdBy = dr["CreatedBy"] != DBNull.Value ? dr["CreatedBy"].ToString() : "";
             string removeButton = "";
-            if (statusId == 4 || (stTotal > 0 && stCompleted == stTotal))
+            if (statusId == 4 || (stTotal > 0 && stCompleted > 0))
             {
-                removeButton = "<button type='button' class='btn btn-xs btn-default' disabled title='Completed task cannot be deleted'><i class='glyphicon glyphicon-trash'></i></button>";
+                removeButton = "<button type='button' class='btn btn-xs btn-default' disabled title='Task with completed subtasks cannot be deleted'><i class='glyphicon glyphicon-trash'></i></button>";
             }
             else if (createdBy == userid)
             {
@@ -826,9 +847,9 @@ public partial class Employee_taskgrids : System.Web.UI.Page
             
             string createdBy = dr["CreatedBy"] != DBNull.Value ? dr["CreatedBy"].ToString() : "";
             string removeButton = "";
-            if (stTotal > 0 && stCompleted == stTotal)
+            if (stTotal > 0 && stCompleted > 0)
             {
-                removeButton = "<button type='button' class='btn btn-xs btn-default' disabled title='Completed task cannot be deleted'><i class='glyphicon glyphicon-trash'></i></button>";
+                removeButton = "<button type='button' class='btn btn-xs btn-default' disabled title='Task with completed subtasks cannot be deleted'><i class='glyphicon glyphicon-trash'></i></button>";
             }
             else if (createdBy == userid)
             {
@@ -965,9 +986,9 @@ public partial class Employee_taskgrids : System.Web.UI.Page
             
             string createdBy = dr["CreatedBy"] != DBNull.Value ? dr["CreatedBy"].ToString() : "";
             string removeButton = "";
-            if (stTotal > 0 && stCompleted == stTotal)
+            if (stTotal > 0 && stCompleted > 0)
             {
-                removeButton = "<button type='button' class='btn btn-xs btn-default' disabled title='Completed task cannot be deleted'><i class='glyphicon glyphicon-trash'></i></button>";
+                removeButton = "<button type='button' class='btn btn-xs btn-default' disabled title='Task with completed subtasks cannot be deleted'><i class='glyphicon glyphicon-trash'></i></button>";
             }
             else if (createdBy == userid)
             {

@@ -14,8 +14,8 @@ body { background: #f8f9fa; }
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     animation: fadeInUp 0.6s ease forwards;
     opacity: 0;
-    margin-bottom: 24px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
     overflow: hidden;
     position: relative;
 }
@@ -40,7 +40,7 @@ body { background: #f8f9fa; }
 
 /* Header */
 .pc-heading {
-    padding: 18px 20px 14px;
+    padding: 10px 14px 8px;
     border-bottom: 1px solid #f0f2f5;
     display: flex;
     align-items: flex-start;
@@ -161,7 +161,7 @@ body { background: #f8f9fa; }
 }
 .pc-stat {
     flex: 1;
-    padding: 14px 10px;
+    padding: 8px 6px;
     text-align: center;
     border-right: 1px solid #eceff1;
     transition: background 0.3s;
@@ -209,7 +209,7 @@ body { background: #f8f9fa; }
 
 /* Task sections */
 .pc-body {
-    padding: 18px 20px 20px;
+    padding: 10px 14px 12px;
 }
 .pc-section-label {
     font-size: 11px;
@@ -242,8 +242,8 @@ body { background: #f8f9fa; }
     margin-bottom: 12px;
 }
 .task-box {
-    border-radius: 10px;
-    padding: 14px 8px 12px;
+    border-radius: 8px;
+    padding: 8px 4px 6px;
     text-align: center;
     transition: all 0.3s;
     cursor: pointer;

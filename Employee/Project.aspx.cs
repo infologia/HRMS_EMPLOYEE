@@ -1,4 +1,3 @@
-using Org.BouncyCastle.Asn1.Cmp;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -27,9 +26,17 @@ public partial class Employee_Project : System.Web.UI.Page
             BindProjectManagers();
             BindTeamLead();
             BindEmployees();
-            string userRoleId = SC.UserRecordTable != null && SC.UserRecordTable.Rows.Count > 0
-                ? SC.UserRecordTable.Rows[0]["Role"].ToString() : "";
-            pnlBudget.Visible = userRoleId == "11";
+
+            SqlCommand cmdRole = new SqlCommand("SELECT role FROM IT_EmployeeRegister WHERE Employeekey = @Employeekey AND role = 11");
+            cmdRole.Parameters.AddWithValue("@Employeekey", SC.Userid);
+            bool isRole11 = DA.GetDataTable(cmdRole).Rows.Count > 0;
+
+            pnlBudget.Visible = isRole11;
+
+            SqlCommand cmdLastCode = new SqlCommand("SELECT TOP 1 ProjectCode FROM IT_projects ORDER BY ProjectKey DESC");
+            DataTable dtLast = DA.GetDataTable(cmdLastCode);
+            lblLastProjectCode.Text = (dtLast.Rows.Count > 0) ? dtLast.Rows[0]["ProjectCode"].ToString() : "-";
+
             Label control1 = this.Master.FindControl("lbl_bread") as Label;
             if (control1 != null)
                 control1.Text = "Project";
@@ -37,11 +44,8 @@ public partial class Employee_Project : System.Web.UI.Page
             {
                 int projectKey = int.Parse(Request.QueryString["id"]);
                 hfProjectKey.Value = projectKey.ToString();
-                PopulateProjectData(projectKey);
-
+                PopulateProjectData(projectKey, isRole11);
                 btnSave.Visible = false;
-
-               
             }
             else
             {
@@ -132,7 +136,7 @@ private DateTime? ParseDate(string dateText)
     }
     private void BindTeamLead()
     {
-        string str_teamlead = @"SELECT EmployeeKey, (Firstname +' ' + Lastname) as name FROM IT_EmployeeRegister Where Employeestatus = 1 and Division = 1";
+        string str_teamlead = @"SELECT EmployeeKey, (Firstname +' ' + Lastname) as name FROM IT_EmployeeRegister Where Employeestatus = 1 ORDER BY Firstname";
 
         SqlCommand cmd = new SqlCommand(str_teamlead);
         DataSet ds = this.DA.GetDataSet(cmd);
@@ -162,7 +166,7 @@ private DateTime? ParseDate(string dateText)
         }
     }
 
-    private void PopulateProjectData(int projectKey)
+    private void PopulateProjectData(int projectKey, bool isRole11)
     {
         string query = "SELECT ProjectKey, ClientKey, ProjectName, ProjectCode, Description, CONVERT(varchar(10), StartDate, 103) AS StartDate, CONVERT(varchar(10), EndDate, 103) AS EndDate, Status, Budget, EstimatedHours, ProjectTypeId, ProjectManagerKey FROM IT_projects WHERE ProjectKey = @ProjectKey";
         SqlCommand cmd = new SqlCommand(query);
@@ -179,25 +183,12 @@ private DateTime? ParseDate(string dateText)
             txtStartDate.Text = row["StartDate"].ToString();
             txtEndDate.Text = row["EndDate"].ToString();
             ddlStatus.SelectedValue = row["Status"].ToString();
-            string str_ddlStatus = ddlStatus.SelectedValue;
-            if (str_ddlStatus == "Planned")
-            {
-                btnUpdate.Visible = true;
-                txtBudget.Text = row["Budget"].ToString();
-            }
+            txtBudget.Text = row["Budget"].ToString();
+
+            if (isRole11)
+                btnUpdate.Visible = row["Status"].ToString() != "Completed";
             else
-            {
-                
-                if (str_ddlStatus == "Completed")
-                { btnUpdate.Visible = false;
-                }
-                else
-                {
-                    btnUpdate.Visible = true;
-                }
-                    txtBudget.Text = row["Budget"].ToString();
-                // txtBudget.ReadOnly = true;
-            }
+                btnUpdate.Visible = false;
 
             txtEstimatedHours.Text = row["EstimatedHours"] != DBNull.Value ? row["EstimatedHours"].ToString() : "";
 
@@ -270,7 +261,7 @@ private DateTime? ParseDate(string dateText)
 
                 sb.Append("<tr>");
                 sb.Append(string.Format("<td><input type=\"text\" class=\"form-control\" placeholder=\"Enter Document Name\" name=\"docName[]\" value=\"{0}\" /></td>", docName));
-                sb.Append(string.Format("<td><input type=\"hidden\" name=\"existingDocFile[]\" value=\"{0}\" /><input type=\"file\" class=\"form-control\" name=\"docFile[]\" accept=\".pdf, .jpg, .jpeg, .png, .gif, .webp\" /><small class=\"text-muted\">Only PDF & Images</small>{1}</td>", filePath, fileDisplay));
+                sb.Append(string.Format("<td><input type=\"hidden\" name=\"existingDocFile[]\" value=\"{0}\" /><input type=\"file\" class=\"form-control\" name=\"docFile[]\" accept=\".pdf, .jpg, .jpeg, .png, .gif, .webp\" />{1}</td>", filePath, fileDisplay));
                 sb.Append("<td><div class=\"input-group\"><span class=\"input-group-addon\"><i class=\"icon-calendar22\"></i></span>");
                 sb.Append(string.Format("<input type=\"text\" class=\"form-control pickadate\" placeholder=\"DD/MM/YYYY\" name=\"docValidFrom[]\" value=\"{0}\" /></div></td>", validFrom));
                 sb.Append("<td><div class=\"input-group\"><span class=\"input-group-addon\"><i class=\"icon-calendar22\"></i></span>");
@@ -288,6 +279,18 @@ private DateTime? ParseDate(string dateText)
             return;
         if (string.IsNullOrEmpty(ddlClient.SelectedValue))
             return;
+
+        // Server-side duplicate check (defense in depth): the client-side AJAX check
+        // can be bypassed or race with another user creating the same code at the
+        // same moment, so re-check right before inserting.
+        if (CheckProjectCode(txtProjectCode.Text.Trim(), "0") == "EXISTS")
+        {
+            ScriptManager.RegisterStartupScript(
+                this, this.GetType(), "dupcode",
+                "$('#lblProjectCodeError').show(); $('#" + txtProjectCode.ClientID + "').css('border-color','red').focus();",
+                true);
+            return;
+        }
 
         if (!string.IsNullOrEmpty(txtStartDate.Text) &&
              !string.IsNullOrEmpty(txtEndDate.Text))
@@ -456,7 +459,16 @@ cmdProject.Parameters.AddWithValue("@EndDate",
     {
         if (string.IsNullOrEmpty(ddlClient.SelectedValue) || string.IsNullOrEmpty(hfProjectKey.Value))
             return;
-       
+
+        // Server-side duplicate check (defense in depth), excluding this project's own record
+        if (CheckProjectCode(txtProjectCode.Text.Trim(), hfProjectKey.Value) == "EXISTS")
+        {
+            ScriptManager.RegisterStartupScript(
+                this, this.GetType(), "dupcode",
+                "$('#lblProjectCodeError').show(); $('#" + txtProjectCode.ClientID + "').css('border-color','red').focus();",
+                true);
+            return;
+        }
 
         if (!string.IsNullOrEmpty(txtStartDate.Text) &&
            !string.IsNullOrEmpty(txtEndDate.Text))
@@ -626,6 +638,31 @@ cmdUpdate.Parameters.AddWithValue("@EndDate",
  "setTimeout(function(){ window.location.href = '/Employee/Projectgrid.aspx'; }, 2000);",
  true
 );
+    }
+
+    [System.Web.Services.WebMethod]
+    public static string CheckProjectCode(string projectCode, string projectKey)
+    {
+        try
+        {
+            DataAccess DA = new DataAccess();
+            string query = "SELECT COUNT(*) FROM IT_projects WHERE ProjectCode = @ProjectCode";
+            if (!string.IsNullOrEmpty(projectKey) && projectKey != "0")
+                query += " AND ProjectKey <> @ProjectKey";
+
+            SqlCommand cmd = new SqlCommand(query);
+            cmd.Parameters.AddWithValue("@ProjectCode", projectCode.Trim());
+            if (!string.IsNullOrEmpty(projectKey) && projectKey != "0")
+                cmd.Parameters.AddWithValue("@ProjectKey", int.Parse(projectKey));
+
+            DataTable dt = DA.GetDataTable(cmd);
+            int count = Convert.ToInt32(dt.Rows[0][0]);
+            return count > 0 ? "EXISTS" : "OK";
+        }
+        catch
+        {
+            return "ERROR";
+        }
     }
 
 }

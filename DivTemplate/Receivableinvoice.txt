@@ -1,15 +1,19 @@
-﻿    <tr> 
+    <tr> 
+                    <td>%%Invoice_Number%%</td>
                     <td>%%Company_Name%%</td>
                     <td>%%ProjectName%%</td>
-                    <td>%%Invoice_Number%%</td>
                     <td>%%Invoice_Date%%</td>
                     <td>%%Due_Date%%</td>
                     <td>%%ActiveText%%</td>
                     <td>%%Download%%</td>
                     <td>%%Created_Date%%</td>
-                    <td><a href="createinvoice.aspx?id=%%InvoiceKey%%"><span class="label label-info">Update</span></a></td> 
-                   
-  </tr>
+                    <td class="text-center">
+                        <ul class="icons-list">
+                            <li><a href="createinvoice.aspx?id=%%InvoiceKey%%" class="text-primary" data-popup="tooltip" title="Update"><i class="icon-pencil7"></i></a></li>
+                            <li><a href="javascript:void(0);" class="text-danger" onclick="fn_DeleteInvoice(%%InvoiceKey%%)" data-popup="tooltip" title="Delete"><i class="icon-trash"></i></a></li>
+                        </ul>
+                    </td>
+   </tr>
            
          
            

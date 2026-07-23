@@ -145,7 +145,7 @@ public partial class Admin_Holidays : System.Web.UI.Page
         DateTime parsedDate;
         if (DateTime.TryParseExact(
             dateText,
-            "dd/MM/yyyy",
+            new string[] { "dd/MM/yyyy", "d MMMM, yyyy", "dd MMMM, yyyy", "yyyy-MM-dd" },
             CultureInfo.InvariantCulture,
             DateTimeStyles.None,
             out parsedDate))
@@ -158,11 +158,17 @@ public partial class Admin_Holidays : System.Web.UI.Page
 
     protected void btn_submit_Click(object sender, EventArgs e)
     {
-        DateTime holidayDate = DateTime.ParseExact(
-            txt_date.Text,
-            "dd/MM/yyyy",
-            CultureInfo.InvariantCulture
-        );
+        DateTime holidayDate;
+        if (!DateTime.TryParseExact(
+            txt_date.Text.Trim(),
+            new string[] { "dd/MM/yyyy", "d MMMM, yyyy", "dd MMMM, yyyy", "yyyy-MM-dd" },
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.None,
+            out holidayDate))
+        {
+            ScriptManager.RegisterStartupScript(this, GetType(), "alert", "toastr.error('Invalid date format.');", true);
+            return;
+        }
 
         string editKey = hf_holidayKey.Value;
 

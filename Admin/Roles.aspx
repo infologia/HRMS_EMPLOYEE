@@ -235,32 +235,37 @@
     </div>
 
     <!-- Create/Edit Modal -->
-    <div class="modal fade" id="roleModal" tabindex="-1" role="dialog">
+    <div class="modal fade" id="roleModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-primary">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h5 class="modal-title" id="modalTitle">Create Role</h5>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label>Role Name <span class="text-danger">*</span></label>
-                        <input type="text" id="txt_RoleName" class="form-control" placeholder="Enter role name" />
-                    </div>
-                    <div class="form-group">
-                        <label>Module Name</label>
-                        <div class="multi-select-full">
-                            <asp:ListBox ID="lstModules" runat="server" CssClass="multiselect form-control" SelectionMode="Multiple"></asp:ListBox>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="text-semibold">Role Name <span class="text-danger">*</span></label>
+                                <input type="text" id="txt_RoleName" class="form-control" placeholder="Enter role name" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="text-semibold">Module Name</label>
+                                <div class="multi-select-full">
+                                    <asp:ListBox ID="lstModules" runat="server" CssClass="multiselect form-control" SelectionMode="Multiple"></asp:ListBox>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
                     <div class="form-group">
-                        <label>Description</label>
+                        <label class="text-semibold">Description</label>
                         <textarea id="txt_Description" class="form-control" rows="3" placeholder="Enter description"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
                     <button type="button" id="btnSave" class="btn btn-primary" onclick="SaveRole();">Save</button>
                 </div>
             </div>
@@ -268,8 +273,8 @@
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-sm" style="margin-top: 15vh;" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-danger text-white">
                     <h5 class="modal-title">Confirm Delete</h5>

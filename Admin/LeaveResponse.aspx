@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Masterpage/AdminMaster.master" AutoEventWireup="true" CodeFile="LeaveResponse.aspx.cs" Inherits="WEB_Admin_LeaveResponse" %>
+<%@ Page Title="" Language="C#" MasterPageFile="~/Masterpage/AdminMaster.master" AutoEventWireup="true" CodeFile="LeaveResponse.aspx.cs" Inherits="WEB_Admin_LeaveResponse" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
     <script type="text/javascript" src="../Template/assets/js/plugins/tables/datatables/datatables.min.js"></script>
@@ -153,7 +153,7 @@ white-space: nowrap;
                 <th>To Date</th>
                 <th>Leave Days</th>
                 <th>Status</th>
-                <th>View</th>
+                <th class="text-center">View</th>
 
             </tr>
         </thead>
