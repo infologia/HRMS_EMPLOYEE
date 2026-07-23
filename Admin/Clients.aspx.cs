@@ -23,9 +23,10 @@ public partial class Admin_Clients : System.Web.UI.Page
                 control1.Text = "Organization";
         }
 
-        string userRoleId = SC.UserRecordTable != null && SC.UserRecordTable.Rows.Count > 0
-            ? SC.UserRecordTable.Rows[0]["Role"].ToString() : "";
-        a_createlead.Visible = userRoleId == "11";
+        SqlCommand cmdRole = new SqlCommand("SELECT role FROM IT_EmployeeRegister WHERE Employeekey = @Employeekey AND role = 11");
+        cmdRole.Parameters.AddWithValue("@Employeekey", SC.Userid);
+        bool isRole11 = DA.GetDataTable(cmdRole).Rows.Count > 0;
+        a_createlead.Visible = isRole11;
 
         string str_query = "SELECT c.ClientKey, c.ClientCode, c.ClientName, c.CompanyName, c.ContactPerson, c.Status, c.CreatedOn, ISNULL(pt.PT_Name, '') AS PT_Name FROM IT_ClientDetails c LEFT JOIN IT_PartyType pt ON pt.PT_ID = c.PartyType";
         SqlCommand cmd = new SqlCommand(str_query);
@@ -46,14 +47,14 @@ public partial class Admin_Clients : System.Web.UI.Page
                 ? "<span class='label label-sm label-success'>Active</span>"
                 : "<span class='label label-sm label-danger'>InActive</span>";
                 
-            if (userRoleId == "11")
+            if (isRole11)
             {
-                dr["ActionText"] = "<a href=\"Clientsdetails.aspx?id=" + dr["ClientKey"].ToString() + "\" style=\"margin-right: 5px;\" title=\"Update\"><span class=\"label label-info\"><i class=\"icon-pencil\"></i></span></a>" + 
-                                   "<a style=\"cursor:pointer;\" title=\"Delete\"><span class=\"label label-danger\" onclick=\"fn_DeleteProject('" + dr["ClientKey"].ToString() + "')\"><i class=\"icon-trash\"></i></span></a>";
+                dr["ActionText"] = "<a href=\"Clientsdetails.aspx?id=" + dr["ClientKey"].ToString() + "\" style=\"margin-right:8px;\" title=\"Update\"><i class=\"icon-pencil7 text-primary\"></i></a>" +
+                                   "<a style=\"cursor:pointer;\" title=\"Delete\" onclick=\"fn_DeleteProject('" + dr["ClientKey"].ToString() + "')\"><i class=\"icon-trash text-danger\"></i></a>";
             }
             else
             {
-                dr["ActionText"] = "<a href=\"Clientsdetails.aspx?id=" + dr["ClientKey"].ToString() + "\" title=\"View\"><span class=\"label label-info\"><i class=\"icon-eye\"></i></span></a>";
+                dr["ActionText"] = "<a href=\"Clientsdetails.aspx?id=" + dr["ClientKey"].ToString() + "\" title=\"View\"><i class=\"icon-eye text-primary\"></i></a>";
             }
         }
 

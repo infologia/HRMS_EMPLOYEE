@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Masterpage/AdminMaster.master" AutoEventWireup="true" CodeFile="PettyCash.aspx.cs" Inherits="Admin_PettyCash" %>
+<%@ Page Title="" Language="C#" MasterPageFile="~/Masterpage/AdminMaster.master" AutoEventWireup="true" CodeFile="PettyCash.aspx.cs" Inherits="Admin_PettyCash" %>
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
@@ -44,35 +44,11 @@
         });
     }
 </script>
-<%--<script>
-    $(document).ready(function () {
-
-        if ($.fn.DataTable.isDataTable('#tablecash')) {
-            $('#tablecash').DataTable().destroy();
-        }
-        $('#tablecash').DataTable({
-            autoWidth: false,
-            ordering: false,        
-            paging: true,
-            searching: true,
-            lengthChange: true,
-            pageLength: 10,
-            dom: '<"datatable-header"fl><"datatable-scroll"t><"datatable-footer"ip>',
-            language: {
-                search: '<span>Filter:</span> _INPUT_',
-                searchPlaceholder: 'Type to filter...',
-                lengthMenu: '<span>Show:</span> _MENU_',
-                paginate: {
-                    'next': '&rarr;',
-                    'previous': '&larr;'
-                }
-            }
-        });
-
-    });
-</script>--%>
 
     <style>
+#tablecash th, #tablecash td {
+    font-size: 12px;
+}
 .filter-row {
     display: flex;
     align-items: center;
@@ -150,12 +126,11 @@
              <tr>
                  <th>Description</th>
                  <th>Amount</th>
-                 <th>Balance Amount</th>
+                 <th style="white-space: nowrap;">Balance Amount</th>
                  <th>Type</th>
-                 <th>Entry Date</th>
+                 <th style="white-space: nowrap;">Entry Date</th>
                  <th>Created By</th>                   
-                 <th>Update</th>
-                 <th>Delete</th>
+                 <th>Actions</th>
              </tr>
          </thead>
          <tbody>

@@ -5,8 +5,10 @@
 		<td>%%CompanyEmail%%</td>
 		<td>%%LeadStatus%%</td>
 		<td>%%Priority%%</td>
-		<td style="text-align:center;">
-			<a href="generatelead.aspx?id=%%CompanyKey%%" class="btn btn-sm btn-primary" style="margin-right:4px;" title="Update"><i class="icon-pencil7"></i></a>
-			<a href="javascript:void(0);" class="btn btn-sm btn-danger" title="Remove" onclick="fn_DeleteLead('%%CompanyKey%%')"><i class="icon-trash"></i></a>
+		<td>
+			<div style="display: flex; gap: 8px; justify-content: center;">
+				<a href="generatelead.aspx?id=%%CompanyKey%%" class="btn btn-primary btn-xs" style="border-radius: 4px; padding: 4px 8px;" title="Update"><i class="icon-pencil7"></i></a>
+				<a href="javascript:void(0);" class="btn btn-danger btn-xs" style="border-radius: 4px; padding: 4px 8px;" title="Remove" onclick="fn_DeleteLead('%%CompanyKey%%')"><i class="icon-trash"></i></a>
+			</div>
 		</td>
 	</tr>

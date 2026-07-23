@@ -2,6 +2,7 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
+using System.Web;
 using System.Web.UI.WebControls;
 
 public partial class Admin_Clientsdetails : System.Web.UI.Page
@@ -9,6 +10,7 @@ public partial class Admin_Clientsdetails : System.Web.UI.Page
     DataAccess DA;
     SessionCustom SC;
 
+    public string DocOptionsHtml { get; set; }
     private string key = "";
     string str_id = "";
 
@@ -19,38 +21,48 @@ public partial class Admin_Clientsdetails : System.Web.UI.Page
     {
         this.DA = new DataAccess();
         this.SC = new SessionCustom();
+        Form.Enctype = "multipart/form-data";
+
+        if (!string.IsNullOrEmpty(Request.QueryString["id"]))
+        {
+            this.str_id = Request.QueryString["id"].ToString();
+        }
 
         Label control1 = this.Master.FindControl("lbl_bread") as Label;
         if (control1 != null)
             control1.Text = "Organization";
 
-        if (!string.IsNullOrEmpty(Request.QueryString["id"]))
-        {
-            this.str_id = Request.QueryString["id"].ToString();
-            if (!IsPostBack)
-            {
-                Loadcountry();
-                LoadEmp();
-                Loadsales();
-                LoadPartyType();
-                LoadTaxType();
-                assignvalues();
-            }
+        LoadDocOptions();
 
-            btn_update.Visible = true;
+        if (!IsPostBack)
+        {
+            Loadcountry();
+            LoadEmp();
+            Loadsales();
+            LoadPartyType();
+            LoadTaxType();
+
+            if (!string.IsNullOrEmpty(this.str_id))
+            {
+                assignvalues();
+                LoadClientDocuments();
+            }
+            else
+            {
+                AddDefaultDocRow();
+            }
+        }
+
+        if (!string.IsNullOrEmpty(this.str_id))
+        {
+            SqlCommand cmdRole = new SqlCommand("SELECT role FROM IT_EmployeeRegister WHERE Employeekey = @Employeekey AND role = 11");
+            cmdRole.Parameters.AddWithValue("@Employeekey", SC.Userid);
+            bool isRole11 = DA.GetDataTable(cmdRole).Rows.Count > 0;
+            btn_update.Visible = isRole11;
             btn_request.Visible = false;
         }
         else
         {
-            if (!IsPostBack)
-            {
-                Loadcountry();
-                LoadEmp();
-                Loadsales();
-                LoadPartyType();
-                LoadTaxType();
-            }
-
             btn_request.Visible = true;
             btn_update.Visible = false;
         }
@@ -126,70 +138,52 @@ public partial class Admin_Clientsdetails : System.Web.UI.Page
     protected void btn_request_Click(object sender, EventArgs e)
     {
         Guid userId = new Guid(SC.Userid.ToString());
-
-        // Handle file uploads
-        string contractCopyPath = SaveUploadedFile(fu_ContractCopy, "ContractCopy");
-        string ndaPath          = SaveUploadedFile(fu_NDA, "NDA");
-        string sowPath          = SaveUploadedFile(fu_SOW, "SOW");
-        string otherDocsPath    = SaveUploadedFile(fu_OtherDocs, "OtherDocs");
+        Guid newClientKey = Guid.NewGuid();
 
         SqlCommand cmd = new SqlCommand(@"
             INSERT INTO IT_ClientDetails 
             (
-                ClientCode, ClientName, CompanyName, ContactPerson, Designation,
+                ClientKey, ClientCode, ClientName, CompanyName, ContactPerson, Designation,
                 Email, AlternateEmail, Mobile, AlternateMobile, PartyType, Industry,
                 Website, AddressLine1, AddressLine2, Country, Source, Status,
                 Description, OnboardBy, CreatedBy, TaxType, SalesPerson,
-                -- Bank Details
                 BankName, AccountHolderName, AccountNumber, IFSCCode, Branch, BankAddress,
-                -- Contact Details
                 ContactName, ContactTitle, Department, Telephone, ContactMobile, ContactEmail,
-                -- Account Manager
                 AccMgrName, AccMgrEmail, AccMgrMobile, AssignedDate, LastFollowUpDate,
-                -- Documents
-                ContractCopyPath, NDAPath, SOWPath, OtherDocsPath,
-                -- Contract Information
                 ContractNumber, ContractStartDate, ContractEndDate, ContractType,
                 RenewalDate, NoticePeriod, ContractStatus, SLADetails
             )
             VALUES
             (
-                @ClientCode, @ClientName, @CompanyName, @ContactPerson, @Designation,
+                @ClientKey, @ClientCode, @ClientName, @CompanyName, @ContactPerson, @Designation,
                 @Email, @AlternateEmail, @Mobile, @AlternateMobile, @PartyType, @Industry,
                 @Website, @AddressLine1, @AddressLine2, @Country, @Source, @Status,
                 @Description, @OnboardBy, @CreatedBy, @TaxType, @SalesPerson,
-                -- Bank Details
                 @BankName, @AccountHolderName, @AccountNumber, @IFSCCode, @Branch, @BankAddress,
-                -- Contact Details
                 @ContactName, @ContactTitle, @Department, @Telephone, @ContactMobile, @ContactEmail,
-                -- Account Manager
                 @AccMgrName, @AccMgrEmail, @AccMgrMobile, @AssignedDate, @LastFollowUpDate,
-                -- Documents
-                @ContractCopyPath, @NDAPath, @SOWPath, @OtherDocsPath,
-                -- Contract Information
                 @ContractNumber, @ContractStartDate, @ContractEndDate, @ContractType,
                 @RenewalDate, @NoticePeriod, @ContractStatus, @SLADetails
             )");
 
+        cmd.Parameters.Add("@ClientKey", SqlDbType.UniqueIdentifier).Value = newClientKey;
         AddBasicParams(cmd, userId);
         AddBankParams(cmd);
         AddContactParams(cmd);
         AddAccMgrParams(cmd);
-        AddDocumentParams(cmd, contractCopyPath, ndaPath, sowPath, otherDocsPath);
         AddContractParams(cmd);
 
         DA.ExecuteNonQuery(cmd);
-        Response.Redirect("Clients.aspx");
+        UpsertClientDocuments(newClientKey);
+
+        Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_redirect",
+            "showToastr('success','Organization Created Successfully!');" +
+            "setTimeout(function(){ window.location.href = 'Clients.aspx'; }, 2000);", true);
     }
     protected void btn_update_Click(object sender, EventArgs e)
     {
         Guid userId = new Guid(SC.Userid.ToString());
-
-        // Use existing path if no new file uploaded, else save new file
-        string contractCopyPath = fu_ContractCopy.HasFile  ? SaveUploadedFile(fu_ContractCopy, "ContractCopy") : hf_ContractCopyPath.Value;
-        string ndaPath          = fu_NDA.HasFile           ? SaveUploadedFile(fu_NDA, "NDA")                   : hf_NDAPath.Value;
-        string sowPath          = fu_SOW.HasFile           ? SaveUploadedFile(fu_SOW, "SOW")                   : hf_SOWPath.Value;
-        string otherDocsPath    = fu_OtherDocs.HasFile     ? SaveUploadedFile(fu_OtherDocs, "OtherDocs")       : hf_OtherDocsPath.Value;
+        Guid clientKey = new Guid(this.str_id);
 
         SqlCommand cmd = new SqlCommand(@"
             UPDATE IT_ClientDetails SET
@@ -200,19 +194,12 @@ public partial class Admin_Clientsdetails : System.Web.UI.Page
                 AddressLine1=@AddressLine1, AddressLine2=@AddressLine2, Country=@Country,
                 Source=@Source, Status=@Status, Description=@Description,
                 OnboardBy=@OnboardBy, ModifiedBy=@ModifiedBy, ModifiedOn=GETDATE(), TaxType=@TaxType, SalesPerson=@SalesPerson,
-                -- Bank Details
                 BankName=@BankName, AccountHolderName=@AccountHolderName, AccountNumber=@AccountNumber,
                 IFSCCode=@IFSCCode, Branch=@Branch, BankAddress=@BankAddress,
-                -- Contact Details
                 ContactName=@ContactName, ContactTitle=@ContactTitle, Department=@Department,
                 Telephone=@Telephone, ContactMobile=@ContactMobile, ContactEmail=@ContactEmail,
-                -- Account Manager
                 AccMgrName=@AccMgrName, AccMgrEmail=@AccMgrEmail, AccMgrMobile=@AccMgrMobile,
                 AssignedDate=@AssignedDate, LastFollowUpDate=@LastFollowUpDate,
-                -- Documents
-                ContractCopyPath=@ContractCopyPath, NDAPath=@NDAPath,
-                SOWPath=@SOWPath, OtherDocsPath=@OtherDocsPath,
-                -- Contract Information
                 ContractNumber=@ContractNumber, ContractStartDate=@ContractStartDate,
                 ContractEndDate=@ContractEndDate, ContractType=@ContractType,
                 RenewalDate=@RenewalDate, NoticePeriod=@NoticePeriod,
@@ -223,12 +210,14 @@ public partial class Admin_Clientsdetails : System.Web.UI.Page
         AddBankParams(cmd);
         AddContactParams(cmd);
         AddAccMgrParams(cmd);
-        AddDocumentParams(cmd, contractCopyPath, ndaPath, sowPath, otherDocsPath);
         AddContractParams(cmd);
-        cmd.Parameters.Add("@ClientKey", SqlDbType.UniqueIdentifier).Value = new Guid(this.str_id);
-
+        cmd.Parameters.Add("@ClientKey", SqlDbType.UniqueIdentifier).Value = clientKey;
         DA.ExecuteNonQuery(cmd);
-        Response.Redirect("Clients.aspx");
+        UpsertClientDocuments(clientKey);
+
+        Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_redirect",
+            "showToastr('success','Organization Updated Successfully!');" +
+            "setTimeout(function(){ window.location.href = 'Clients.aspx'; }, 2000);", true);
     }
     public void assignvalues()
     {
@@ -292,16 +281,9 @@ public partial class Admin_Clientsdetails : System.Web.UI.Page
             if (r["LastFollowUpDate"] != DBNull.Value)
                 txt_LastFollowUpDate.Text = Convert.ToDateTime(r["LastFollowUpDate"]).ToString("yyyy-MM-dd");
 
-            // Documents – store paths in hidden fields and show View links
-            hf_ContractCopyPath.Value   = r["ContractCopyPath"].ToString();
-            hf_NDAPath.Value            = r["NDAPath"].ToString();
-            hf_SOWPath.Value            = r["SOWPath"].ToString();
-            hf_OtherDocsPath.Value      = r["OtherDocsPath"].ToString();
+            // Documents - loaded separately via LoadClientDocuments()
 
-            SetViewLink(hl_ContractCopy, r["ContractCopyPath"].ToString());
-            SetViewLink(hl_NDA, r["NDAPath"].ToString());
-            SetViewLink(hl_SOW, r["SOWPath"].ToString());
-            SetViewLink(hl_OtherDocs, r["OtherDocsPath"].ToString());
+
 
             // Contract Information
             txt_ContractNumber.Text     = r["ContractNumber"].ToString();
@@ -319,30 +301,129 @@ public partial class Admin_Clientsdetails : System.Web.UI.Page
             txt_SLADetails.Text         = r["SLADetails"].ToString();
         }
     }
-    protected void lnk_RemoveContractCopy_Click(object sender, EventArgs e)  { RemoveDocument("ContractCopyPath", hf_ContractCopyPath, hl_ContractCopy); }
-    protected void lnk_RemoveNDA_Click(object sender, EventArgs e)            { RemoveDocument("NDAPath", hf_NDAPath, hl_NDA); }
-    protected void lnk_RemoveSOW_Click(object sender, EventArgs e)            { RemoveDocument("SOWPath", hf_SOWPath, hl_SOW); }
-    protected void lnk_RemoveOtherDocs_Click(object sender, EventArgs e)      { RemoveDocument("OtherDocsPath", hf_OtherDocsPath, hl_OtherDocs); }
-
-    private void RemoveDocument(string columnName, HiddenField hf, HyperLink hl)
+    private void LoadDocOptions()
     {
-        if (!string.IsNullOrEmpty(this.str_id) && !string.IsNullOrEmpty(hf.Value))
+        SqlCommand cmd = new SqlCommand("SELECT CM_ID, DocName FROM IT_ClientDocMaster ORDER BY CM_ID");
+        DataTable dt = DA.GetDataTable(cmd);
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        sb.Append("<option value=''>-- Select Document --</option>");
+        foreach (DataRow dr in dt.Rows)
         {
-            // Delete physical file
-            string physicalPath = Server.MapPath(hf.Value);
-            if (File.Exists(physicalPath))
-                File.Delete(physicalPath);
+            sb.AppendFormat("<option value='{0}'>{1}</option>", dr["CM_ID"], dr["DocName"]);
+        }
+        DocOptionsHtml = sb.ToString();
+        string js = "var docOptionsHtml = \"" + System.Web.HttpUtility.JavaScriptStringEncode(DocOptionsHtml) + "\";";
+        Page.ClientScript.RegisterClientScriptBlock(this.GetType(), "docOptionsJs", js, true);
+    }
 
-            // Clear DB column
-            SqlCommand cmd = new SqlCommand(
-                "UPDATE IT_ClientDetails SET " + columnName + " = NULL WHERE ClientKey = @ClientKey"
-            );
-            cmd.Parameters.Add("@ClientKey", SqlDbType.UniqueIdentifier).Value = new Guid(this.str_id);
-            DA.ExecuteNonQuery(cmd);
+    private void AddDefaultDocRow()
+    {
+        tBodyClientDocs.InnerHtml =
+            "<tr class='doc-row'>" +
+            "<td><select class='form-control' name='clientDocId_0'>" + DocOptionsHtml + "</select></td>" +
+            "<td><input type='hidden' name='clientExistingPath_0' value='' /><input type='file' class='form-control' name='clientDocFile_0' accept='.pdf,.jpg,.jpeg,.png,.gif,.webp' /></td>" +
+            "<td style='text-align:center;'><input type='hidden' name='clientDocRowIndex[]' value='0' /><button type='button' class='btn-remove-inv removeClientDocRow' title='Remove' onclick='removeClientDocRow(this)'><i class='icon-cross2'></i></button></td>" +
+            "</tr>";
+        Page.ClientScript.RegisterStartupScript(this.GetType(), "setRowIdx", "clientDocRowIdx = 1;", true);
+    }
+
+    private string GetDocOptionsWithSelected(string selectedId)
+    {
+        SqlCommand cmd = new SqlCommand("SELECT CM_ID, DocName FROM IT_ClientDocMaster ORDER BY CM_ID");
+        DataTable dt = DA.GetDataTable(cmd);
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        sb.Append("<option value=''>-- Select Document --</option>");
+        foreach (DataRow dr in dt.Rows)
+        {
+            string selectedStr = dr["CM_ID"].ToString() == selectedId ? " selected='selected'" : "";
+            sb.AppendFormat("<option value='{0}'{1}>{2}</option>", dr["CM_ID"], selectedStr, dr["DocName"]);
+        }
+        return sb.ToString();
+    }
+
+    private void LoadClientDocuments()
+    {
+        if (string.IsNullOrEmpty(this.str_id)) return;
+
+        SqlCommand cmd = new SqlCommand("SELECT Docid, OtherDocsPath FROM IT_ClientDocuments WHERE ClientKey = @ClientKey");
+        cmd.Parameters.Add("@ClientKey", SqlDbType.UniqueIdentifier).Value = new Guid(this.str_id);
+        DataTable dt = DA.GetDataTable(cmd);
+
+        if (dt == null || dt.Rows.Count == 0)
+        {
+            AddDefaultDocRow();
+            return;
         }
 
-        hf.Value = "";
-        hl.Visible = false;
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        int idx = 0;
+        foreach (DataRow dr in dt.Rows)
+        {
+            string docid = dr["Docid"].ToString();
+            string existingPath = dr["OtherDocsPath"].ToString();
+
+            string viewLink = !string.IsNullOrEmpty(existingPath)
+                ? string.Format("<a href='{0}' target='_blank' style='font-size:12px;color:#3a7bd5;margin-left:10px;display:inline-flex;align-items:center;vertical-align:middle;gap:3px;'><i class='icon-eye'></i> View</a>", ResolveUrl(existingPath))
+                : "";
+
+            sb.AppendFormat(
+                "<tr class='doc-row'>" +
+                "<td><select class='form-control' name='clientDocId_{0}'>{1}</select></td>" +
+                "<td><input type='hidden' name='clientExistingPath_{0}' value='{2}' /><input type='file' class='form-control' name='clientDocFile_{0}' accept='.pdf,.jpg,.jpeg,.png,.gif,.webp' />{3}</td>" +
+                "<td style='text-align:center;'><input type='hidden' name='clientDocRowIndex[]' value='{0}' /><button type='button' class='btn-remove-inv removeClientDocRow' title='Remove' onclick='removeClientDocRow(this)'><i class='icon-cross2'></i></button></td>" +
+                "</tr>",
+                idx, GetDocOptionsWithSelected(docid), existingPath, viewLink);
+            idx++;
+        }
+        tBodyClientDocs.InnerHtml = sb.ToString();
+        Page.ClientScript.RegisterStartupScript(this.GetType(), "setRowIdx", "clientDocRowIdx = " + idx + ";", true);
+    }
+
+    private void UpsertClientDocuments(Guid clientKey)
+    {
+        SqlCommand cmdDel = new SqlCommand("DELETE FROM IT_ClientDocuments WHERE ClientKey = @ClientKey");
+        cmdDel.Parameters.Add("@ClientKey", SqlDbType.UniqueIdentifier).Value = clientKey;
+        DA.ExecuteNonQuery(cmdDel);
+
+        string[] rowIndices = Request.Form.GetValues("clientDocRowIndex[]");
+        if (rowIndices == null || rowIndices.Length == 0) return;
+
+        string folderPath = Server.MapPath(UploadFolder);
+        if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+
+        Guid userId = new Guid(SC.Userid.ToString());
+
+        foreach (string idxStr in rowIndices)
+        {
+            int idx = int.Parse(idxStr);
+            string docIdVal = Request.Form["clientDocId_" + idx];
+            if (string.IsNullOrEmpty(docIdVal)) continue;
+
+            int docId = int.Parse(docIdVal);
+            string existingPath = Request.Form["clientExistingPath_" + idx] ?? "";
+            string savedPath = existingPath;
+
+            HttpPostedFile file = Request.Files["clientDocFile_" + idx];
+            if (file != null && file.ContentLength > 0)
+            {
+                string uniqueName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+                file.SaveAs(Path.Combine(folderPath, uniqueName));
+                savedPath = UploadFolder.TrimEnd('/') + "/" + uniqueName;
+            }
+
+            SqlCommand cmdIns = new SqlCommand(@"
+                INSERT INTO IT_ClientDocuments 
+                (CD_ID, ClientKey, OtherDocsPath, Docid, CreatedBy, CreatedDate) 
+                VALUES 
+                (NEWID(), @ClientKey, @OtherDocsPath, @Docid, @CreatedBy, GETDATE())");
+
+            cmdIns.Parameters.Add("@ClientKey", SqlDbType.UniqueIdentifier).Value = clientKey;
+            cmdIns.Parameters.AddWithValue("@OtherDocsPath", string.IsNullOrEmpty(savedPath) ? (object)DBNull.Value : savedPath);
+            cmdIns.Parameters.AddWithValue("@Docid", docId);
+            cmdIns.Parameters.Add("@CreatedBy", SqlDbType.UniqueIdentifier).Value = userId;
+
+            DA.ExecuteNonQuery(cmdIns);
+        }
     }
     private void AddBasicParams(SqlCommand cmd, Guid userId, bool isUpdate = false)
     {
@@ -368,9 +449,13 @@ public partial class Admin_Clientsdetails : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@TaxType", DD_TaxType.SelectedValue);
         else
             cmd.Parameters.AddWithValue("@TaxType", DBNull.Value);
-        cmd.Parameters.Add("@OnboardBy", SqlDbType.UniqueIdentifier).Value = new Guid(ddl_OnboardBy.SelectedValue);
+        Guid onboardBy;
+        if (!Guid.TryParse(ddl_OnboardBy.SelectedValue.Trim(), out onboardBy))
+        {
+            throw new Exception("Invalid GUID: " + ddl_OnboardBy.SelectedValue);
+        }
+        cmd.Parameters.Add("@OnboardBy", SqlDbType.UniqueIdentifier).Value = onboardBy;
         cmd.Parameters.Add("@SalesPerson", SqlDbType.UniqueIdentifier).Value = !string.IsNullOrEmpty(ddlsalesperson.SelectedValue) && ddlsalesperson.SelectedValue != "" ? (object)new Guid(ddlsalesperson.SelectedValue) : DBNull.Value;
-
         if (isUpdate)
             cmd.Parameters.Add("@ModifiedBy", SqlDbType.UniqueIdentifier).Value = userId;
         else
@@ -402,14 +487,6 @@ public partial class Admin_Clientsdetails : System.Web.UI.Page
         cmd.Parameters.AddWithValue("@AccMgrMobile",    txt_AccMgrMobile.Text.Trim());
         cmd.Parameters.AddWithValue("@AssignedDate",    string.IsNullOrEmpty(txt_AssignedDate.Text)    ? (object)DBNull.Value : DateTime.Parse(txt_AssignedDate.Text));
         cmd.Parameters.AddWithValue("@LastFollowUpDate",string.IsNullOrEmpty(txt_LastFollowUpDate.Text)? (object)DBNull.Value : DateTime.Parse(txt_LastFollowUpDate.Text));
-    }
-
-    private void AddDocumentParams(SqlCommand cmd, string contractCopyPath, string ndaPath, string sowPath, string otherDocsPath)
-    {
-        cmd.Parameters.AddWithValue("@ContractCopyPath", string.IsNullOrEmpty(contractCopyPath) ? (object)DBNull.Value : contractCopyPath);
-        cmd.Parameters.AddWithValue("@NDAPath",          string.IsNullOrEmpty(ndaPath)          ? (object)DBNull.Value : ndaPath);
-        cmd.Parameters.AddWithValue("@SOWPath",          string.IsNullOrEmpty(sowPath)          ? (object)DBNull.Value : sowPath);
-        cmd.Parameters.AddWithValue("@OtherDocsPath",    string.IsNullOrEmpty(otherDocsPath)    ? (object)DBNull.Value : otherDocsPath);
     }
 
     private void AddContractParams(SqlCommand cmd)
