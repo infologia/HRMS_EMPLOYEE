@@ -123,22 +123,24 @@
         <div class="panel-body" style="padding: 0px;">
         </div>
         
-        <table class="table datatable-basic" id="tblLeads">
-            <thead>
-                <tr>
-                    <th>Company Name</th>
-                    <th>Industry</th>
-                    <th>Phone</th>
-                    <th>Email</th>
-                    <th>Status</th>
-                    <th>Priority</th>
-                    <th style="min-width: 100px; text-align: center;">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <asp:PlaceHolder ID="PH_Leads" runat="server"></asp:PlaceHolder>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table datatable-basic" id="tblLeads">
+                <thead>
+                    <tr>
+                        <th style="white-space: nowrap;">Company Name</th>
+                        <th style="white-space: nowrap;">Industry</th>
+                        <th style="white-space: nowrap;">Phone</th>
+                        <th style="white-space: nowrap;">Email</th>
+                        <th style="white-space: nowrap;">Status</th>
+                        <th style="white-space: nowrap;">Priority</th>
+                        <th style="min-width: 100px; text-align: center;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <asp:PlaceHolder ID="PH_Leads" runat="server"></asp:PlaceHolder>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- Delete Confirmation Modal -->

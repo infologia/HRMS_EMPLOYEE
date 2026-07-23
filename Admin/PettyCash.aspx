@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Masterpage/AdminMaster.master" AutoEventWireup="true" CodeFile="PettyCash.aspx.cs" Inherits="Admin_PettyCash" %>
+<%@ Page Title="" Language="C#" MasterPageFile="~/Masterpage/AdminMaster.master" AutoEventWireup="true" CodeFile="PettyCash.aspx.cs" Inherits="Admin_PettyCash" %>
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
@@ -46,6 +46,9 @@
 </script>
 
     <style>
+#tablecash th, #tablecash td {
+    font-size: 12px;
+}
 .filter-row {
     display: flex;
     align-items: center;
@@ -123,12 +126,11 @@
              <tr>
                  <th>Description</th>
                  <th>Amount</th>
-                 <th>Balance Amount</th>
+                 <th style="white-space: nowrap;">Balance Amount</th>
                  <th>Type</th>
-                 <th>Entry Date</th>
+                 <th style="white-space: nowrap;">Entry Date</th>
                  <th>Created By</th>                   
-                 <th>Update</th>
-                 <th>Delete</th>
+                 <th>Actions</th>
              </tr>
          </thead>
          <tbody>
