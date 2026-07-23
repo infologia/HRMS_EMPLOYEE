@@ -164,11 +164,11 @@
         <table class="table datatable-basic" id="tblActive">
             <thead>
                 <tr>
-                    <th>Project Code</th>
+                    <th style="white-space: nowrap;">Project Code</th>
                     <th>Project Name</th>
                     <th>Client Name</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
+                    <th style="white-space: nowrap;">Start Date</th>
+                    <th style="white-space: nowrap;">End Date</th>
                     <th>Status</th>
                     <th style="min-width: 100px; text-align: center;">Action</th>
                 </tr>
@@ -188,11 +188,11 @@
         <table class="table datatable-basic" id="tblCompleted">
             <thead>
                 <tr>
-                    <th>Project Code</th>
+                    <th style="white-space: nowrap;">Project Code</th>
                     <th>Project Name</th>
                     <th>Client Name</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
+                    <th style="white-space: nowrap;">Start Date</th>
+                    <th style="white-space: nowrap;">End Date</th>
                     <th>Status</th>
                     <th style="min-width: 100px; text-align: center;">Action</th>
                 </tr>

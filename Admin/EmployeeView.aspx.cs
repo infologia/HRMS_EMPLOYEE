@@ -30,7 +30,7 @@ public partial class WEB_EmployeeView : System.Web.UI.Page
             //    control.Attributes.Add("class", "active");
         }
 
-        String str_query = "Select a.Employeekey,a.Image,a.Username,a.Firstname+' '+a.Lastname as Name,a.Designation,a.Email,a.Phonenumber,a.EmployeeStatus,a.Gender,a.createdon,d.Divisionname,b.RoleName,c.Departmentname from IT_EmployeeRegister a left outer join IT_Roles b on a.Role=b.RoleId left outer join IT_Department c on a.Department=c.Departmentid left outer join IT_Division d on a.Division=d.Divisionid where a.roles in (0,1,2) order by a.createdon";
+        String str_query = "Select a.Employeekey,a.Image,a.Username,a.Firstname+' '+a.Lastname as Name,ISNULL(desig.Departmentname, a.Designation) as Designation,a.Email,a.Phonenumber,a.EmployeeStatus,a.Gender,a.createdon,d.Divisionname,b.RoleName,c.Departmentname from IT_EmployeeRegister a left outer join IT_Roles b on a.Role=b.RoleId left outer join IT_Department c on a.Department=c.Departmentid left outer join IT_Division d on a.Division=d.Divisionid left outer join IT_Department desig on CAST(a.Designation as varchar) = CAST(desig.Departmentid as varchar) where a.roles in (0,1,2) order by a.createdon";
         SqlCommand cmd = new SqlCommand(str_query);
        
         DataTable dt_dashboard = DA.GetDataTable(cmd);
@@ -100,6 +100,11 @@ public partial class WEB_EmployeeView : System.Web.UI.Page
                 }
 
                 // Handle missing Designation
+                if (ds.Tables[0].Columns.Contains("Designation"))
+                {
+                    ds.Tables[0].Columns["Designation"].ReadOnly = false;
+                }
+                
                 if (dr["Designation"] == DBNull.Value || string.IsNullOrEmpty(dr["Designation"].ToString().Trim()))
                 {
                     dr["Designation"] = "N/A";

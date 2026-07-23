@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -37,7 +37,7 @@ if (this.userroles == "2") // Admin
 }
 else // Employee
 {
-    btnBack.HRef = "~/Employee/DashBoard.aspx";
+    btnBack.HRef = "~/Employee/Timings.aspx";
 }
  }
 
@@ -337,7 +337,7 @@ else // Employee
         //}
         //else if(str_role == "1")
         //{
-        //    Response.Redirect("~/Employee/Dashboard.aspx");
+        //    Response.Redirect("~/Employee/Timings.aspx");
 
         //}
         string redirectUrl = "";
@@ -348,7 +348,7 @@ else // Employee
         }
         else if (str_role == "1")
         {
-            redirectUrl = "/Employee/Dashboard.aspx";
+            redirectUrl = "/Employee/Timings.aspx";
         }
 
         ClientScript.RegisterStartupScript(
