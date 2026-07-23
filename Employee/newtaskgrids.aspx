@@ -519,7 +519,7 @@
                     </div>
                 </div>
 
-                <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+                <div class="table-responsive" style="overflow-x: auto;">
                     <table class="table datatable-basic">
                         <thead>
                             <tr>

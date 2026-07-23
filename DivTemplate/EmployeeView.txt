@@ -6,15 +6,13 @@
                     </td>
                     <td>%%Username%%</td>
                     <td><a href="EmployeeRegisterNew.aspx?EmployeeKey=%%Employeekey%%" class="text-semibold">%%Name%%</a></td>
-                    <td>%%Designation%%</td>
                     <td>%%Email%%</td>
                     <td>%%Phonenumber%%</td>
-                    <td>%%Departmentname%%</td>
                     <td>%%RoleName%%</td>
                     <td>%%ActiveText1%%</td>
                     <td>%%ActiveText%%</td>
                     <td class="text-center">
-                        <a href="EmployeeRegisterNew.aspx?EmployeeKey=%%Employeekey%%" class="btn border-primary text-primary btn-flat btn-icon btn-rounded btn-sm" title="Edit Employee">
+                        <a href="EmployeeRegisterNew.aspx?EmployeeKey=%%Employeekey%%" class="btn border-primary text-primary btn-flat btn-icon btn-rounded btn-xs" style="padding: 4px; width: 26px; height: 26px; line-height: 1; font-size: 11px;" title="Edit Employee">
                             <i class="icon-pencil"></i>
                         </a>
                     </td>

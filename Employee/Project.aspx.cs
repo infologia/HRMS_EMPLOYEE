@@ -1,4 +1,3 @@
-using Org.BouncyCastle.Asn1.Cmp;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -33,6 +32,11 @@ public partial class Employee_Project : System.Web.UI.Page
             bool isRole11 = DA.GetDataTable(cmdRole).Rows.Count > 0;
 
             pnlBudget.Visible = isRole11;
+
+            SqlCommand cmdLastCode = new SqlCommand("SELECT TOP 1 ProjectCode FROM IT_projects ORDER BY ProjectKey DESC");
+            DataTable dtLast = DA.GetDataTable(cmdLastCode);
+            lblLastProjectCode.Text = (dtLast.Rows.Count > 0) ? dtLast.Rows[0]["ProjectCode"].ToString() : "-";
+
             Label control1 = this.Master.FindControl("lbl_bread") as Label;
             if (control1 != null)
                 control1.Text = "Project";
@@ -132,7 +136,7 @@ private DateTime? ParseDate(string dateText)
     }
     private void BindTeamLead()
     {
-        string str_teamlead = @"SELECT EmployeeKey, (Firstname +' ' + Lastname) as name FROM IT_EmployeeRegister Where Employeestatus = 1 and Division = 1";
+        string str_teamlead = @"SELECT EmployeeKey, (Firstname +' ' + Lastname) as name FROM IT_EmployeeRegister Where Employeestatus = 1 ORDER BY Firstname";
 
         SqlCommand cmd = new SqlCommand(str_teamlead);
         DataSet ds = this.DA.GetDataSet(cmd);
@@ -257,7 +261,7 @@ private DateTime? ParseDate(string dateText)
 
                 sb.Append("<tr>");
                 sb.Append(string.Format("<td><input type=\"text\" class=\"form-control\" placeholder=\"Enter Document Name\" name=\"docName[]\" value=\"{0}\" /></td>", docName));
-                sb.Append(string.Format("<td><input type=\"hidden\" name=\"existingDocFile[]\" value=\"{0}\" /><input type=\"file\" class=\"form-control\" name=\"docFile[]\" accept=\".pdf, .jpg, .jpeg, .png, .gif, .webp\" /><small class=\"text-muted\">Only PDF & Images</small>{1}</td>", filePath, fileDisplay));
+                sb.Append(string.Format("<td><input type=\"hidden\" name=\"existingDocFile[]\" value=\"{0}\" /><input type=\"file\" class=\"form-control\" name=\"docFile[]\" accept=\".pdf, .jpg, .jpeg, .png, .gif, .webp\" />{1}</td>", filePath, fileDisplay));
                 sb.Append("<td><div class=\"input-group\"><span class=\"input-group-addon\"><i class=\"icon-calendar22\"></i></span>");
                 sb.Append(string.Format("<input type=\"text\" class=\"form-control pickadate\" placeholder=\"DD/MM/YYYY\" name=\"docValidFrom[]\" value=\"{0}\" /></div></td>", validFrom));
                 sb.Append("<td><div class=\"input-group\"><span class=\"input-group-addon\"><i class=\"icon-calendar22\"></i></span>");
@@ -275,6 +279,18 @@ private DateTime? ParseDate(string dateText)
             return;
         if (string.IsNullOrEmpty(ddlClient.SelectedValue))
             return;
+
+        // Server-side duplicate check (defense in depth): the client-side AJAX check
+        // can be bypassed or race with another user creating the same code at the
+        // same moment, so re-check right before inserting.
+        if (CheckProjectCode(txtProjectCode.Text.Trim(), "0") == "EXISTS")
+        {
+            ScriptManager.RegisterStartupScript(
+                this, this.GetType(), "dupcode",
+                "$('#lblProjectCodeError').show(); $('#" + txtProjectCode.ClientID + "').css('border-color','red').focus();",
+                true);
+            return;
+        }
 
         if (!string.IsNullOrEmpty(txtStartDate.Text) &&
              !string.IsNullOrEmpty(txtEndDate.Text))
@@ -443,7 +459,16 @@ cmdProject.Parameters.AddWithValue("@EndDate",
     {
         if (string.IsNullOrEmpty(ddlClient.SelectedValue) || string.IsNullOrEmpty(hfProjectKey.Value))
             return;
-       
+
+        // Server-side duplicate check (defense in depth), excluding this project's own record
+        if (CheckProjectCode(txtProjectCode.Text.Trim(), hfProjectKey.Value) == "EXISTS")
+        {
+            ScriptManager.RegisterStartupScript(
+                this, this.GetType(), "dupcode",
+                "$('#lblProjectCodeError').show(); $('#" + txtProjectCode.ClientID + "').css('border-color','red').focus();",
+                true);
+            return;
+        }
 
         if (!string.IsNullOrEmpty(txtStartDate.Text) &&
            !string.IsNullOrEmpty(txtEndDate.Text))
@@ -613,6 +638,31 @@ cmdUpdate.Parameters.AddWithValue("@EndDate",
  "setTimeout(function(){ window.location.href = '/Employee/Projectgrid.aspx'; }, 2000);",
  true
 );
+    }
+
+    [System.Web.Services.WebMethod]
+    public static string CheckProjectCode(string projectCode, string projectKey)
+    {
+        try
+        {
+            DataAccess DA = new DataAccess();
+            string query = "SELECT COUNT(*) FROM IT_projects WHERE ProjectCode = @ProjectCode";
+            if (!string.IsNullOrEmpty(projectKey) && projectKey != "0")
+                query += " AND ProjectKey <> @ProjectKey";
+
+            SqlCommand cmd = new SqlCommand(query);
+            cmd.Parameters.AddWithValue("@ProjectCode", projectCode.Trim());
+            if (!string.IsNullOrEmpty(projectKey) && projectKey != "0")
+                cmd.Parameters.AddWithValue("@ProjectKey", int.Parse(projectKey));
+
+            DataTable dt = DA.GetDataTable(cmd);
+            int count = Convert.ToInt32(dt.Rows[0][0]);
+            return count > 0 ? "EXISTS" : "OK";
+        }
+        catch
+        {
+            return "ERROR";
+        }
     }
 
 }

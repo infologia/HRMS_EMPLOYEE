@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
@@ -51,64 +51,29 @@ public partial class WEB_Employee_Division : System.Web.UI.Page
         String str_sql = "SELECT Divid,Divisionname FROM IT_Division  order by createdon ASC";
         sc = new SqlCommand(str_sql);
         DataTable dt_UserSession = this.DA.GetDataTable(sc);
-        GridView1.DataSource = dt_UserSession;
-        GridView1.DataBind();
-
-    }
-    protected void GridView1_RowDeleting(object sender, GridViewDeleteEventArgs e)
-    {
-        string id = GridView1.DataKeys[e.RowIndex].Value.ToString();
-
-        SqlCommand cmd = new SqlCommand(
-            "DELETE FROM IT_Division WHERE Divid = @Divid");
-        cmd.Parameters.AddWithValue("@Divid", id);
-
-        DA.ExecuteNonQuery(cmd);
-        ScriptManager.RegisterStartupScript(
-            this,
-            this.GetType(),
-            "delete_success",
-            "showToastr('success','Division deleted successfully!');",
-            true
-        );
-        grid();
-    }
-
-    protected void GridView1_RowEditing(object sender, GridViewEditEventArgs e)
-    {
-        GridView1.EditIndex = e.NewEditIndex;
-        grid();
-    }
-    protected void GridView1_RowUpdating(object sender, GridViewUpdateEventArgs e)
-    {
-        string date = DateTime.Now.ToString();
-
-        string id1 = GridView1.DataKeys[e.RowIndex].Values["Divid"].ToString();
-        GridViewRow row = (GridViewRow)GridView1.Rows[e.RowIndex];
-        Label lblID = (Label)row.FindControl("lblID");
-
-        TextBox Depname = (TextBox)row.Cells[1].Controls[0];
-
-        GridView1.EditIndex = -1;
-        SqlCommand cmd = new SqlCommand("update IT_Division set Divisionname='" + Depname.Text + "',Modifiedby='" + this.str_userid + "',Modifiedon=@Modifiedon where Divid='" + id1 + "'");
-        cmd.Parameters.Add("@Modifiedon", SqlDbType.DateTime).Value = DateTime.Now;
-        DA.ExecuteNonQuery(cmd);
-
-        ScriptManager.RegisterStartupScript(
-                this,
-                this.GetType(),
-                "update_success",
-                "showToastr('success','Division updated successfully!');" +
-                "setTimeout(function(){ window.location.href='/Admin/Division.aspx'; }, 2000);",
-                true
-            );
-        grid();
-    }
-
-    protected void GridView1_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
-    {
-        GridView1.EditIndex = -1;
-        grid();
+        
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        foreach (DataRow row in dt_UserSession.Rows)
+        {
+            string divId = row["Divid"].ToString();
+            string divName = row["Divisionname"].ToString();
+            
+            sb.Append("<tr>");
+            sb.Append("<td>" + divId + "</td>");
+            sb.Append("<td>" + divName + "</td>");
+            
+            // Actions (Edit & Delete)
+            sb.Append("<td class='text-center'>");
+            sb.Append("<ul class='icons-list'>");
+            sb.Append("<li><a href='javascript:void(0);' class='text-primary' onclick=\"openEditModal('" + divId + "', '" + divName.Replace("'", "\\'") + "')\" data-popup='tooltip' title='Edit'><i class='icon-pencil7'></i></a></li>");
+            sb.Append("<li><a href='javascript:void(0);' class='text-danger' onclick=\"fn_DeleteDivision('" + divId + "')\" data-popup='tooltip' title='Delete'><i class='icon-trash'></i></a></li>");
+            sb.Append("</ul>");
+            sb.Append("</td>");
+            
+            sb.Append("</tr>");
+        }
+        
+        PH_Division.Controls.Add(new LiteralControl(sb.ToString()));
     }
 
     [WebMethod]
@@ -147,19 +112,41 @@ public partial class WEB_Employee_Division : System.Web.UI.Page
         }
         return "true";
     }
-    protected void GridView1_RowDataBound(object sender, GridViewRowEventArgs e)
-    {
-        if (e.Row.RowType == DataControlRowType.DataRow)
-        {
-            if ((e.Row.RowState & DataControlRowState.Edit) > 0)
-                return;
-            LinkButton btnDelete = e.Row.Cells[3].Controls[0] as LinkButton;
 
-            if (btnDelete != null && btnDelete.CommandName == "Delete")
-            {
-                btnDelete.OnClientClick =
-                    "return confirm('Are you sure you want to delete this Division?');";
-            }
+    [WebMethod]
+    public static string UpdateDivision(string divId, string divName)
+    {
+        try
+        {
+            SessionCustom SC = new SessionCustom();
+            string str_userid = SC.Userid;
+            SqlCommand cmd = new SqlCommand("update IT_Division set Divisionname=@Divisionname, Modifiedby=@Modifiedby, Modifiedon=@Modifiedon where Divid=@Divid");
+            cmd.Parameters.AddWithValue("@Divisionname", divName);
+            cmd.Parameters.AddWithValue("@Modifiedby", str_userid);
+            cmd.Parameters.AddWithValue("@Modifiedon", DateTime.Now);
+            cmd.Parameters.AddWithValue("@Divid", divId);
+            new DataAccess().ExecuteNonQuery(cmd);
+            return "true";
+        }
+        catch
+        {
+            return "false";
+        }
+    }
+
+    [WebMethod]
+    public static string DeleteDivision(string divId)
+    {
+        try
+        {
+            SqlCommand cmd = new SqlCommand("delete FROM IT_Division where Divid=@Divid");
+            cmd.Parameters.AddWithValue("@Divid", divId);
+            new DataAccess().ExecuteNonQuery(cmd);
+            return "true";
+        }
+        catch
+        {
+            return "false";
         }
     }
 }
