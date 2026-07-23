@@ -29,6 +29,11 @@ public partial class Admin_ReceivableInvoiceGrid : System.Web.UI.Page
             DownloadInvoiceTxt(Request.QueryString["InvoiceKey"]);
             return;
         }
+        if (Request.QueryString["DeleteKey"] != null)
+        {
+            DeleteInvoice(Request.QueryString["DeleteKey"]);
+            return;
+        }
         if (!IsPostBack)
         {
             Label control1 = this.Master.FindControl("lbl_bread") as Label;
@@ -37,7 +42,50 @@ public partial class Admin_ReceivableInvoiceGrid : System.Web.UI.Page
             BindFinancialYearDropdown();
             BindGrid();
         }
+    }
+
+    private void DeleteInvoice(string invoiceKey)
+    {
+        try
+        {
+            SqlCommand cmdDesc = new SqlCommand("DELETE FROM IT_InvoiceDescription WHERE InvoiceKey = @InvoiceKey");
+            cmdDesc.Parameters.AddWithValue("@InvoiceKey", invoiceKey);
+            DA.ExecuteNonQuery(cmdDesc);
+
+            SqlCommand cmdInv = new SqlCommand("DELETE FROM IT_Invoices WHERE InvoiceKey = @InvoiceKey");
+            cmdInv.Parameters.AddWithValue("@InvoiceKey", invoiceKey);
+            DA.ExecuteNonQuery(cmdInv);
+
+            Response.Redirect("ReceivableInvoiceGrid.aspx", false);
         }
+        catch (Exception ex)
+        {
+            Response.Redirect("ReceivableInvoiceGrid.aspx", false);
+        }
+    }
+
+    [System.Web.Services.WebMethod]
+    [System.Web.Script.Services.ScriptMethod(ResponseFormat = System.Web.Script.Services.ResponseFormat.Json)]
+    public static string DeleteInvoiceWebMethod(string invoiceKey)
+    {
+        try
+        {
+            DataAccess da = new DataAccess();
+            SqlCommand cmdDesc = new SqlCommand("DELETE FROM IT_InvoiceDescription WHERE InvoiceKey = @InvoiceKey");
+            cmdDesc.Parameters.AddWithValue("@InvoiceKey", invoiceKey);
+            da.ExecuteNonQuery(cmdDesc);
+
+            SqlCommand cmdInv = new SqlCommand("DELETE FROM IT_Invoices WHERE InvoiceKey = @InvoiceKey");
+            cmdInv.Parameters.AddWithValue("@InvoiceKey", invoiceKey);
+            da.ExecuteNonQuery(cmdInv);
+
+            return "true";
+        }
+        catch (Exception ex)
+        {
+            return "false";
+        }
+    }
 
     private void BindFinancialYearDropdown()
     {
@@ -449,8 +497,8 @@ WHERE ISNULL(a.InvoiceDate, a.CreatedOn) >= @FYStart AND ISNULL(a.InvoiceDate, a
 
 
         html.AppendLine("<style>");
-        html.AppendLine(".footer { width:100%; font-size:14px; color:#555; margin-top:200px; }");
-        html.AppendLine(".footer-center { text-align:center; font-style:italic; margin-bottom:12px; }");
+        html.AppendLine(".footer { width:100%; font-size:14px; color:#555; margin-top:200px; padding: 15px 0px; }");
+        html.AppendLine(".footer-center { text-align:center; font-style:italic; margin-bottom:12px; padding-bottom: 5px; }");
         html.AppendLine(".social { text-align:left; }");
         html.AppendLine(".social-item { display:inline-block; margin-left:12px; font-size:13px; }");
         html.AppendLine(".social-item img { vertical-align:middle; margin-right:4px; }");

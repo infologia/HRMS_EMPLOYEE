@@ -18,6 +18,10 @@ public partial class Employee_taskgrids : System.Web.UI.Page
 
         if (!IsPostBack)
         {
+            Label control1 = this.Master.FindControl("lbl_bread") as Label;
+            if (control1 != null)
+                control1.Text = "Tasks";
+
             if (Request.QueryString["action"] == "delete" && !string.IsNullOrEmpty(Request.QueryString["taskkey"]))
             {
                 DeleteTask(Request.QueryString["taskkey"]);
@@ -612,9 +616,9 @@ public partial class Employee_taskgrids : System.Web.UI.Page
             
             string createdBy = dr["CreatedBy"] != DBNull.Value ? dr["CreatedBy"].ToString() : "";
             string removeButton = "";
-            if (statusId == 4 || (stTotal > 0 && stCompleted == stTotal))
+            if (statusId == 4 || (stTotal > 0 && stCompleted > 0))
             {
-                removeButton = "<button type='button' class='btn btn-xs btn-default' disabled title='Completed task cannot be deleted'><i class='glyphicon glyphicon-trash'></i></button>";
+                removeButton = "<button type='button' class='btn btn-xs btn-default' disabled title='Task with completed subtasks cannot be deleted'><i class='glyphicon glyphicon-trash'></i></button>";
             }
             else if (createdBy == userid)
             {
@@ -843,9 +847,9 @@ public partial class Employee_taskgrids : System.Web.UI.Page
             
             string createdBy = dr["CreatedBy"] != DBNull.Value ? dr["CreatedBy"].ToString() : "";
             string removeButton = "";
-            if (stTotal > 0 && stCompleted == stTotal)
+            if (stTotal > 0 && stCompleted > 0)
             {
-                removeButton = "<button type='button' class='btn btn-xs btn-default' disabled title='Completed task cannot be deleted'><i class='glyphicon glyphicon-trash'></i></button>";
+                removeButton = "<button type='button' class='btn btn-xs btn-default' disabled title='Task with completed subtasks cannot be deleted'><i class='glyphicon glyphicon-trash'></i></button>";
             }
             else if (createdBy == userid)
             {
@@ -982,9 +986,9 @@ public partial class Employee_taskgrids : System.Web.UI.Page
             
             string createdBy = dr["CreatedBy"] != DBNull.Value ? dr["CreatedBy"].ToString() : "";
             string removeButton = "";
-            if (stTotal > 0 && stCompleted == stTotal)
+            if (stTotal > 0 && stCompleted > 0)
             {
-                removeButton = "<button type='button' class='btn btn-xs btn-default' disabled title='Completed task cannot be deleted'><i class='glyphicon glyphicon-trash'></i></button>";
+                removeButton = "<button type='button' class='btn btn-xs btn-default' disabled title='Task with completed subtasks cannot be deleted'><i class='glyphicon glyphicon-trash'></i></button>";
             }
             else if (createdBy == userid)
             {

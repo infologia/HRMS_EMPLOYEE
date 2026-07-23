@@ -4,7 +4,11 @@
                     <td>%%Todate%%</td>
                     <td>%%Leavedays%%</td>
                     <td>%%ActiveText%% </td>
-                    <td><a href="LeaveView.aspx?key=%%Employeeleavedetailskey%%" <span class="label label-primary">View</span></a></td> 
+                    <td class="text-center">
+                        <ul class="icons-list">
+                            <li><a href="LeaveView.aspx?key=%%Employeeleavedetailskey%%" class="text-primary" data-popup="tooltip" title="View"><i class="icon-eye"></i></a></li>
+                        </ul>
+                    </td> 
                      
 
                 </tr>

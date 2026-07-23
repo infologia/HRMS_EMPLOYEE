@@ -89,6 +89,7 @@
                             ErrorMessage="Select Project"
                             ForeColor="Red" />
                     </div>
+
                     <div class="col-md-4">
                         <label>Team Members <span style="color: red">*</span></label>
                         <asp:DropDownList ID="ddlEmployee"
@@ -388,8 +389,8 @@
             tr.className = 'row-edit-mode';
 
             tr.innerHTML =
-                '<td style="padding:2px 6px;"><input type="text" class="form-control input-sm editable-field" name="task_name" placeholder="Enter Task Name" />'
-                + '<span class="display-field" style="font-size:12px;"></span></td>'
+                '<td style="padding:2px 6px;"><textarea class="form-control editable-field" name="task_name" rows="1" placeholder="Enter Task Name" style="resize:vertical;font-size:12px;"></textarea>'
+                + '<textarea class="form-control display-field" name="task_name_display" rows="1" style="resize:vertical;font-size:12px;" readonly></textarea></td>'
                 + '<td style="padding:2px 6px;"><textarea class="form-control editable-field" name="task_description" rows="1" style="resize:vertical;font-size:12px;"></textarea>'
                 + '<textarea class="form-control display-field" name="task_description_display" rows="1" style="resize:vertical;font-size:12px;" readonly></textarea></td>'
                 + '<td style="padding:2px 6px;"><select class="form-control input-sm editable-field" name="task_work_type">' + workTypeOptions + '</select>'
@@ -575,7 +576,7 @@
 
             rows.forEach(function(row, index) {
                 var rowNum = index + 1;
-                var taskName = row.querySelector('input[name="task_name"]');
+                var taskName = row.querySelector('textarea[name="task_name"]');
                 var taskDesc = row.querySelector('textarea[name="task_description"]');
                 var workType = row.querySelector('select[name="task_work_type"]');
                 var assignedHours = row.querySelector('select[name="task_assigned_hours"]');

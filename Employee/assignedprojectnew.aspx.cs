@@ -14,7 +14,12 @@ public partial class Employee_Taskdashboard : System.Web.UI.Page
         this.DA = new DataAccess();
         this.SC = new SessionCustom();
         if (!IsPostBack)
+        {
+            Label control1 = this.Master.FindControl("lbl_bread") as Label;
+            if (control1 != null)
+                control1.Text = "Assigned Projects";
             LoadProjectDashboard();
+        }
     }
 
     public string GetBorderClass(object status)

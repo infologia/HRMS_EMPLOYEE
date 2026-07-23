@@ -23,7 +23,7 @@ public partial class WEB_Employee_EmployeeDocument : System.Web.UI.Page
         {
             Label control1 = this.Master.FindControl("lbl_bread") as Label;
             if (control1 != null)
-                control1.Text = "File Maintanence";
+                control1.Text = "My Documents";
         }
 
         string str_query = "select b.employeeid,a.Document,a.Employeekey,a.Documentkey,a.DocumentName,a.Username,a.createdon from IT_Document a  inner join IT_EmployeeRegister b on a.Employeekey =b.Employeekey where a.employeekey=@Employeekey";

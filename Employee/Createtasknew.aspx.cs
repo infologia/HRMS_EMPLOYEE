@@ -19,6 +19,15 @@ public partial class Employee_Createtask : System.Web.UI.Page
         this.SC = new SessionCustom();
         if (!IsPostBack)
         {
+            Label control1 = this.Master.FindControl("lbl_bread") as Label;
+            if (control1 != null)
+            {
+                if (!string.IsNullOrEmpty(Request.QueryString["id"]))
+                    control1.Text = (!string.IsNullOrEmpty(Request.QueryString["view"]) && Request.QueryString["view"] == "1") ? "View Task" : "Edit Task";
+                else
+                    control1.Text = "Create Task";
+            }
+
             bool hasFullAccess = CheckFullAccess();
             hfHasFullAccess.Value = hasFullAccess ? "1" : "0";
             BindRoles();
@@ -73,8 +82,6 @@ public partial class Employee_Createtask : System.Web.UI.Page
                     PopulateTaskData(taskKey);
                     btnSaveTask.Visible = false;
                     btnUpdateTask.Visible = true;
-                    // Set Add Row button visibility based on access
-                    btnAddRow.Visible = CheckCreateTaskAccess();
                 }
                 
                 // Set back button URL based on task's project
@@ -198,7 +205,7 @@ public partial class Employee_Createtask : System.Web.UI.Page
         
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
         sb.Append(isViewMode ? "<tr class='row-view-mode'>" : "<tr class='row-edit-mode'>");
-        sb.Append("<td><input type='text' class='form-control editable-field' name='task_name' placeholder='Enter Task Name' " + disabledAttr + " /><span class='display-field'></span></td>");
+        sb.Append("<td><textarea class='form-control editable-field' name='task_name' rows='1' placeholder='Enter Task Name' style='resize:vertical;' " + disabledAttr + "></textarea><textarea class='form-control display-field' name='task_name_display' rows='1' style='resize:vertical;background:#f5f5f5;' readonly></textarea></td>");
         sb.Append("<td><textarea class='form-control editable-field' name='task_description' rows='1' " + disabledAttr + "></textarea><textarea class='form-control display-field' rows='1' style='resize:vertical;background:#f5f5f5;' readonly></textarea></td>");
         sb.Append("<td><select class='form-control editable-field' name='task_work_type'>");
         sb.Append(ltWorkTypeOptions.Text);
@@ -249,21 +256,29 @@ public partial class Employee_Createtask : System.Web.UI.Page
         string userid = this.SC.Userid;
         if (string.IsNullOrEmpty(userid)) return false;
         
-        string checkQuery = @"SELECT Division, Destination FROM IT_EmployeeRegister 
-                             WHERE Employeekey = @EmpId AND Employeestatus = 1";
-        
-        SqlCommand cmd = new SqlCommand(checkQuery);
-        cmd.Parameters.AddWithValue("@EmpId", userid);
-        
-        DataTable dt = DA.GetDataTable(cmd);
-        
-        if (dt != null && dt.Rows.Count > 0)
+        string projectParam = Request.QueryString["project"];
+        if (!string.IsNullOrEmpty(projectParam))
         {
-            int division = dt.Rows[0]["Division"] != DBNull.Value ? Convert.ToInt32(dt.Rows[0]["Division"]) : 0;
-            int destination = dt.Rows[0]["Destination"] != DBNull.Value ? Convert.ToInt32(dt.Rows[0]["Destination"]) : 0;
+            SqlCommand cmdCheckTL = new SqlCommand("SELECT 1 FROM IT_ProjectTeamLeads WHERE ProjectKey = @ProjectKey AND EmployeeKey = @EmpId");
+            cmdCheckTL.Parameters.AddWithValue("@ProjectKey", projectParam);
+            cmdCheckTL.Parameters.AddWithValue("@EmpId", userid);
+            DataTable dtCheckTL = DA.GetDataTable(cmdCheckTL);
             
-            // Same condition as newtaskgrids.aspx Create Task button
-            return (division == 1) || (destination == 11) || (destination == 23) || (destination == 24);
+            if (dtCheckTL != null && dtCheckTL.Rows.Count > 0)
+            {
+                return true;
+            }
+        }
+        else
+        {
+            SqlCommand cmdCheckTL = new SqlCommand("SELECT 1 FROM IT_ProjectTeamLeads WHERE EmployeeKey = @EmpId");
+            cmdCheckTL.Parameters.AddWithValue("@EmpId", userid);
+            DataTable dtCheckTL = DA.GetDataTable(cmdCheckTL);
+            
+            if (dtCheckTL != null && dtCheckTL.Rows.Count > 0)
+            {
+                return true;
+            }
         }
         
         return false;
@@ -284,6 +299,19 @@ public partial class Employee_Createtask : System.Web.UI.Page
             return (division == 1 || destination == 24 || destination == 11);
         }
         return false;
+    }
+
+    private bool CheckIsProjectTeamLead(int projectKey)
+    {
+        string userid = this.SC.Userid;
+        if (string.IsNullOrEmpty(userid)) return false;
+
+        string qTL = "SELECT 1 FROM IT_ProjectTeamLeads WHERE ProjectKey = @ProjectKey AND EmployeeKey = @UserId";
+        SqlCommand cTL = new SqlCommand(qTL);
+        cTL.Parameters.AddWithValue("@ProjectKey", projectKey);
+        cTL.Parameters.AddWithValue("@UserId", userid);
+        DataTable dtTL = DA.GetDataTable(cTL);
+        return (dtTL.Rows.Count > 0);
     }
 
     private void CheckTeamLead()
@@ -853,8 +881,22 @@ public partial class Employee_Createtask : System.Web.UI.Page
 
         DataRow row = ds.Tables[0].Rows[0];
 
-        ddlProject.SelectedValue = row["ProjectName"].ToString();
         int projectKey = Convert.ToInt32(row["ProjectName"]);
+        string projectStr = projectKey.ToString();
+        
+        if (ddlProject.Items.FindByValue(projectStr) == null)
+        {
+            string pQuery = "SELECT ProjectName FROM IT_Projects WHERE ProjectKey = @PKey";
+            SqlCommand pCmd = new SqlCommand(pQuery);
+            pCmd.Parameters.AddWithValue("@PKey", projectKey);
+            DataTable pDt = DA.GetDataTable(pCmd);
+            if(pDt.Rows.Count > 0)
+            {
+                ddlProject.Items.Add(new ListItem(pDt.Rows[0]["ProjectName"].ToString(), projectStr));
+            }
+        }
+        
+        ddlProject.SelectedValue = projectStr;
 
         BindTeamLead(projectKey);
         BindEmployees(projectKey);
@@ -875,8 +917,13 @@ public partial class Employee_Createtask : System.Web.UI.Page
         cmdDetails.Parameters.AddWithValue("@TaskKey", taskKey);
         DataTable dtDetails = DA.GetDataTable(cmdDetails);
 
-        bool hasFullAccess = CheckFullAccess();
+        bool hasFullAccess = CheckIsProjectTeamLead(projectKey);
         bool isViewMode = hfViewMode.Value == "1";
+        
+        if (!isViewMode) {
+            btnAddRow.Visible = hasFullAccess;
+        }
+
         string disabledAttr = hasFullAccess ? "" : "readonly";
         
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -899,8 +946,8 @@ public partial class Employee_Createtask : System.Web.UI.Page
             string statusColorClass = GetStatusColorClass(selectedStatus);
 
             sb.Append("<tr class='row-view-mode'>");
-            sb.Append("<td><input type='text' class='form-control editable-field' name='task_name' value='" + detailRow["TaskName"].ToString() + "' " + disabledAttr + " />");
-            sb.Append("<span class='display-field'>" + detailRow["TaskName"].ToString() + "</span></td>");
+            string taskName = detailRow["TaskName"] != DBNull.Value ? detailRow["TaskName"].ToString() : "";
+            sb.Append("<td><textarea class='form-control editable-field' name='task_name' rows='1' style='resize:vertical;' " + disabledAttr + ">" + taskName + "</textarea><textarea class='form-control display-field' name='task_name_display' rows='1' style='resize:vertical;background:#f5f5f5;' readonly title='" + taskName.Replace("'", "&#39;") + "'>" + taskName + "</textarea></td>");
 
             string descVal = detailRow["TaskDescription"].ToString();
             sb.Append("<td><textarea class='form-control editable-field' name='task_description' rows='1' title='" + descVal.Replace("'", "&#39;") + "' " + disabledAttr + ">" + descVal + "</textarea>");
@@ -958,6 +1005,7 @@ public partial class Employee_Createtask : System.Web.UI.Page
             }
             sb.Append("</select>");
             sb.Append("</td>");
+
             string remarksVal = detailRow["Remarks"] != DBNull.Value ? detailRow["Remarks"].ToString() : "";
             sb.Append("<td><textarea class='form-control always-on-field' name='task_remarks' rows='1' style='resize:vertical;' title='" + remarksVal.Replace("'", "&#39;") + "'>" + remarksVal + "</textarea></td>");
             if (!isViewMode)
@@ -965,9 +1013,16 @@ public partial class Employee_Createtask : System.Web.UI.Page
                 sb.Append("<td class='text-center' style='white-space:nowrap;'>");
                 sb.Append("<button type='button' class='btn btn-primary btn-xs btn-edit-row' onclick='editTaskRow(this)' title='Edit Row' style='margin-right:2px;'><i class='glyphicon glyphicon-pencil'></i></button>");
                 if (hasFullAccess)
-                    sb.Append("<button type='button' class='btn btn-danger btn-xs' onclick='removeTaskRow(this)' title='Delete Row'><i class='icon-trash'></i></button>");
+                {
+                    if (selectedStatus == "4")
+                        sb.Append("<button type='button' class='btn btn-danger btn-xs' disabled style='opacity:0.5; cursor:not-allowed;' title='Completed subtask cannot be deleted'><i class='icon-trash'></i></button>");
+                    else
+                        sb.Append("<button type='button' class='btn btn-danger btn-xs' onclick='removeTaskRow(this)' title='Delete Row'><i class='icon-trash'></i></button>");
+                }
                 else
+                {
                     sb.Append("<button type='button' class='btn btn-danger btn-xs' disabled style='opacity:0.5; cursor:not-allowed;' title='Delete Row'><i class='icon-trash'></i></button>");
+                }
                 sb.Append("</td>");
             }
             else

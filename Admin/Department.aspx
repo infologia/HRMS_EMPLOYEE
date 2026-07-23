@@ -1,11 +1,10 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Masterpage/AdminMaster.master" AutoEventWireup="true" CodeFile="Department.aspx.cs" Inherits="WEB_Admin_Department" %>
+<%@ Page Title="" Language="C#" MasterPageFile="~/Masterpage/AdminMaster.master" AutoEventWireup="true" CodeFile="Department.aspx.cs" Inherits="WEB_Admin_Department" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
 
     <script type="text/javascript" src="../Template/assets/js/plugins/tables/datatables/datatables.min.js"></script>
-    <script type="text/javascript" src="../Template/assets/js/plugins/forms/selects/select2.min.js"></script>
-    <script type="text/javascript" src="../Template/assets/js/pages/datatables_advanced.js"></script>
-
+    <script type="text/javascript" src="../Template/assets/js/plugins/tables/datatables/extensions/buttons.min.js"></script>
+    <script type="text/javascript" src="../Template/assets/js/pages/datatables_extension_buttons_init.js"></script>
 
     <style type="text/css">
         .Remove {
@@ -38,10 +37,8 @@
                    class="form-control" required />
         </div>
         <div class="col-xs-1 col-sm-1 col-md-1 text-right">
-            <a 
-                    onclick="RemoveRow(this)"
-                    class="btn btn-danger btn-rounded btn-xs">
-                ✕
+            <a onclick="RemoveRow(this)" class="btn btn-danger btn-rounded btn-xs">
+                <i class="icon-trash"></i>
             </a>
         </div>
     </div>`;
@@ -57,8 +54,6 @@
         }
 
         function RemoveRow(btn) {
-            if (!confirm("Are you sure? do you want to remove this Department?"))
-                return false;
             var rowDiv = $(btn).closest("[id^='div_Dynamicrow']");
             rowDiv.remove();
             div_ids = div_ids.replace(rowDiv.attr("id") + ",", "");
@@ -126,8 +121,76 @@
             function OnErrorCall(response) {
                 alert(response.status + " " + response.statusText);
                 window.location.reload(true);
-                // document.getElementById("img_loading").style.display = "none";
             }
+        }
+
+        // --- Edit and Delete functions ---
+        var currentDepId = "";
+
+        function openEditModal(depId, depName) {
+            currentDepId = depId;
+            $('#txt_EditDepName').val(depName);
+            $('#editDepModal').modal('show');
+        }
+
+        function SaveEditDepartment() {
+            var depName = $('#txt_EditDepName').val().trim();
+            if (depName === '') {
+                showToastr('error', 'Department name is required!');
+                $('#txt_EditDepName').focus();
+                return false;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "Department.aspx/UpdateDepartment",
+                data: JSON.stringify({ depId: currentDepId, depName: depName }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    if (response.d === "true") {
+                        showToastr('success', 'Department updated successfully!');
+                        $('#editDepModal').modal('hide');
+                        setTimeout(function () { location.reload(); }, 1500);
+                    } else {
+                        showToastr('error', 'Failed to update department.');
+                    }
+                },
+                error: function () {
+                    showToastr('error', 'Server error. Please try again.');
+                }
+            });
+        }
+
+        var deleteDepId = "";
+        function fn_DeleteDepartment(depId) {
+            deleteDepId = depId;
+            $('#confirmDeleteModal').modal('show');
+        }
+
+        function confirmDeleteDepartment() {
+            if (deleteDepId === "") return;
+
+            $.ajax({
+                type: "POST",
+                url: "Department.aspx/DeleteDepartment",
+                data: JSON.stringify({ depId: deleteDepId }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $('#confirmDeleteModal').modal('hide');
+                    if (data.d === "true") {
+                        showToastr('success', 'Department deleted successfully!');
+                        setTimeout(function () { location.reload(); }, 1500);
+                    } else {
+                        showToastr('error', 'Unable to delete department.');
+                    }
+                },
+                error: function () {
+                    $('#confirmDeleteModal').modal('hide');
+                    showToastr('error', 'Server error. Please try again.');
+                }
+            });
         }
     </script>
 </asp:Content>
@@ -159,14 +222,61 @@
             </div>
         </div>
         <div class="table-responsive">
-            <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="false" OnRowDeleting="GridView1_RowDeleting" OnRowUpdating="GridView1_RowUpdating" OnRowCancelingEdit="GridView1_RowCancelingEdit" OnRowEditing="GridView1_RowEditing" DataKeyNames="Depid" CssClass="table table-bordered table-hover datatable-highlight" OnRowDataBound="GridView1_RowDataBound">
-                <Columns>
-                    <asp:BoundField DataField="Depid" HeaderText="Department ID" ReadOnly="true" />
-                    <asp:BoundField DataField="Departmentname" HeaderText="Department Name" ControlStyle-CssClass="form-control" />
-                    <asp:CommandField HeaderText="Edit" ShowEditButton="true" ControlStyle-CssClass="label label-info" />
-                    <asp:CommandField HeaderText="Delete" ShowDeleteButton="true" ControlStyle-CssClass="label label-danger" />
-                </Columns>
-            </asp:GridView>
+            <table class="table datatable-basic">
+                <thead>
+                    <tr>
+                        <th>Department ID</th>
+                        <th>Department Name</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <asp:PlaceHolder ID="PH_Department" runat="server"></asp:PlaceHolder>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editDepModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-sm" style="margin-top: 15vh;" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Edit Department</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="text-semibold">Department Name <span class="text-danger">*</span></label>
+                        <input type="text" id="txt_EditDepName" class="form-control" placeholder="Enter department name" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="SaveEditDepartment();">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-sm" style="margin-top: 15vh;" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Confirm Delete</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="mb-0">Are you sure you want to delete this department?</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmDeleteDepartment()">Yes, Delete</button>
+                </div>
+            </div>
         </div>
     </div>
 </asp:Content>
