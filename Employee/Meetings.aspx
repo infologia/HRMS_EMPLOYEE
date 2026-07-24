@@ -76,14 +76,12 @@
             <thead>
                 <tr>
                     <th>Title</th>
-                    <th>Meeting Date</th>
-                    <th>Start Time</th>
-                    <th>End Time</th>
+                    <th style="white-space: nowrap; min-width: 110px;">Meeting Date</th>
+                    <th style="white-space: nowrap; min-width: 110px;">Start Time</th>
+                    <th style="white-space: nowrap; min-width: 110px;">End Time</th>
                     <th>Status</th>
                     <th>Created</th>
-                    <th id="UpdateView" runat="server">Update</th>
-
-                    <th>Delete</th>
+                    <th id="UpdateView" runat="server" class="text-center">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -104,13 +102,13 @@
             <thead>
                 <tr>
                     <th>Title</th>
-                    <th>Meeting Date</th>
-                    <th>Start Time</th>
-                    <th>End Time</th>
+                    <th style="white-space: nowrap; min-width: 110px;">Meeting Date</th>
+                    <th style="white-space: nowrap; min-width: 110px;">Start Time</th>
+                    <th style="white-space: nowrap; min-width: 110px;">End Time</th>
                     <th>Hours</th>
                     <th>Status</th>
                     <th>Created</th>
-                    <th >View</th>
+                    <th class="text-center">Action</th>
 
                 </tr>
             </thead>

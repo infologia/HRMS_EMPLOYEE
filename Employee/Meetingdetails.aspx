@@ -311,6 +311,9 @@
     if (typeof ddlEmployees.multiselect === 'function') {
         ddlEmployees.multiselect('refresh');
     }
+    // Programmatic .val() doesn't fire native 'change', so trigger it manually
+    // to keep the "X selected" button text in sync after this conflict-resolution update.
+    ddlEmployees.trigger('change');
 
     conflictEmployeeKey = null;
     $('#modal_theme_danger').modal('hide');
@@ -326,6 +329,41 @@
                 ddlEmployees.multiselect('refresh');
             }
     });
+    </script>
+    <script>
+        // Force "X selected" text for Project Participants, instead of bootstrap-multiselect's
+        // default (names for <=3 selected, count for 4+). Same fix as Project.aspx.
+        // Uses window 'load' (not document 'ready') so the plugin's .btn-group/.multiselect-container
+        // markup is guaranteed to already exist when we bind to it.
+        $(window).on('load', function () {
+            function forceCountText(selectId) {
+                var $select = $(selectId);
+                var $btnGroup = $select.next('.btn-group');
+
+                if ($btnGroup.length === 0) {
+                    setTimeout(function () { forceCountText(selectId); }, 200);
+                    return;
+                }
+
+                function updateText() {
+                    var count = $select.find('option:selected').length;
+                    $btnGroup.find('.multiselect-selected-text').text(count === 0 ? 'None selected' : count + ' selected');
+                }
+
+                // 'change' (not 'click') because these checkboxes are styled by jQuery Uniform -
+                // the real click lands on Uniform's overlay, not the native <input>, but 'change'
+                // still fires reliably. No setTimeout delay, so it updates in the same tick as
+                // the plugin's own button-text update (avoids a name->count flicker).
+                $btnGroup.on('change', '.multiselect-container input[type="checkbox"]', function () {
+                    updateText();
+                });
+
+                $select.on('change', updateText);
+                updateText();
+            }
+
+            forceCountText('#<%= ddl_employee.ClientID %>');
+        });
     </script>
       <script>
           $('.pickadate').pickadate({

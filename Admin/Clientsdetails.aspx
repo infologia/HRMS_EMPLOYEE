@@ -217,7 +217,7 @@
                             </div>
                         </div>
                         <div class="row mt-10">
-                            <div class="col-md-4">
+                            <div class="col-md-4" id="div_SalesPerson">
                                 <label>Sales Person <span style="color: red">*</span></label>
                                 <asp:DropDownList ID="ddlsalesperson" runat="server" Class="form-control"></asp:DropDownList>
                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator3" ControlToValidate="ddlsalesperson" runat="server" ErrorMessage="Please Select Employee." ForeColor="Red"></asp:RequiredFieldValidator>
@@ -447,8 +447,37 @@
             closeOnSelect: true
         });
 
+        function toggleTypeFields() {
+            try {
+                var typeVal = $('#<%= ddl_Type.ClientID %>').val();
+                var validatorSP = document.getElementById('<%= RequiredFieldValidator3.ClientID %>');
+                
+                if (typeVal == '1') {
+                    $('#div_SalesPerson').hide();
+                    if (typeof ValidatorEnable === 'function' && validatorSP) {
+                        ValidatorEnable(validatorSP, false);
+                    }
+                } else { // 2 or others
+                    $('#div_SalesPerson').show();
+                    if (typeof ValidatorEnable === 'function' && validatorSP) {
+                        ValidatorEnable(validatorSP, true);
+                    }
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
         $('#<%= ddl_Type.ClientID %>').on('change', toggleTypeFields);
-        $(document).ready(function () { toggleTypeFields(); });
+        
+        // Use pageLoad for ASP.NET WebForms to handle both full loads and partial postbacks
+        function pageLoad() {
+            setTimeout(toggleTypeFields, 100);
+        }
+        
+        $(document).ready(function () { 
+            setTimeout(toggleTypeFields, 100); 
+        });
 
         var clientDocRowIdx = 0;
 

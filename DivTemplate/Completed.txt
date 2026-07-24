@@ -1,4 +1,4 @@
-﻿   <tr>
+   <tr>
                     <td>%%MeetingTitle%%</td>                   
                     <td>%%MeetingDate%%</td>
                     <td>%%StartTime%%</td>
@@ -6,7 +6,7 @@
                     <td>%%Hours%%</td>
                     <td>%%ActiveText%%</td>
                     <td>%%Username%%</td>
-                     <td><a href="Meetingdetails.aspx?id=%%MeetingKey%%" <span class="label label-primary">View</span></a></td> 
+                     <td class="text-center"><a href="Meetingdetails.aspx?id=%%MeetingKey%%&Viewid=0" title="View"><i class="icon-eye text-primary"></i></a></td> 
                    
                    
                 </tr>
