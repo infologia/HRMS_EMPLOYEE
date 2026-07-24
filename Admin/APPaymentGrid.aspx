@@ -52,6 +52,7 @@
                 </div>
                 <div class="col-md-6 pull-right">
                     <div style="display: flex; gap: 10px; justify-content: flex-end; align-items: center;">
+                        <asp:DropDownList ID="ddlFinancialYear" runat="server" CssClass="form-control" AutoPostBack="true" OnSelectedIndexChanged="ddlFinancialYear_SelectedIndexChanged" style="width: 200px;"></asp:DropDownList>
                         <a href="APPaymentEntry.aspx" class="btn btn-primary"><i class="icon-plus-circle2"></i> Create Payment</a>
                     </div>
                 </div>

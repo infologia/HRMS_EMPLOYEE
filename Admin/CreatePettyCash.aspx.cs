@@ -112,7 +112,15 @@ public partial class Admin_CreatePettyCash : System.Web.UI.Page
         if (status == 1) // Credit
             newBalance = lastBalance + enteredAmount;
         else if (status == 2) // Debit
+        {
+            if (enteredAmount > lastBalance)
+            {
+                Page.ClientScript.RegisterStartupScript(this.GetType(), "balanceerror",
+                    "showToastr('error','Insufficient petty cash balance. Please add cash before recording this expense.');", true);
+                return;
+            }
             newBalance = lastBalance - enteredAmount;
+        }
 
         // 🔹 Insert Query
         string insertQuery = @"
@@ -195,7 +203,15 @@ public partial class Admin_CreatePettyCash : System.Web.UI.Page
         if (status == 1) // Credit
             currentBalance = previousBalance + enteredAmount;
         else // Debit
+        {
+            if (enteredAmount > previousBalance)
+            {
+                Page.ClientScript.RegisterStartupScript(this.GetType(), "balanceerror",
+                    "showToastr('error','Insufficient petty cash balance. Please add cash before recording this expense.');", true);
+                return;
+            }
             currentBalance = previousBalance - enteredAmount;
+        }
 
         // 🔹 3. Update current record
         string updateQuery = @"

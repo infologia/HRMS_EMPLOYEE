@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
@@ -47,55 +47,29 @@ public partial class WEB_Admin_Department : System.Web.UI.Page
 		String str_sql = "SELECT Depid,Departmentname FROM IT_Department  order by createdon ASC";
 		sc = new SqlCommand(str_sql);
 		DataTable dt_UserSession = this.DA.GetDataTable(sc);
-		GridView1.DataSource = dt_UserSession;
-		GridView1.DataBind();
-	}
-	protected void GridView1_RowDeleting(object sender, GridViewDeleteEventArgs e)
-	{
-
-		string id = GridView1.DataKeys[e.RowIndex].Values["Depid"].ToString();
-		SqlCommand cmd = new SqlCommand("delete FROM IT_Department where Depid='" + id + "'");
-		DA.ExecuteNonQuery(cmd);
-        ScriptManager.RegisterStartupScript(
-          this,
-          this.GetType(),
-          "delete_success",
-          "showToastr('success','Department deleted successfully!');",
-          true
-      );
-        grid();
-	}
-	protected void GridView1_RowEditing(object sender, GridViewEditEventArgs e)
-	{
-		GridView1.EditIndex = e.NewEditIndex;
-		grid();
-	}
-	protected void GridView1_RowUpdating(object sender, GridViewUpdateEventArgs e)
-	{
-		string date = DateTime.Now.ToString();
 		
-		string id1 = GridView1.DataKeys[e.RowIndex].Values["Depid"].ToString();
-		GridViewRow row = (GridViewRow)GridView1.Rows[e.RowIndex];
-		Label lblID = (Label)row.FindControl("lblID");
-		TextBox Depname = (TextBox)row.Cells[1].Controls[0];
-		GridView1.EditIndex = -1;
-		SqlCommand cmd = new SqlCommand("update IT_Department set Departmentname='" + Depname.Text + "',Modifiedby='" + this.str_userid + "',Modifiedon=@Modifiedon where Depid='" + id1 + "'");
-        cmd.Parameters.Add("@Modifiedon", SqlDbType.DateTime).Value = DateTime.Now;
-        DA.ExecuteNonQuery(cmd);
-        ScriptManager.RegisterStartupScript(
-             this,
-             this.GetType(),
-             "update_success",
-             "showToastr('success','Department updated successfully!');" +
-             "setTimeout(function(){ window.location.href='/Admin/Department.aspx'; }, 2000);",
-             true
-         );
-        grid();
-	}
-	protected void GridView1_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
-	{
-		GridView1.EditIndex = -1;
-		grid();
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        foreach (DataRow row in dt_UserSession.Rows)
+        {
+            string depId = row["Depid"].ToString();
+            string depName = row["Departmentname"].ToString();
+            
+            sb.Append("<tr>");
+            sb.Append("<td>" + depId + "</td>");
+            sb.Append("<td>" + depName + "</td>");
+            
+            // Actions (Edit & Delete)
+            sb.Append("<td class='text-center'>");
+            sb.Append("<ul class='icons-list'>");
+            sb.Append("<li><a href='javascript:void(0);' class='text-primary' onclick=\"openEditModal('" + depId + "', '" + depName.Replace("'", "\\'") + "')\" data-popup='tooltip' title='Edit'><i class='icon-pencil7'></i></a></li>");
+            sb.Append("<li><a href='javascript:void(0);' class='text-danger' onclick=\"fn_DeleteDepartment('" + depId + "')\" data-popup='tooltip' title='Delete'><i class='icon-trash'></i></a></li>");
+            sb.Append("</ul>");
+            sb.Append("</td>");
+            
+            sb.Append("</tr>");
+        }
+        
+        PH_Department.Controls.Add(new LiteralControl(sb.ToString()));
 	}
 
 	[WebMethod]
@@ -135,21 +109,40 @@ public partial class WEB_Admin_Department : System.Web.UI.Page
 		return "true";
 	}
 
-    protected void GridView1_RowDataBound(object sender, GridViewRowEventArgs e)
+    [WebMethod]
+    public static string UpdateDepartment(string depId, string depName)
     {
-        if (e.Row.RowType == DataControlRowType.DataRow)
+        try
         {
-            if ((e.Row.RowState & DataControlRowState.Edit) > 0)
-                return;
-
-            LinkButton btnDelete = e.Row.Cells[3].Controls[0] as LinkButton;
-
-            if (btnDelete != null && btnDelete.CommandName == "Delete")
-            {
-                btnDelete.OnClientClick =
-                    "return confirm('Are you sure you want to delete this Department?');";
-            }
+            SessionCustom SC = new SessionCustom();
+            string str_userid = SC.Userid;
+            SqlCommand cmd = new SqlCommand("update IT_Department set Departmentname=@Departmentname, Modifiedby=@Modifiedby, Modifiedon=@Modifiedon where Depid=@Depid");
+            cmd.Parameters.AddWithValue("@Departmentname", depName);
+            cmd.Parameters.AddWithValue("@Modifiedby", str_userid);
+            cmd.Parameters.AddWithValue("@Modifiedon", DateTime.Now);
+            cmd.Parameters.AddWithValue("@Depid", depId);
+            new DataAccess().ExecuteNonQuery(cmd);
+            return "true";
+        }
+        catch
+        {
+            return "false";
         }
     }
 
+    [WebMethod]
+    public static string DeleteDepartment(string depId)
+    {
+        try
+        {
+            SqlCommand cmd = new SqlCommand("delete FROM IT_Department where Depid=@Depid");
+            cmd.Parameters.AddWithValue("@Depid", depId);
+            new DataAccess().ExecuteNonQuery(cmd);
+            return "true";
+        }
+        catch
+        {
+            return "false";
+        }
+    }
 }

@@ -463,7 +463,8 @@
         $('.pickadate').pickadate({
             format: 'dd/mm/yyyy',
             selectMonths: true,
-            selectYears: true,
+            selectYears: 50,
+            max: new Date(2007, 11, 31),
             closeOnSelect: true
         });
 

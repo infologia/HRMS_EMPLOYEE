@@ -105,8 +105,8 @@ public partial class Admin_blog : System.Web.UI.Page
         string blogImage  = SaveImage(fuBlogImage, "", "BlogImages");
 
         string query = @"INSERT INTO IT_BlogCreation 
-            (BlogTitle, BlogCreator, PublishDate, Flag, Keywords, Description, SmallImage, BlogImage, Title, BlogContent, Status, CreatedBy, CreatedOn)
-            VALUES (@BlogTitle, @BlogCreator, @PublishDate, @Flag, @Keywords, @Description, @SmallImage, @BlogImage, @Title, @BlogContent, 1, @CreatedBy, GETDATE())";
+            (BlogTitle, BlogCreator, PublishDate, Flag, Keywords, Description, SmallImage, BlogImage, Title, BlogContent, Status, IsPublished, CreatedBy, CreatedOn)
+            VALUES (@BlogTitle, @BlogCreator, @PublishDate, @Flag, @Keywords, @Description, @SmallImage, @BlogImage, @Title, @BlogContent, 0, 0, @CreatedBy, GETDATE())";
 
         SqlCommand cmd = new SqlCommand(query);
         cmd.Parameters.AddWithValue("@BlogTitle",    txtBlogTitle.Text.Trim());

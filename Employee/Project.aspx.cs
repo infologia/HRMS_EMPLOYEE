@@ -288,6 +288,18 @@ private DateTime? ParseDate(string dateText)
             return;
         }
 
+        // Server-side duplicate check (defense in depth): the client-side AJAX check
+        // can be bypassed or race with another user creating the same code at the
+        // same moment, so re-check right before inserting.
+        if (CheckProjectCode(txtProjectCode.Text.Trim(), "0") == "EXISTS")
+        {
+            ScriptManager.RegisterStartupScript(
+                this, this.GetType(), "dupcode",
+                "$('#lblProjectCodeError').show(); $('#" + txtProjectCode.ClientID + "').css('border-color','red').focus();",
+                true);
+            return;
+        }
+
         if (!string.IsNullOrEmpty(txtStartDate.Text) &&
              !string.IsNullOrEmpty(txtEndDate.Text))
         {

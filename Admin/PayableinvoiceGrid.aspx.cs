@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
@@ -20,6 +20,7 @@ public partial class Admin_PayableinvoiceGrid : System.Web.UI.Page
         this.PH = new PhTemplate();
         if (!IsPostBack)
         {
+            BindFinancialYearDropdown();
             BindVendorDropdown();
             BindGrid();
             LoadTotalAmount();
@@ -50,11 +51,45 @@ public partial class Admin_PayableinvoiceGrid : System.Web.UI.Page
         LoadTotalAmount();
     }
 
+    private void BindFinancialYearDropdown()
+    {
+        ddlFinancialYear.Items.Clear();
+        int currentYear = DateTime.Now.Year;
+        int currentMonth = DateTime.Now.Month;
+        int startYear = currentMonth >= 4 ? currentYear : currentYear - 1;
+
+        for (int y = startYear; y >= 2020; y--)
+        {
+            string fyText = "FY " + y + "-" + (y + 1).ToString().Substring(2, 2);
+            string fyValue = y.ToString();
+            ddlFinancialYear.Items.Add(new ListItem(fyText, fyValue));
+        }
+    }
+
+    protected void ddlFinancialYear_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        BindGrid();
+        LoadTotalAmount();
+    }
+
+    private void GetFinancialYearDates(out DateTime startDate, out DateTime endDate)
+    {
+        int startYear = Convert.ToInt32(ddlFinancialYear.SelectedValue);
+        startDate = new DateTime(startYear, 4, 1);
+        endDate = new DateTime(startYear + 1, 3, 31, 23, 59, 59);
+    }
+
     private void LoadTotalAmount()
     {
+        DateTime fyStart, fyEnd;
+        GetFinancialYearDates(out fyStart, out fyEnd);
+
         string vendorFilter = ddlVendor.SelectedValue != "0" ? " AND a.VendorNameNew = @VendorKey" : "";
-        string query = "SELECT ISNULL(SUM(a.InvoiceAmount), 0) AS TotalAmount FROM IT_PayableInvoices a WHERE 1=1" + vendorFilter;
+        string query = "SELECT ISNULL(SUM(a.InvoiceAmount), 0) AS TotalAmount FROM IT_PayableInvoices a WHERE ISNULL(a.InvoiceDate, a.CreatedOn) >= @FYStart AND ISNULL(a.InvoiceDate, a.CreatedOn) <= @FYEnd" + vendorFilter;
         SqlCommand cmd = new SqlCommand(query);
+        cmd.Parameters.AddWithValue("@FYStart", fyStart);
+        cmd.Parameters.AddWithValue("@FYEnd", fyEnd);
+
         if (ddlVendor.SelectedValue != "0")
             cmd.Parameters.AddWithValue("@VendorKey", ddlVendor.SelectedValue);
 
@@ -65,13 +100,19 @@ public partial class Admin_PayableinvoiceGrid : System.Web.UI.Page
 
     private void BindGrid()
     {
+        DateTime fyStart, fyEnd;
+        GetFinancialYearDates(out fyStart, out fyEnd);
+
         string vendorFilter = ddlVendor.SelectedValue != "0" ? " AND a.VendorNameNew = @VendorKey" : "";
 
         string query1 = @"SELECT a.PayableInvoiceKey, b.ClientName AS VendorName, a.InvoiceNumber, a.InvoiceDate, a.DueDate, a.InvoiceAmount, a.PaymentStatus, a.CreatedOn
                           FROM IT_PayableInvoices a
                           LEFT JOIN IT_ClientDetails b ON a.VendorNameNew = b.ClientKey
-                          WHERE 1=1" + vendorFilter + " ORDER BY a.CreatedOn DESC";
+                          WHERE ISNULL(a.InvoiceDate, a.CreatedOn) >= @FYStart AND ISNULL(a.InvoiceDate, a.CreatedOn) <= @FYEnd" + vendorFilter + " ORDER BY a.CreatedOn DESC";
         SqlCommand cmd1 = new SqlCommand(query1);
+        cmd1.Parameters.AddWithValue("@FYStart", fyStart);
+        cmd1.Parameters.AddWithValue("@FYEnd", fyEnd);
+
         if (ddlVendor.SelectedValue != "0")
             cmd1.Parameters.AddWithValue("@VendorKey", ddlVendor.SelectedValue);
 

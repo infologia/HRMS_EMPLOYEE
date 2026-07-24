@@ -59,8 +59,8 @@ public partial class Employee_DailyTaskDetails : System.Web.UI.Page
                         d.AssignedHours, d.ActualHours, d.Status, d.Remarks 
                         FROM IT_TaskCreation t
                         LEFT JOIN IT_Projects p ON t.ProjectName = p.ProjectKey
-                        LEFT JOIN IT_TaskRole tr ON t.Role = tr.RoleID
                         LEFT JOIN IT_TaskDescriptiondetails d ON t.TaskKey = d.TaskKey
+                        LEFT JOIN IT_TaskRole tr ON d.WorkType = tr.RoleID
                         WHERE CAST(t.StartDate AS DATE) = @Date AND t.EmployeeList = @EmpKey
                         ORDER BY p.ProjectName, d.TaskName";
                         

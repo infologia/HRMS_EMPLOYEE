@@ -13,7 +13,7 @@ using System.Web.UI.WebControls;
 using System.Globalization;
 
 
-public partial class Admin_createinvoice : System.Web.UI.Page
+public partial class Admin_createinvoice : System.Web.UI.Page, ICallbackEventHandler
 {
     DataAccess DA;
     SessionCustom SC;
@@ -26,8 +26,18 @@ public partial class Admin_createinvoice : System.Web.UI.Page
         this.SC = new SessionCustom();
         this.PH = new PhTemplate();
 
+        // Register Callback for real-time validation
+        String cbReference = Page.ClientScript.GetCallbackEventReference(this, "arg", "ReceiveServerData", "context");
+        String callbackScript = "function CallServer(arg, context) {" + cbReference + "; }";
+        Page.ClientScript.RegisterClientScriptBlock(this.GetType(), "CallServer", callbackScript, true);
+
         if (!IsPostBack)
         {
+            // Disable browser caching for these controls so that a soft refresh clears them
+            ddlClient.Attributes.Add("autocomplete", "off");
+            ddProjectName.Attributes.Add("autocomplete", "off");
+            InvoiceNumber.Attributes.Add("autocomplete", "off");
+
             try { DA.ExecuteNonQuery(new SqlCommand("IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[IT_Invoices]') AND name = 'TdsPercentage') BEGIN ALTER TABLE IT_Invoices ADD TdsPercentage DECIMAL(18,2) NULL END")); } catch {}
             BindClients();
             BindStatus();
@@ -58,6 +68,7 @@ public partial class Admin_createinvoice : System.Web.UI.Page
                 TDSViews.Visible = true;
                 PopulateProjectData(invoiceId);
                 Invoicegrid();
+                BindLastInvoiceNumber();
             }
             else
             {
@@ -66,6 +77,7 @@ public partial class Admin_createinvoice : System.Web.UI.Page
                            "<i class='icon-reading position-left'></i> Create Receivable Invoice";
                 btnSave.Visible = true;
                 btnUpdate.Visible = false;
+                BindLastInvoiceNumber();
             }
         }
     }
@@ -80,11 +92,26 @@ public partial class Admin_createinvoice : System.Web.UI.Page
             return;
         }
 
-        string str_view = @"SELECT b.ProjectName As ProjectName, a.InvoiceKey, a.InvoiceNumber, a.TotalAmount, CONVERT(VARCHAR(10), a.InvoiceDate, 105) AS InvoiceDate, CONVERT(VARCHAR(10), a.ReceivedDate, 105) AS ReceivedDate, CONVERT(VARCHAR(10), a.CreatedOn, 105) AS CreatedOn FROM IT_Invoices a left join IT_Projects b on a.ProjectKey = b.ProjectKey where a.ClientKey='" + clientId + "' and a.ProjectKey='" + projectId + "'";
+        DateTime currentDate = DateTime.Now;
+        DateTime fyStart, fyEnd;
+        if (currentDate.Month >= 4)
+        {
+            fyStart = new DateTime(currentDate.Year, 4, 1);
+            fyEnd = new DateTime(currentDate.Year + 1, 3, 31, 23, 59, 59);
+        }
+        else
+        {
+            fyStart = new DateTime(currentDate.Year - 1, 4, 1);
+            fyEnd = new DateTime(currentDate.Year, 3, 31, 23, 59, 59);
+        }
+
+        string str_view = @"SELECT b.ProjectName As ProjectName, a.InvoiceKey, a.InvoiceNumber, a.TotalAmount, CONVERT(VARCHAR(10), a.InvoiceDate, 105) AS InvoiceDate, CONVERT(VARCHAR(10), a.ReceivedDate, 105) AS ReceivedDate, CONVERT(VARCHAR(10), a.CreatedOn, 105) AS CreatedOn FROM IT_Invoices a left join IT_Projects b on a.ProjectKey = b.ProjectKey where a.ClientKey=@ClientKey and a.ProjectKey=@ProjectKey AND ISNULL(a.InvoiceDate, a.CreatedOn) >= @FYStart AND ISNULL(a.InvoiceDate, a.CreatedOn) <= @FYEnd";
 
         SqlCommand cmd = new SqlCommand(str_view);
         cmd.Parameters.AddWithValue("@ClientKey", clientId);
         cmd.Parameters.AddWithValue("@ProjectKey", projectId);
+        cmd.Parameters.AddWithValue("@FYStart", fyStart);
+        cmd.Parameters.AddWithValue("@FYEnd", fyEnd);
         DataTable dt = DA.GetDataTable(cmd);
         PH_invoice.Controls.Clear();
 
@@ -282,6 +309,12 @@ public partial class Admin_createinvoice : System.Web.UI.Page
     }
     protected void btn_send_Click(object sender, EventArgs e)
     {
+        if (CheckDuplicateInvoiceServer(InvoiceNumber.Text.Trim(), ""))
+        {
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "duplicate", "showToastr('error','This invoice number already exists');", true);
+            return;
+        }
+
         if (!string.IsNullOrEmpty(IT_InvoiceDate.Text) &&
                !string.IsNullOrEmpty(IT_ReceivedDate.Text))
         {
@@ -445,6 +478,11 @@ public partial class Admin_createinvoice : System.Web.UI.Page
     {
         try
         {
+            if (CheckDuplicateInvoiceServer(InvoiceNumber.Text.Trim(), hfInvoiceKey.Value))
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "duplicate", "showToastr('error','This invoice number already exists');", true);
+                return;
+            }
 
             if (!string.IsNullOrEmpty(IT_InvoiceDate.Text) &&
             !string.IsNullOrEmpty(IT_ReceivedDate.Text))
@@ -757,9 +795,24 @@ WHERE
         cmdproject.Parameters.AddWithValue("@ProjectKey", client_Id);
         DataSet ds_project = this.DA.GetDataSet(cmdproject);
 
-        string str_projectAmount = "select count(InvoiceKey) as invoiceCount, sum(InvoiceAmount) as amount from IT_Invoices where ProjectKey = @ProjectKey";
+        DateTime currentDate = DateTime.Now;
+        DateTime fyStart, fyEnd;
+        if (currentDate.Month >= 4)
+        {
+            fyStart = new DateTime(currentDate.Year, 4, 1);
+            fyEnd = new DateTime(currentDate.Year + 1, 3, 31, 23, 59, 59);
+        }
+        else
+        {
+            fyStart = new DateTime(currentDate.Year - 1, 4, 1);
+            fyEnd = new DateTime(currentDate.Year, 3, 31, 23, 59, 59);
+        }
+
+        string str_projectAmount = "select count(InvoiceKey) as invoiceCount, sum(InvoiceAmount) as amount from IT_Invoices where ProjectKey = @ProjectKey AND ISNULL(InvoiceDate, CreatedOn) >= @FYStart AND ISNULL(InvoiceDate, CreatedOn) <= @FYEnd";
         SqlCommand cmdprojectAmount = new SqlCommand(str_projectAmount);
         cmdprojectAmount.Parameters.AddWithValue("@ProjectKey", client_Id);
+        cmdprojectAmount.Parameters.AddWithValue("@FYStart", fyStart);
+        cmdprojectAmount.Parameters.AddWithValue("@FYEnd", fyEnd);
         DataSet ds_projectAmount = this.DA.GetDataSet(cmdprojectAmount);
 
         if (ds_project.Tables[0].Rows.Count > 0 &&
@@ -888,4 +941,52 @@ WHERE
         }
     }
 
+    private void BindLastInvoiceNumber()
+    {
+        string sql = "SELECT TOP 1 InvoiceNumber FROM IT_Invoices ORDER BY InvoiceKey DESC";
+        SqlCommand cmd = new SqlCommand(sql);
+        DataSet ds = this.DA.GetDataSet(cmd);
+        if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+        {
+            lblLastInvoiceNo.Text = "Previous Invoice No: " + ds.Tables[0].Rows[0]["InvoiceNumber"].ToString();
+        }
+    }
+
+    private bool CheckDuplicateInvoiceServer(string invoiceNumber, string invoiceKey)
+    {
+        string sql = "SELECT COUNT(1) FROM IT_Invoices WHERE InvoiceNumber = @InvoiceNumber";
+        if (!string.IsNullOrEmpty(invoiceKey))
+        {
+            sql += " AND InvoiceKey != @InvoiceKey";
+        }
+        SqlCommand cmd = new SqlCommand(sql);
+        cmd.Parameters.AddWithValue("@InvoiceNumber", invoiceNumber);
+        if (!string.IsNullOrEmpty(invoiceKey))
+        {
+            cmd.Parameters.AddWithValue("@InvoiceKey", invoiceKey);
+        }
+        DataSet ds = this.DA.GetDataSet(cmd);
+        if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+        {
+            int count = Convert.ToInt32(ds.Tables[0].Rows[0][0]);
+            return count > 0;
+        }
+        return false;
+    }
+
+    // Callback event handling for duplicate checking
+    private string callbackResult = "";
+
+    public void RaiseCallbackEvent(string eventArgument)
+    {
+        string invoiceNo = eventArgument;
+        string invoiceKey = hfInvoiceKey.Value;
+        bool exists = CheckDuplicateInvoiceServer(invoiceNo, invoiceKey);
+        callbackResult = exists ? "1" : "0";
+    }
+
+    public string GetCallbackResult()
+    {
+        return callbackResult;
+    }
 }

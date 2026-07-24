@@ -85,6 +85,10 @@
 
     <div class="panel panel-flat">
         <div class="panel-heading">
+            <div class="pull-right">
+                <asp:Label ID="lblLastInvoiceNo" runat="server" CssClass="text-semibold text-primary" style="font-size: 14px; margin-right: 15px; margin-top: 10px;"></asp:Label>
+            </div>
+            <div class="clearfix"></div>
             <%--            <h5 class="panel-title">Receivable Invoice</h5>--%>
         </div>
 
@@ -110,7 +114,8 @@
                             </div>
                             <div class="col-sm-3">
                                 <label class="compact-label">Invoice No <span class="text-danger">*</span></label>
-                                <asp:TextBox ID="InvoiceNumber" runat="server" CssClass="form-control input-sm" placeholder="#000-YY-MM" />
+                                <asp:TextBox ID="InvoiceNumber" runat="server" CssClass="form-control input-sm" placeholder="#000-YY-MM" onkeyup="checkInvoiceDuplicate()" oninput="checkInvoiceDuplicate()" onchange="checkInvoiceDuplicate()" onpaste="checkInvoiceDuplicate()" />
+                                <span id="lblInvoiceError" class="text-danger" style="display:none; font-size:11px;"></span>
                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" ControlToValidate="InvoiceNumber" ErrorMessage="Enter No" CssClass="text-danger" Display="Dynamic" />
                                 <asp:RegularExpressionValidator ID="RegexInvoiceNumber" runat="server" ControlToValidate="InvoiceNumber" ValidationExpression="^#[0-9]{3}-[0-9]{2}-(0[1-9]|1[0-2])$" ErrorMessage="Invalid format" CssClass="text-danger" Display="Dynamic" />
                             </div>
@@ -454,7 +459,57 @@
                     }
                 }
             });
+
+            // We use inline handlers for checkInvoiceDuplicate now to guarantee execution
         });
+
+        // Global functions for duplicate invoice checking
+        function checkInvoiceDuplicate() {
+            try {
+                var txt = document.getElementById("<%= InvoiceNumber.ClientID %>");
+                if (!txt) {
+                    return;
+                }
+                var invoiceNo = txt.value.trim();
+                
+                if (invoiceNo.length > 0) {
+                    if (typeof CallServer === 'function') {
+                        CallServer(invoiceNo, null);
+                    } else {
+                        console.error("CallServer function is not defined.");
+                    }
+                } else {
+                    $("#lblInvoiceError").hide();
+                    try {
+                        document.getElementById("<%= btnSave.ClientID %>").disabled = false;
+                        document.getElementById("<%= btnUpdate.ClientID %>").disabled = false;
+                    } catch(e) {}
+                }
+            } catch (ex) {
+                console.error("JS Error: " + ex.message);
+            }
+        }
+
+        // This function receives the result from the ASP.NET Callback
+        function ReceiveServerData(rValue) {
+            if (rValue === "1") {
+                $("#lblInvoiceError").text("This invoice number already exists").show();
+                try {
+                    document.getElementById("<%= btnSave.ClientID %>").disabled = true;
+                    document.getElementById("<%= btnUpdate.ClientID %>").disabled = true;
+                } catch(e) {}
+            } else {
+                $("#lblInvoiceError").hide();
+                try {
+                    document.getElementById("<%= btnSave.ClientID %>").disabled = false;
+                    document.getElementById("<%= btnUpdate.ClientID %>").disabled = false;
+                } catch(e) {}
+            }
+        }
+        
+        function ReceiveServerError(err) {
+            console.error("Server Callback Error:", err);
+        }
     </script>
 
     <script>

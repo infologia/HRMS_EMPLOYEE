@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -22,27 +22,66 @@ public partial class Admin_tds : System.Web.UI.Page
             Label control1 = this.Master.FindControl("lbl_bread") as Label;
             if (control1 != null)
                 control1.Text = "Receivable TDS";
+            BindFinancialYearDropdown();
             LoadTds();
         }
     }
 
+    private void BindFinancialYearDropdown()
+    {
+        ddlFinancialYear.Items.Clear();
+        int currentYear = DateTime.Now.Year;
+        int currentMonth = DateTime.Now.Month;
+        int startYear = currentMonth >= 4 ? currentYear : currentYear - 1;
+
+        for (int y = startYear; y >= 2020; y--)
+        {
+            string fyText = "FY " + y + "-" + (y + 1).ToString().Substring(2, 2);
+            string fyValue = y.ToString();
+            ddlFinancialYear.Items.Add(new System.Web.UI.WebControls.ListItem(fyText, fyValue));
+        }
+    }
+
+    protected void ddlFinancialYear_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        LoadTds();
+    }
+
+    private void GetFinancialYearDates(out DateTime startDate, out DateTime endDate)
+    {
+        int startYear = Convert.ToInt32(ddlFinancialYear.SelectedValue);
+        startDate = new DateTime(startYear, 4, 1);
+        endDate = new DateTime(startYear + 1, 3, 31, 23, 59, 59);
+    }
+
     private void LoadTds()
     {
+        DateTime fyStart, fyEnd;
+        GetFinancialYearDates(out fyStart, out fyEnd);
+
         string str_query = @"SELECT 
         c.ClientName,
         i.InvoiceNumber,
         i.InvoiceAmount,
         i.TDSAmount,
         i.TotalAmount,
-        i.Status,
+        i.InvoiceStatus,
+        s.name as StatusName,
         CONVERT(VARCHAR(10), i.InvoiceDate, 103) AS InvoiceDate
     FROM IT_Invoices i
     INNER JOIN IT_ClientDetails c ON i.ClientKey = c.ClientKey
-    WHERE i.TDSAmount > 0
+    LEFT JOIN IT_Countries cnt ON cnt.CountryKey = c.Country
+    LEFT JOIN IT_InvoiceStatus s ON i.InvoiceStatus = s.id
+    WHERE i.TDSAmount > 0 
+      AND ISNULL(i.InvoiceDate, i.CreatedOn) >= @FYStart 
+      AND ISNULL(i.InvoiceDate, i.CreatedOn) <= @FYEnd
+      AND cnt.Country = 'India'
     ORDER BY i.InvoiceDate DESC;";
 
         using (SqlCommand cmd = new SqlCommand(str_query))
         {
+            cmd.Parameters.AddWithValue("@FYStart", fyStart);
+            cmd.Parameters.AddWithValue("@FYEnd", fyEnd);
             DataTable dtTds = DA.GetDataTable(cmd);
 
             DataSet ds = new DataSet();
@@ -52,15 +91,29 @@ public partial class Admin_tds : System.Web.UI.Page
             if (!ds.Tables[0].Columns.Contains("StatusText"))
                 ds.Tables[0].Columns.Add("StatusText");
 
-            // 🔹 Status logic (Paid / Unpaid)
+            // 🔹 Status logic (Given / Received / Cancelled)
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
-                int status = Convert.ToInt32(dr["Status"]);
+                int invoiceStatus = dr["InvoiceStatus"] != DBNull.Value ? Convert.ToInt32(dr["InvoiceStatus"]) : 0;
+                string statusName = dr["StatusName"] != DBNull.Value ? dr["StatusName"].ToString() : "Pending";
 
-                if (status == 0) // Pending
-                    dr["StatusText"] = "<span class='label label-danger'>Pending</span>";
-                else // Received
-                    dr["StatusText"] = "<span class='label label-success'>Received</span>";
+                string labelClass = "label-warning"; 
+                if (invoiceStatus == 1)
+                {
+                    labelClass = "label-primary"; 
+                }
+                else if (invoiceStatus == 2)
+                {
+                    labelClass = "label-success"; 
+                }
+                else if (invoiceStatus == 3)
+                {
+                    labelClass = "label-danger"; 
+                }
+                
+                if(string.IsNullOrEmpty(statusName)) statusName = "Pending";
+
+                dr["StatusText"] = "<span class='label label-sm " + labelClass + "'>" + statusName + "</span>";
             }
 
             // 🔹 Load to grid

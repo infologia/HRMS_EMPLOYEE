@@ -442,9 +442,17 @@ public partial class Employee_Overalltaskgrid : System.Web.UI.Page
                         SUM(CASE WHEN d.Status = 2 THEN 1 ELSE 0 END) AS InProgressCount,
                         (SUM(CASE WHEN d.Status = 4 THEN 1 ELSE 0 END) + ISNULL((SELECT COUNT(DISTINCT m.MeetingKey) FROM IT_Meetings m JOIN IT_MeetingParticipants mp ON m.MeetingKey = mp.MeetingKey WHERE mp.EmployeeKey = a.EmployeeList AND CAST(m.MeetingDate AS DATE) = CAST(a.StartDate AS DATE) AND m.Status = 2), 0)) AS CompletedCount,
                         SUM(CASE WHEN d.Status != 4 AND a.StartDate < DATEADD(day, -7, @CurrentDate) THEN 1 ELSE 0 END) AS OverdueCount
-                        FROM IT_TaskCreation a
+                        FROM (
+                            SELECT CAST(StartDate AS DATE) AS StartDate, EmployeeList
+                            FROM IT_TaskCreation
+                            UNION
+                            SELECT CAST(m.MeetingDate AS DATE) AS StartDate, mp.EmployeeKey AS EmployeeList
+                            FROM IT_Meetings m
+                            JOIN IT_MeetingParticipants mp ON m.MeetingKey = mp.MeetingKey
+                        ) a
+                        LEFT JOIN IT_TaskCreation tc ON CAST(tc.StartDate AS DATE) = a.StartDate AND tc.EmployeeList = a.EmployeeList
                         LEFT JOIN IT_EmployeeRegister e ON a.EmployeeList = e.EmployeeKey
-                        LEFT JOIN IT_TaskDescriptiondetails d ON a.TaskKey = d.TaskKey" + where + @"
+                        LEFT JOIN IT_TaskDescriptiondetails d ON tc.TaskKey = d.TaskKey" + where + @"
                         GROUP BY CAST(a.StartDate AS DATE), a.EmployeeList, e.Firstname, e.Lastname, e.Image
                         ORDER BY CAST(a.StartDate AS DATE) DESC";
 
@@ -457,15 +465,15 @@ public partial class Employee_Overalltaskgrid : System.Web.UI.Page
 
     private void BindGrid(int statusId)
     {
-        string where = " WHERE d.Status = @StatusId" + GetCommonWhereClause(true);
-        string query = @"SELECT CAST(a.StartDate AS DATE) AS StartDate, a.EmployeeList AS EmployeeKey,
+        string where = " WHERE (d.Status = @StatusId OR EXISTS (SELECT 1 FROM IT_Meetings mm JOIN IT_MeetingParticipants mmp ON mm.MeetingKey = mmp.MeetingKey WHERE mmp.EmployeeKey = a.EmployeeList AND CAST(mm.MeetingDate AS DATE) = a.StartDate AND mm.Status = @StatusId))" + GetCommonWhereClause(true);
+        string query = @"SELECT a.StartDate, a.EmployeeList AS EmployeeKey,
                         (e.Firstname + ' ' + e.Lastname) AS AssignedTo, e.Image AS EmpImage,
                         (SUM(CAST(ISNULL(d.AssignedHours, 0) AS DECIMAL(10,2))) + 
                          ISNULL((SELECT SUM(DATEDIFF(MINUTE, m.StartTime, m.EndTime)) / 60.0 
                                  FROM IT_Meetings m 
                                  JOIN IT_MeetingParticipants mp ON m.MeetingKey = mp.MeetingKey 
                                  WHERE mp.EmployeeKey = a.EmployeeList 
-                                   AND CAST(m.MeetingDate AS DATE) = CAST(a.StartDate AS DATE) 
+                                   AND CAST(m.MeetingDate AS DATE) = a.StartDate 
                                    AND m.Status IN (1, 2)), 0)) AS AssignedHours, 
                         SUM(CAST(ISNULL(d.ActualHours, 0) AS DECIMAL(10,2))) AS ActualHours, 
                         COUNT(d.TaskKey) AS SubTaskCount,
@@ -473,15 +481,23 @@ public partial class Employee_Overalltaskgrid : System.Web.UI.Page
                                 FROM IT_Meetings m 
                                 JOIN IT_MeetingParticipants mp ON m.MeetingKey = mp.MeetingKey 
                                 WHERE mp.EmployeeKey = a.EmployeeList 
-                                  AND CAST(m.MeetingDate AS DATE) = CAST(a.StartDate AS DATE) 
+                                  AND CAST(m.MeetingDate AS DATE) = a.StartDate 
                                   AND m.Status IN (1, 2)), 0) AS MeetingCount,
-                        (SUM(CASE WHEN d.Status = 1 THEN 1 ELSE 0 END) + ISNULL((SELECT COUNT(DISTINCT m.MeetingKey) FROM IT_Meetings m JOIN IT_MeetingParticipants mp ON m.MeetingKey = mp.MeetingKey WHERE mp.EmployeeKey = a.EmployeeList AND CAST(m.MeetingDate AS DATE) = CAST(a.StartDate AS DATE) AND m.Status = 1), 0)) AS YetToStartCount,
+                        (SUM(CASE WHEN d.Status = 1 THEN 1 ELSE 0 END) + ISNULL((SELECT COUNT(DISTINCT m.MeetingKey) FROM IT_Meetings m JOIN IT_MeetingParticipants mp ON m.MeetingKey = mp.MeetingKey WHERE mp.EmployeeKey = a.EmployeeList AND CAST(m.MeetingDate AS DATE) = a.StartDate AND m.Status = 1), 0)) AS YetToStartCount,
                         SUM(CASE WHEN d.Status = 2 THEN 1 ELSE 0 END) AS InProgressCount,
-                        (SUM(CASE WHEN d.Status = 4 THEN 1 ELSE 0 END) + ISNULL((SELECT COUNT(DISTINCT m.MeetingKey) FROM IT_Meetings m JOIN IT_MeetingParticipants mp ON m.MeetingKey = mp.MeetingKey WHERE mp.EmployeeKey = a.EmployeeList AND CAST(m.MeetingDate AS DATE) = CAST(a.StartDate AS DATE) AND m.Status = 2), 0)) AS CompletedCount,
+                        (SUM(CASE WHEN d.Status = 4 THEN 1 ELSE 0 END) + ISNULL((SELECT COUNT(DISTINCT m.MeetingKey) FROM IT_Meetings m JOIN IT_MeetingParticipants mp ON m.MeetingKey = mp.MeetingKey WHERE mp.EmployeeKey = a.EmployeeList AND CAST(m.MeetingDate AS DATE) = a.StartDate AND m.Status = 2), 0)) AS CompletedCount,
                         SUM(CASE WHEN d.Status != 4 AND a.StartDate < DATEADD(day, -7, @CurrentDate) THEN 1 ELSE 0 END) AS OverdueCount
-                        FROM IT_TaskCreation a
+                        FROM (
+                            SELECT CAST(StartDate AS DATE) AS StartDate, EmployeeList
+                            FROM IT_TaskCreation
+                            UNION
+                            SELECT CAST(m.MeetingDate AS DATE) AS StartDate, mp.EmployeeKey AS EmployeeList
+                            FROM IT_Meetings m
+                            JOIN IT_MeetingParticipants mp ON m.MeetingKey = mp.MeetingKey
+                        ) a
+                        LEFT JOIN IT_TaskCreation tc ON CAST(tc.StartDate AS DATE) = a.StartDate AND tc.EmployeeList = a.EmployeeList
                         LEFT JOIN IT_EmployeeRegister e ON a.EmployeeList = e.EmployeeKey
-                        LEFT JOIN IT_TaskDescriptiondetails d ON a.TaskKey = d.TaskKey" + where + @"
+                        LEFT JOIN IT_TaskDescriptiondetails d ON tc.TaskKey = d.TaskKey" + where + @"
                         GROUP BY CAST(a.StartDate AS DATE), a.EmployeeList, e.Firstname, e.Lastname, e.Image
                         ORDER BY CAST(a.StartDate AS DATE) DESC";
 
@@ -517,17 +533,31 @@ public partial class Employee_Overalltaskgrid : System.Web.UI.Page
                         SUM(CASE WHEN d.Status = 2 THEN 1 ELSE 0 END) AS InProgressCount,
                         (SUM(CASE WHEN d.Status = 4 THEN 1 ELSE 0 END) + ISNULL((SELECT COUNT(DISTINCT m.MeetingKey) FROM IT_Meetings m JOIN IT_MeetingParticipants mp ON m.MeetingKey = mp.MeetingKey WHERE mp.EmployeeKey = a.EmployeeList AND CAST(m.MeetingDate AS DATE) = CAST(a.StartDate AS DATE) AND m.Status = 2), 0)) AS CompletedCount,
                         SUM(CASE WHEN d.Status != 4 AND a.StartDate < DATEADD(day, -7, @CurrentDate) THEN 1 ELSE 0 END) AS OverdueCount
-                        FROM IT_TaskCreation a
+                        FROM (
+                            SELECT CAST(StartDate AS DATE) AS StartDate, EmployeeList
+                            FROM IT_TaskCreation
+                            UNION
+                            SELECT CAST(m.MeetingDate AS DATE) AS StartDate, mp.EmployeeKey AS EmployeeList
+                            FROM IT_Meetings m
+                            JOIN IT_MeetingParticipants mp ON m.MeetingKey = mp.MeetingKey
+                        ) a
+                        LEFT JOIN IT_TaskCreation tc ON CAST(tc.StartDate AS DATE) = a.StartDate AND tc.EmployeeList = a.EmployeeList
                         LEFT JOIN IT_EmployeeRegister e ON a.EmployeeList = e.EmployeeKey
-                        LEFT JOIN IT_TaskDescriptiondetails d ON a.TaskKey = d.TaskKey"
+                        LEFT JOIN IT_TaskDescriptiondetails d ON tc.TaskKey = d.TaskKey"
                         + baseWhere + @"
                         AND NOT EXISTS (
                             SELECT 1 FROM IT_TaskDescriptiondetails d2 
-                            WHERE d2.TaskKey = a.TaskKey AND d2.Status != 4
+                            WHERE d2.TaskKey = tc.TaskKey AND d2.Status != 4
                         )
-                        AND EXISTS (
-                            SELECT 1 FROM IT_TaskDescriptiondetails d3 
-                            WHERE d3.TaskKey = a.TaskKey
+                        AND NOT EXISTS (
+                            SELECT 1 FROM IT_Meetings m3 
+                            JOIN IT_MeetingParticipants mp3 ON m3.MeetingKey = mp3.MeetingKey
+                            WHERE mp3.EmployeeKey = a.EmployeeList AND CAST(m3.MeetingDate AS DATE) = a.StartDate AND m3.Status != 2
+                        )
+                        AND (
+                            EXISTS (SELECT 1 FROM IT_TaskDescriptiondetails d3 WHERE d3.TaskKey = tc.TaskKey)
+                            OR
+                            EXISTS (SELECT 1 FROM IT_Meetings m4 JOIN IT_MeetingParticipants mp4 ON m4.MeetingKey = mp4.MeetingKey WHERE mp4.EmployeeKey = a.EmployeeList AND CAST(m4.MeetingDate AS DATE) = a.StartDate)
                         )
                         GROUP BY CAST(a.StartDate AS DATE), a.EmployeeList, e.Firstname, e.Lastname, e.Image
                         ORDER BY CAST(a.StartDate AS DATE) DESC";
@@ -541,15 +571,15 @@ public partial class Employee_Overalltaskgrid : System.Web.UI.Page
 
     private void BindOverdueGrid()
     {
-        string where = " WHERE a.StartDate < DATEADD(day, -7, @CurrentDate) AND d.Status != 4" + GetCommonWhereClause(true);
-        string query = @"SELECT CAST(a.StartDate AS DATE) AS StartDate, a.EmployeeList AS EmployeeKey,
+        string where = " WHERE a.StartDate < DATEADD(day, -7, @CurrentDate) AND (d.Status != 4 OR EXISTS (SELECT 1 FROM IT_Meetings mm JOIN IT_MeetingParticipants mmp ON mm.MeetingKey = mmp.MeetingKey WHERE mmp.EmployeeKey = a.EmployeeList AND CAST(mm.MeetingDate AS DATE) = a.StartDate AND mm.Status != 2))" + GetCommonWhereClause(true);
+        string query = @"SELECT a.StartDate, a.EmployeeList AS EmployeeKey,
                         (e.Firstname + ' ' + e.Lastname) AS AssignedTo, e.Image AS EmpImage,
                         (SUM(CAST(ISNULL(d.AssignedHours, 0) AS DECIMAL(10,2))) + 
                          ISNULL((SELECT SUM(DATEDIFF(MINUTE, m.StartTime, m.EndTime)) / 60.0 
                                  FROM IT_Meetings m 
                                  JOIN IT_MeetingParticipants mp ON m.MeetingKey = mp.MeetingKey 
                                  WHERE mp.EmployeeKey = a.EmployeeList 
-                                   AND CAST(m.MeetingDate AS DATE) = CAST(a.StartDate AS DATE) 
+                                   AND CAST(m.MeetingDate AS DATE) = a.StartDate 
                                    AND m.Status IN (1, 2)), 0)) AS AssignedHours, 
                         SUM(CAST(ISNULL(d.ActualHours, 0) AS DECIMAL(10,2))) AS ActualHours, 
                         COUNT(d.TaskKey) AS SubTaskCount,
@@ -557,15 +587,23 @@ public partial class Employee_Overalltaskgrid : System.Web.UI.Page
                                 FROM IT_Meetings m 
                                 JOIN IT_MeetingParticipants mp ON m.MeetingKey = mp.MeetingKey 
                                 WHERE mp.EmployeeKey = a.EmployeeList 
-                                  AND CAST(m.MeetingDate AS DATE) = CAST(a.StartDate AS DATE) 
+                                  AND CAST(m.MeetingDate AS DATE) = a.StartDate 
                                   AND m.Status IN (1, 2)), 0) AS MeetingCount,
-                        (SUM(CASE WHEN d.Status = 1 THEN 1 ELSE 0 END) + ISNULL((SELECT COUNT(DISTINCT m.MeetingKey) FROM IT_Meetings m JOIN IT_MeetingParticipants mp ON m.MeetingKey = mp.MeetingKey WHERE mp.EmployeeKey = a.EmployeeList AND CAST(m.MeetingDate AS DATE) = CAST(a.StartDate AS DATE) AND m.Status = 1), 0)) AS YetToStartCount,
+                        (SUM(CASE WHEN d.Status = 1 THEN 1 ELSE 0 END) + ISNULL((SELECT COUNT(DISTINCT m.MeetingKey) FROM IT_Meetings m JOIN IT_MeetingParticipants mp ON m.MeetingKey = mp.MeetingKey WHERE mp.EmployeeKey = a.EmployeeList AND CAST(m.MeetingDate AS DATE) = a.StartDate AND m.Status = 1), 0)) AS YetToStartCount,
                         SUM(CASE WHEN d.Status = 2 THEN 1 ELSE 0 END) AS InProgressCount,
                         0 AS CompletedCount,
                         SUM(CASE WHEN d.Status != 4 AND a.StartDate < DATEADD(day, -7, @CurrentDate) THEN 1 ELSE 0 END) AS OverdueCount
-                        FROM IT_TaskCreation a
+                        FROM (
+                            SELECT CAST(StartDate AS DATE) AS StartDate, EmployeeList
+                            FROM IT_TaskCreation
+                            UNION
+                            SELECT CAST(m.MeetingDate AS DATE) AS StartDate, mp.EmployeeKey AS EmployeeList
+                            FROM IT_Meetings m
+                            JOIN IT_MeetingParticipants mp ON m.MeetingKey = mp.MeetingKey
+                        ) a
+                        LEFT JOIN IT_TaskCreation tc ON CAST(tc.StartDate AS DATE) = a.StartDate AND tc.EmployeeList = a.EmployeeList
                         LEFT JOIN IT_EmployeeRegister e ON a.EmployeeList = e.EmployeeKey
-                        LEFT JOIN IT_TaskDescriptiondetails d ON a.TaskKey = d.TaskKey" + where + @"
+                        LEFT JOIN IT_TaskDescriptiondetails d ON tc.TaskKey = d.TaskKey" + where + @"
                         GROUP BY CAST(a.StartDate AS DATE), a.EmployeeList, e.Firstname, e.Lastname, e.Image
                         ORDER BY CAST(a.StartDate AS DATE) DESC";
 

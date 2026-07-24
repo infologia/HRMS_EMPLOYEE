@@ -5,6 +5,16 @@
     <script type="text/javascript" src="../Template/assets/js/plugins/forms/selects/select2.min.js"></script>
     <script type="text/javascript" src="../Template/assets/js/plugins/tables/datatables/extensions/buttons.min.js"></script>
     <script type="text/javascript" src="../Template/assets/js/pages/datatables_extension_buttons_init.js"></script>
+    <style>
+        .blog-status-btn { display: inline-block; width: 90px; padding: 5px 0; font-size: 12px; font-weight: 600; text-align: center; border-radius: 4px; border: none; line-height: 1.4; }
+        .blog-status-btn.is-pending { background: #f0ad4e; color: #fff; cursor: pointer; }
+        .blog-status-btn.is-pending:hover { background: #ec971f; color: #fff; text-decoration: none; }
+        .blog-status-btn.is-approved { background: #5cb85c; color: #fff; }
+        .blog-view-btn { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 4px; background: #5bc0de; color: #fff; font-size: 11px; margin-right: 4px; }
+        .blog-view-btn:hover { background: #31b0d5; color: #fff; text-decoration: none; }
+        .blog-update-btn { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 4px; background: #337ab7; color: #fff; font-size: 11px; }
+        .blog-update-btn:hover { background: #286090; color: #fff; text-decoration: none; }
+    </style>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
@@ -24,11 +34,12 @@
         <table class="table datatable-basic">
             <thead>
                 <tr>
-                    <th>Blog Title</th>
-                    <th>Creator Name</th>
-                    <th>Description</th>
                     <th>Title</th>
-                    <th class="text-center">Action</th>
+                    <th>Creator Name</th>
+                    <th>Status</th>
+                    <th>Is Published</th>
+                    <th class="text-center">View</th>
+                    <th class="text-center">Update</th>
                 </tr>
             </thead>
             <tbody>

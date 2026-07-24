@@ -184,7 +184,7 @@
                                     <input type="text" class="form-control pickadate" placeholder="DD/MM/YYYY" name="rowNextDate[]" readonly />
                                 </div>
                             </td>
-                            <td style="text-align:center;"><button type="button" class="btn-remove-inv removeDocRow"><i class="icon-trash"></i></button></td>
+                            <td style="text-align:center;"><button type="button" class="btn btn-xs btn-danger removeDocRow"><i class="icon-trash"></i></button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -228,7 +228,7 @@
                         <input type="text" class="form-control pickadate-doc" placeholder="DD/MM/YYYY" name="rowNextDate[]" readonly />
                     </div>
                 </td>
-                <td style="text-align:center;"><button type="button" class="btn-remove-inv removeDocRow"><i class="icon-trash"></i></button></td>
+                <td style="text-align:center;"><button type="button" class="btn btn-xs btn-danger removeDocRow"><i class="icon-trash"></i></button></td>
             </tr>
         `);
         setTimeout(function () {
@@ -274,7 +274,5 @@
         .invoice-table .input-group-addon { padding: 2px 6px; font-size: 12px; height: 26px; line-height: 1.6; }
         .btn-add-row { background: #3a7bd5; color: #fff; border: none; border-radius: 4px; padding: 5px 14px; font-size: 12px; cursor: pointer; }
         .btn-add-row:hover { background: #2a5fb5; }
-        .btn-remove-inv { background: #e53935; color: #fff; border: none; border-radius: 4px; padding: 3px 10px; font-size: 11px; cursor: pointer; }
-        .btn-remove-inv:hover { background: #b71c1c; }
     </style>
 </asp:Content>

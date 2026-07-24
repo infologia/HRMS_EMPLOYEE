@@ -3,8 +3,5 @@
 ################################################################################
 
 /LogFiles
-/.vs/HRMS_GIT21/CopilotIndices/17.14.1696.13113
-/.vs/HRMS_GIT21/FileContentIndex
-/Admin
-/Employee
-/.vs/HRMS_GIT21/v17
+*.zip
+
