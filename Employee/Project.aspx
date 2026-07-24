@@ -94,127 +94,7 @@
             background: #b71c1c;
         }
     </style>
-    <script type="text/javascript">
-    function validateEmployees(sender, args) {
-        var listBox = document.getElementById('<%= lstEmployees.ClientID %>');
-        var selectedCount = 0;
 
-        for (var i = 0; i < listBox.options.length; i++) {
-            if (listBox.options[i].selected) {
-                selectedCount++;
-            }
-        }
-
-        args.IsValid = selectedCount > 0;
-    }
-
-    function validateTeamLead(sender, args) {
-        var listBox = document.getElementById('<%= lstTeamLead.ClientID %>');
-        var selectedCount = 0;
-
-        for (var i = 0; i < listBox.options.length; i++) {
-            if (listBox.options[i].selected) {
-                selectedCount++;
-            }
-        }
-
-        args.IsValid = selectedCount > 0;
-    }
-
-    // Document Details - Add Row (exact same as createinvoice addRow)
-    function addDocumentRow() {
-        $("#docDetailsTable tbody").append(`
-            <tr>
-                <td><input type="text" class="form-control" placeholder="Enter Document Name" name="docName[]" /></td>
-                <td>
-                    <input type="hidden" name="existingDocFile[]" value="" />
-                    <input type="file" class="form-control" name="docFile[]" accept=".pdf, .jpg, .jpeg, .png, .gif, .webp" />
-                    <small class="text-muted">Only PDF & Images</small>
-                </td>
-                <td>
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="icon-calendar22"></i></span>
-                        <input type="text" class="form-control pickadate" placeholder="DD/MM/YYYY" name="docValidFrom[]" />
-                    </div>
-                </td>
-                <td>
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="icon-calendar22"></i></span>
-                        <input type="text" class="form-control pickadate" placeholder="DD/MM/YYYY" name="docValidTo[]" />
-                    </div>
-                </td>
-                <td style="text-align:center;"><button type="button" class="btn-remove-inv removeDocRow">Remove</button></td>
-            </tr>
-        `);
-
-        var today = new Date();
-        $('#docDetailsTable tbody tr:last .pickadate').pickadate({
-            format: 'dd/mm/yyyy',
-            min: today,
-            selectMonths: true,
-            selectYears: true,
-            closeOnSelect: true
-        });
-    }
-
-    $(document).on("click", ".removeDocRow", function () {
-        if ($("#docDetailsTable tbody tr").length > 1) {
-            $(this).closest("tr").remove();
-        } else {
-            alert('At least one document row is required.');
-        }
-    });
-
-    function openPreview(url, type) {
-        $('#previewModal').modal('show');
-        
-        // Reset and hide all viewers
-        $('#previewIframe').hide().attr('src', '');
-        $('#previewImage').hide().attr('src', '');
-        $('#previewMessage').hide();
-
-        if (type === 'image') {
-            $('#previewImage').attr('src', url).show();
-        } else if (type === 'pdf') {
-            $('#previewIframe').attr('src', url).show();
-        } else {
-            $('#previewMessage').show();
-            // Trigger download for unsupported preview types
-            var a = document.createElement('a');
-            a.href = url;
-            a.download = '';
-            a.target = '_blank';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        }
-    }
-
-    $(document).ready(function() {
-        $('#previewModal').on('hidden.bs.modal', function () {
-            $('#previewIframe').attr('src', '');
-            $('#previewImage').attr('src', '');
-        });
-    });
-
-    // Handle File Selection to generate local View Attachment link in Create/Edit mode
-    $(document).on('change', 'input[name="docFile[]"]', function () {
-        var file = this.files[0];
-        var parentTd = $(this).closest('td');
-        
-        // Remove any existing preview links (local or server) so they don't stack up
-        parentTd.find('.preview-link').remove();
-
-        if (file) {
-            var isImage = file.type.startsWith('image/');
-            var isPdf = file.type === 'application/pdf';
-            var typeStr = isImage ? 'image' : (isPdf ? 'pdf' : 'other');
-
-            var objectUrl = URL.createObjectURL(file);
-            parentTd.append('<br/><a href="javascript:void(0);" onclick="openPreview(\'' + objectUrl + '\', \'' + typeStr + '\')" class="preview-link" style="font-size:12px; color:#3a7bd5;"><i class="icon-eye"></i> View Attachment</a>');
-        }
-    });
-    </script>
   
     <!-- Preview Modal -->
     <div id="previewModal" class="modal fade" tabindex="-1">
@@ -241,8 +121,11 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <div class="panel panel-flat">
-        <div class="panel-heading">
+        <div class="panel-heading" style="display:flex; justify-content:space-between; align-items:center;">
             <h5 class="panel-title">Project Management</h5>
+            <span style="font-size:13px; color:#555;">
+                Last Project Code: <strong><asp:Label ID="lblLastProjectCode" runat="server" Text="-" style="color:#3a7bd5;"></asp:Label></strong>
+            </span>
         </div>
 
         <div class="panel-body">
@@ -256,7 +139,10 @@
                 <div class="col-md-3">
                     <label>Project Code <span style="color: red">*</span></label>
                     <asp:TextBox ID="txtProjectCode" runat="server"
-                        CssClass="form-control" placeholder="Enter Project Code"></asp:TextBox>
+                        CssClass="form-control" placeholder="Enter Project Code" onkeyup="onProjectCodeKeyup();" onchange="onProjectCodeKeyup();"></asp:TextBox>
+                    <span id="lblProjectCodeError" style="color:red; font-size:12px; display:none;">
+                       Project Code already exists. Please enter a different Project Code.
+                    </span>
                     <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server"
     ControlToValidate="txtProjectCode"
     ErrorMessage="Project Code is required"
@@ -405,7 +291,6 @@
                         <td>
                             <input type="hidden" name="existingDocFile[]" value="" />
                             <input type="file" class="form-control" name="docFile[]" accept=".pdf, .jpg, .jpeg, .png, .gif, .webp" />
-                            <small class="text-muted">Only PDF & Images</small>
                         </td>
                         <td>
                             <div class="input-group">
@@ -446,15 +331,241 @@
 </div>
         </div>
     </div>
-     <script>
-         var today = new Date();
+    <script>
+    function validateEmployees(sender, args) {
+        var listBox = document.getElementById('<%= lstEmployees.ClientID %>');
+        var selectedCount = 0;
 
-         $('.pickadate').pickadate({
-             format: 'dd/mm/yyyy',
-             min: today,
-             selectMonths: true,
-             selectYears: true,
-             closeOnSelect: true
-         });
-     </script>
+        for (var i = 0; i < listBox.options.length; i++) {
+            if (listBox.options[i].selected) {
+                selectedCount++;
+            }
+        }
+
+        args.IsValid = selectedCount > 0;
+    }
+
+    function validateTeamLead(sender, args) {
+        var listBox = document.getElementById('<%= lstTeamLead.ClientID %>');
+        var selectedCount = 0;
+
+        for (var i = 0; i < listBox.options.length; i++) {
+            if (listBox.options[i].selected) {
+                selectedCount++;
+            }
+        }
+
+        args.IsValid = selectedCount > 0;
+    }
+
+    $(window).on('load', function () {
+        function forceCountText(selectId) {
+            var $select = $(selectId);
+            var $btnGroup = $select.next('.btn-group');
+
+            if ($btnGroup.length === 0) {
+                setTimeout(function () { forceCountText(selectId); }, 200);
+                return;
+            }
+
+            function updateText() {
+                var count = $select.find('option:selected').length;
+                $btnGroup.find('.multiselect-selected-text').text(count === 0 ? 'None selected' : count + ' selected');
+            }
+
+            $btnGroup.on('change', '.multiselect-container input[type="checkbox"]', function () {
+                updateText();
+            });
+
+            $select.on('change', updateText);
+            updateText();
+        }
+
+        forceCountText('#<%= lstTeamLead.ClientID %>');
+        forceCountText('#<%= lstEmployees.ClientID %>');
+    });
+
+    // Project Code duplicate check
+    var projectCodeExists = false;
+    var originalProjectCode = '';
+    var typingTimer;
+    var doneTypingInterval = 500;
+
+    // Enable/disable whichever Create/Update button is currently visible
+    function setSaveButtonsEnabled(enabled) {
+        $('#<%= btnSave.ClientID %>, #<%= btnUpdate.ClientID %>').prop('disabled', !enabled);
+    }
+
+    function onProjectCodeKeyup() {
+        clearTimeout(typingTimer);
+        setSaveButtonsEnabled(false);
+        typingTimer = setTimeout(checkProjectCode, doneTypingInterval);
+    }
+
+    function checkProjectCode() {
+        var txtCode = document.getElementById('<%= txtProjectCode.ClientID %>');
+        var code = (txtCode.value || "").trim();
+        
+        document.getElementById('lblProjectCodeError').style.display = 'none';
+        txtCode.style.borderColor = '';
+        projectCodeExists = false;
+        
+        if (code === '') { setSaveButtonsEnabled(true); return; }
+        
+        var hfKey = document.getElementById('<%= hfProjectKey.ClientID %>');
+        var projectKey = hfKey ? (hfKey.value || '0') : '0';
+        
+        if (projectKey !== '0' && code === originalProjectCode) {
+            setSaveButtonsEnabled(true);
+            return;
+        }
+        
+        var targetUrl = window.location.pathname.split('?')[0] + '/CheckProjectCode';
+        
+        $.ajax({
+            type: 'POST',
+            url: targetUrl,
+            data: JSON.stringify({ projectCode: code, projectKey: projectKey }),
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            success: function (response) {
+                if (response.d === 'EXISTS') {
+                    projectCodeExists = true;
+                    document.getElementById('lblProjectCodeError').style.display = 'inline';
+                    txtCode.style.borderColor = 'red';
+                    setSaveButtonsEnabled(false);
+                } else {
+                    projectCodeExists = false;
+                    document.getElementById('lblProjectCodeError').style.display = 'none';
+                    txtCode.style.borderColor = '';
+                    setSaveButtonsEnabled(true);
+                }
+            },
+            error: function (xhr, status, error) {
+                // Don't silently allow a possibly-duplicate save if the check itself fails
+                projectCodeExists = true;
+                setSaveButtonsEnabled(false);
+                alert("AJAX Error: Could not check project code. " + error);
+                console.error("AJAX CheckProjectCode error:", xhr);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        var $txtProjectCode = $('#<%= txtProjectCode.ClientID %>');
+        if ($txtProjectCode.length > 0) {
+            originalProjectCode = ($txtProjectCode.val() || "").trim();
+        }
+
+        $('#<%= btnSave.ClientID %>, #<%= btnUpdate.ClientID %>').on('click', function (e) {
+            if (projectCodeExists) {
+                e.preventDefault();
+                toastr.error('Project Code already exists.');
+                $txtProjectCode.focus();
+                return false;
+            }
+        });
+
+        $('#previewModal').on('hidden.bs.modal', function () {
+            $('#previewIframe').attr('src', '');
+            $('#previewImage').attr('src', '');
+        });
+    });
+
+    // Document Details - Add Row (exact same as createinvoice addRow)
+    function addDocumentRow() {
+        $("#docDetailsTable tbody").append(`
+            <tr>
+                <td><input type="text" class="form-control" placeholder="Enter Document Name" name="docName[]" /></td>
+                <td>
+                    <input type="hidden" name="existingDocFile[]" value="" />
+                    <input type="file" class="form-control" name="docFile[]" accept=".pdf, .jpg, .jpeg, .png, .gif, .webp" />
+                </td>
+                <td>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="icon-calendar22"></i></span>
+                        <input type="text" class="form-control pickadate" placeholder="DD/MM/YYYY" name="docValidFrom[]" />
+                    </div>
+                </td>
+                <td>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="icon-calendar22"></i></span>
+                        <input type="text" class="form-control pickadate" placeholder="DD/MM/YYYY" name="docValidTo[]" />
+                    </div>
+                </td>
+                <td style="text-align:center;"><button type="button" class="btn-remove-inv removeDocRow">Remove</button></td>
+            </tr>
+        `);
+
+        var today = new Date();
+        $('#docDetailsTable tbody tr:last .pickadate').pickadate({
+            format: 'dd/mm/yyyy',
+            min: today,
+            selectMonths: true,
+            selectYears: true,
+            closeOnSelect: true
+        });
+    }
+
+    $(document).on("click", ".removeDocRow", function () {
+        if ($("#docDetailsTable tbody tr").length > 1) {
+            $(this).closest("tr").remove();
+        } else {
+            alert('At least one document row is required.');
+        }
+    });
+
+    function openPreview(url, type) {
+        $('#previewModal').modal('show');
+        
+        // Reset and hide all viewers
+        $('#previewIframe').hide().attr('src', '');
+        $('#previewImage').hide().attr('src', '');
+        $('#previewMessage').hide();
+
+        if (type === 'image') {
+            $('#previewImage').attr('src', url).show();
+        } else if (type === 'pdf') {
+            $('#previewIframe').attr('src', url).show();
+        } else {
+            $('#previewMessage').show();
+            // Trigger download for unsupported preview types
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = '';
+            a.target = '_blank';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    }
+
+    // Handle File Selection to generate local View Attachment link in Create/Edit mode
+    $(document).on('change', 'input[name="docFile[]"]', function () {
+        var file = this.files[0];
+        var parentTd = $(this).closest('td');
+        
+        // Remove any existing preview links (local or server) so they don't stack up
+        parentTd.find('.preview-link').remove();
+
+        if (file) {
+            var isImage = file.type.startsWith('image/');
+            var isPdf = file.type === 'application/pdf';
+            var typeStr = isImage ? 'image' : (isPdf ? 'pdf' : 'other');
+
+            var objectUrl = URL.createObjectURL(file);
+            parentTd.append('<br/><a href="javascript:void(0);" onclick="openPreview(\'' + objectUrl + '\', \'' + typeStr + '\')" class="preview-link" style="font-size:12px; color:#3a7bd5;"><i class="icon-eye"></i> View Attachment</a>');
+        }
+    });
+
+          var today = new Date();
+
+          $('.pickadate').pickadate({
+              format: 'dd/mm/yyyy',
+              min: today,
+              selectMonths: true,
+              selectYears: true,
+              closeOnSelect: true
+          });
+    </script>
 </asp:Content>
