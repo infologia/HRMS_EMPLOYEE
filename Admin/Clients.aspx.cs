@@ -20,7 +20,7 @@ public partial class Admin_Clients : System.Web.UI.Page
         {
             Label control1 = this.Master.FindControl("lbl_bread") as Label;
             if (control1 != null)
-                control1.Text = "Organization";
+                control1.Text = "Organizations";
         }
 
         SqlCommand cmdRole = new SqlCommand("SELECT role FROM IT_EmployeeRegister WHERE Employeekey = @Employeekey AND role = 11");

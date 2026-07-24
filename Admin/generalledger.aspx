@@ -243,7 +243,7 @@
         <div class="gl-kpi gl-kpi-recv">
             <div class="gl-kpi-top">
                 <div class="gl-kpi-icon"><i class="glyphicon glyphicon-download-alt"></i></div>
-                <div class="gl-kpi-label">Total Receivables</div>
+                <div class="gl-kpi-label">Pending Receivables</div>
             </div>
             <div class="gl-kpi-value">
                 &#8377;<asp:Label ID="lbl_TotalReceivables" runat="server" Text="0"></asp:Label>
@@ -256,7 +256,7 @@
         <div class="gl-kpi gl-kpi-pay">
             <div class="gl-kpi-top">
                 <div class="gl-kpi-icon"><i class="glyphicon glyphicon-upload"></i></div>
-                <div class="gl-kpi-label">Total Payables</div>
+                <div class="gl-kpi-label">Outstanding Payables</div>
             </div>
             <div class="gl-kpi-value">
                 &#8377;<asp:Label ID="lbl_TotalPayables" runat="server" Text="0"></asp:Label>
@@ -298,26 +298,32 @@
             General Ledger
         </div>
         <div class="gl-filters">
+
+            <asp:DropDownList ID="ddl_FinancialYear" runat="server" CssClass="form-control"
+                style="width:150px">
+            </asp:DropDownList>
+
             <asp:DropDownList ID="ddl_Month" runat="server" CssClass="form-control"
-                style="width:130px" AutoPostBack="true"
-                OnSelectedIndexChanged="Filter_Changed">
+                style="width:140px">
             </asp:DropDownList>
+
             <asp:DropDownList ID="ddl_Year" runat="server" CssClass="form-control"
-                style="width:90px" AutoPostBack="true"
-                OnSelectedIndexChanged="Filter_Changed">
+                style="width:110px">
             </asp:DropDownList>
-           
-      
+
             <asp:DropDownList ID="ddl_Source" runat="server" CssClass="form-control"
-    style="width:180px" AutoPostBack="true"
-    OnSelectedIndexChanged="Filter_Changed">
-    <asp:ListItem Value="0">All Sources</asp:ListItem>
-    <asp:ListItem Value="Payroll">Payroll</asp:ListItem>
-    <asp:ListItem Value="PettyCash">Petty Cash</asp:ListItem>
-    <asp:ListItem Value="Payable">Invoice (Payable)</asp:ListItem>
-    <asp:ListItem Value="Receivable">Invoice (Receivable)</asp:ListItem>
-   
-</asp:DropDownList>
+                style="width:180px">
+                <asp:ListItem Value="0">All Sources</asp:ListItem>
+                <asp:ListItem Value="Payroll">Payroll</asp:ListItem>
+                <asp:ListItem Value="PettyCash">Petty Cash</asp:ListItem>
+                <asp:ListItem Value="Payable">Invoice (Payable)</asp:ListItem>
+                <asp:ListItem Value="Receivable">Invoice (Receivable)</asp:ListItem>
+            </asp:DropDownList>
+
+            <asp:Button ID="btn_Filter" runat="server" Text="Apply Filter"
+                CssClass="btn btn-primary btn-sm"
+                OnClick="btn_Filter_Click"
+                style="height:32px; padding:0 14px; font-size:12px; border-radius:6px;" />
 
         </div>
     </div>

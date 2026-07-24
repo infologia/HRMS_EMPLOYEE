@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Web.Services;
@@ -211,24 +211,22 @@ LEFT JOIN IT_MeetingParticipants c
 
                     // ENABLE DELETE + UPDATE
                     dr["delete"] =
-                        "<td><a href='javascript:void(0);'>" +
-                        "<span class='label label-info' " +
-                        "onclick=\"fn_DeleteProject('" + MeetingKey + "')\">Remove</span></a></td>";
+                        "<a href='javascript:void(0);' title='Remove' " +
+                        "onclick=\"fn_DeleteProject('" + MeetingKey + "')\"><i class='icon-trash text-danger'></i></a>";
 
                     dr["View"] =
-                        "<td><a href='Meetingdetails.aspx?id=" + MeetingKey + "&Viewid=" + encViewUpdate + "'>" +
-                        "<span class='label label-info'>Update</span></a></td>";
+                        "<a href='Meetingdetails.aspx?id=" + MeetingKey + "&Viewid=" + encViewUpdate + "' title='Update'>" +
+                        "<i class='icon-pencil7 text-primary'></i></a>";
                 }
                 else
                 {
                     string encViewOnly = UrlCrypto.Encrypt("0");
                     dr["delete"] =
-                        "<td><span class='label label-default' " +
-                        "style='cursor:not-allowed;opacity:0.6;'>Remove</span></td>";
+                        "<i class='icon-trash text-muted' style='cursor:not-allowed;opacity:0.6;' title='Remove'></i>";
 
                     dr["View"] =
-                        "<td><a href='Meetingdetails.aspx?id=" + MeetingKey + "&Viewid=" + encViewOnly + "'>" +
-                        "<span class='label label-info'>View</span></a></td>";
+                        "<a href='Meetingdetails.aspx?id=" + MeetingKey + "&Viewid=" + encViewOnly + "' title='View'>" +
+                        "<i class='icon-eye text-primary'></i></a>";
                 }
                 if (activetype == 1)
                 {

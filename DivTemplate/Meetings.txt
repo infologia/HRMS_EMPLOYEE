@@ -1,10 +1,13 @@
-﻿   <tr>
+   <tr>
                     <td>%%MeetingTitle%%</td>                   
                     <td>%%MeetingDate%%</td>
                     <td>%%StartTime%%</td>
                     <td>%%EndTime%%</td>
                     <td>%%ActiveText%%</td>
                     <td>%%Username%%</td>
-                     %%View%%
-                    %%delete%%
+                    <td class="text-center">
+                        %%View%%
+                        &nbsp;
+                        %%delete%%
+                    </td>
                 </tr>

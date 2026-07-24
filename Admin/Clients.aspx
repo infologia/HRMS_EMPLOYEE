@@ -56,7 +56,7 @@
         <div class="panel-heading">
             <div class="row">
                 <div class="col-lg-4">
-                    <h5 class="panel-title">Active Organization</h5>
+                    <h5 class="panel-title">Active Organizations</h5>
                 </div>
                 <div class="col-lg-8">
                     <a href="Clientsdetails.aspx" id="a_createlead" runat="server" visible="false" class="btn btn-primary pull-right"><i class="icon-plus-circle2"></i> Create Organization</a>
@@ -68,8 +68,8 @@
         <table class="table datatable-basic" id="tbl_active">
             <thead>
                 <tr>
-                    <th>Organization Code</th>
-                    <th>Organization Name</th>
+                    <th>Org Code</th>
+                    <th>Org Name</th>
                     <th>Type</th>
                     <th>Company Name</th>
                     <th>Contact Person</th>
@@ -86,7 +86,7 @@
         </div>
     <div class="panel panel-flat" style="margin-top: 20px;">
         <div class="panel-heading">
-            <h5 class="panel-title">Inactive Organization</h5>
+            <h5 class="panel-title">Inactive Organizations</h5>
         </div>
         <div class="panel-body" style="padding: 0px;"></div>
         <div style="overflow-x: auto;">
