@@ -141,7 +141,7 @@
                     <asp:TextBox ID="txtProjectCode" runat="server"
                         CssClass="form-control" placeholder="Enter Project Code" onkeyup="onProjectCodeKeyup();" onchange="onProjectCodeKeyup();"></asp:TextBox>
                     <span id="lblProjectCodeError" style="color:red; font-size:12px; display:none;">
-                       Project Code already exists.
+                       Project Code already exists. Please enter a different Project Code.
                     </span>
                     <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server"
     ControlToValidate="txtProjectCode"
@@ -358,14 +358,47 @@
         args.IsValid = selectedCount > 0;
     }
 
+    $(window).on('load', function () {
+        function forceCountText(selectId) {
+            var $select = $(selectId);
+            var $btnGroup = $select.next('.btn-group');
+
+            if ($btnGroup.length === 0) {
+                setTimeout(function () { forceCountText(selectId); }, 200);
+                return;
+            }
+
+            function updateText() {
+                var count = $select.find('option:selected').length;
+                $btnGroup.find('.multiselect-selected-text').text(count === 0 ? 'None selected' : count + ' selected');
+            }
+
+            $btnGroup.on('change', '.multiselect-container input[type="checkbox"]', function () {
+                updateText();
+            });
+
+            $select.on('change', updateText);
+            updateText();
+        }
+
+        forceCountText('#<%= lstTeamLead.ClientID %>');
+        forceCountText('#<%= lstEmployees.ClientID %>');
+    });
+
     // Project Code duplicate check
     var projectCodeExists = false;
     var originalProjectCode = '';
     var typingTimer;
     var doneTypingInterval = 500;
 
+    // Enable/disable whichever Create/Update button is currently visible
+    function setSaveButtonsEnabled(enabled) {
+        $('#<%= btnSave.ClientID %>, #<%= btnUpdate.ClientID %>').prop('disabled', !enabled);
+    }
+
     function onProjectCodeKeyup() {
         clearTimeout(typingTimer);
+        setSaveButtonsEnabled(false);
         typingTimer = setTimeout(checkProjectCode, doneTypingInterval);
     }
 
@@ -377,12 +410,13 @@
         txtCode.style.borderColor = '';
         projectCodeExists = false;
         
-        if (code === '') return;
+        if (code === '') { setSaveButtonsEnabled(true); return; }
         
         var hfKey = document.getElementById('<%= hfProjectKey.ClientID %>');
         var projectKey = hfKey ? (hfKey.value || '0') : '0';
         
         if (projectKey !== '0' && code === originalProjectCode) {
+            setSaveButtonsEnabled(true);
             return;
         }
         
@@ -399,13 +433,18 @@
                     projectCodeExists = true;
                     document.getElementById('lblProjectCodeError').style.display = 'inline';
                     txtCode.style.borderColor = 'red';
+                    setSaveButtonsEnabled(false);
                 } else {
                     projectCodeExists = false;
                     document.getElementById('lblProjectCodeError').style.display = 'none';
                     txtCode.style.borderColor = '';
+                    setSaveButtonsEnabled(true);
                 }
             },
             error: function (xhr, status, error) {
+                // Don't silently allow a possibly-duplicate save if the check itself fails
+                projectCodeExists = true;
+                setSaveButtonsEnabled(false);
                 alert("AJAX Error: Could not check project code. " + error);
                 console.error("AJAX CheckProjectCode error:", xhr);
             }

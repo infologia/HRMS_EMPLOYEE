@@ -279,6 +279,14 @@ private DateTime? ParseDate(string dateText)
             return;
         if (string.IsNullOrEmpty(ddlClient.SelectedValue))
             return;
+        if (CheckProjectCode(txtProjectCode.Text.Trim(), "0") == "EXISTS")
+        {
+            ScriptManager.RegisterStartupScript(
+                this, this.GetType(), "dupcode",
+                "$('#lblProjectCodeError').show(); $('#" + txtProjectCode.ClientID + "').css('border-color','red').focus();",
+                true);
+            return;
+        }
 
         // Server-side duplicate check (defense in depth): the client-side AJAX check
         // can be bypassed or race with another user creating the same code at the
