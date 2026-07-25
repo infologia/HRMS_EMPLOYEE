@@ -461,6 +461,11 @@
                     $('#div_SalesPerson').show();
                     if (typeof ValidatorEnable === 'function' && validatorSP) {
                         ValidatorEnable(validatorSP, true);
+                        // Hide the error message that ValidatorEnable triggers automatically
+                        validatorSP.isvalid = true;
+                        if (typeof ValidatorUpdateDisplay === 'function') {
+                            ValidatorUpdateDisplay(validatorSP);
+                        }
                     }
                 }
             } catch (e) {
