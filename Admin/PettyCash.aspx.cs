@@ -28,8 +28,10 @@ public partial class Admin_PettyCash : System.Web.UI.Page
 
             BindDateDropdown();
             PopulateYearDropdown();
+            BindFinancialYearDropdown();
 
-            ddlDate.SelectedValue = "0"; // All
+            ddlFinancialYear.SelectedValue = "0";
+            ddlDate.SelectedValue = "0";
             ddlYear.SelectedValue = DateTime.Now.Year.ToString();
 
             LoadCashByMonthYear();
@@ -41,8 +43,31 @@ public partial class Admin_PettyCash : System.Web.UI.Page
         }
     }
 
+    private void BindFinancialYearDropdown()
+    {
+        ddlFinancialYear.Items.Clear();
+        ddlFinancialYear.Items.Add(new ListItem("All FY", "0"));
+        int currentYear  = DateTime.Now.Year;
+        int currentMonth = DateTime.Now.Month;
+        int fyStartYear  = currentMonth >= 4 ? currentYear : currentYear - 1;
+        for (int y = fyStartYear; y >= 2020; y--)
+            ddlFinancialYear.Items.Add(new ListItem("FY " + y + "-" + (y + 1).ToString().Substring(2, 2), y.ToString()));
+    }
+
+    private void GetFYDates(out DateTime? fyStart, out DateTime? fyEnd)
+    {
+        string fyVal = ddlFinancialYear.SelectedValue;
+        if (fyVal == "0") { fyStart = null; fyEnd = null; return; }
+        int startYear = Convert.ToInt32(fyVal);
+        fyStart = new DateTime(startYear, 4, 1);
+        fyEnd   = new DateTime(startYear + 1, 3, 31, 23, 59, 59);
+    }
+
     private void LoadCash(int month, int year)
     {
+        DateTime? fyStart, fyEnd;
+        GetFYDates(out fyStart, out fyEnd);
+
         string str_query = @"
     SELECT
     a.PC_CashKey,
@@ -56,54 +81,22 @@ FROM TT_PettyCash a
 LEFT JOIN IT_EmployeeRegister b
     ON a.CreatedBy = b.EmployeeKey
 WHERE
-(
-    -- All (Current Financial Year)
-    @Month = 0
-    AND a.PC_Date >= DATEFROMPARTS(
-            CASE
-                WHEN MONTH(GETDATE()) >= 4 THEN YEAR(GETDATE())
-                ELSE YEAR(GETDATE()) - 1
-            END,
-            4, 1
-        )
-    AND a.PC_Date < DATEFROMPARTS(
-            CASE
-                WHEN MONTH(GETDATE()) >= 4 THEN YEAR(GETDATE()) + 1
-                ELSE YEAR(GETDATE())
-            END,
-            4, 1
-        )
-)
-OR
-(
-    -- Selected Month in Current Financial Year
-    @Month BETWEEN 1 AND 12
-    AND MONTH(a.PC_Date) = @Month
-    AND YEAR(a.PC_Date) =
-        CASE
-            WHEN @Month >= 4 THEN
-                CASE
-                    WHEN MONTH(GETDATE()) >= 4 THEN YEAR(GETDATE())
-                    ELSE YEAR(GETDATE()) - 1
-                END
-            ELSE
-                CASE
-                    WHEN MONTH(GETDATE()) >= 4 THEN YEAR(GETDATE()) + 1
-                    ELSE YEAR(GETDATE())
-                END
-        END
-)
-OR
-(
-    -- Today
-    @Month = -1
-    AND CAST(a.PC_Date AS DATE) = CAST(GETDATE() AS DATE)
-)
+    (@FYStart IS NULL OR a.PC_Date >= @FYStart)
+    AND (@FYEnd IS NULL OR a.PC_Date <= @FYEnd)
+    AND (
+        (@Year = 0 AND @Month = 0)
+        OR (@Year = 0 AND @Month BETWEEN 1 AND 12 AND MONTH(a.PC_Date) = @Month)
+        OR (@Year > 0 AND @Month = 0 AND YEAR(a.PC_Date) = @Year)
+        OR (@Year > 0 AND @Month BETWEEN 1 AND 12 AND MONTH(a.PC_Date) = @Month AND YEAR(a.PC_Date) = @Year)
+        OR (@Month = -1 AND CAST(a.PC_Date AS DATE) = CAST(GETDATE() AS DATE))
+    )
 ORDER BY a.PC_Date DESC;";
 
         SqlCommand cmd = new SqlCommand(str_query);
         cmd.Parameters.AddWithValue("@Month", month);
         cmd.Parameters.AddWithValue("@Year", year);
+        cmd.Parameters.AddWithValue("@FYStart", fyStart.HasValue ? (object)fyStart.Value : DBNull.Value);
+        cmd.Parameters.AddWithValue("@FYEnd",   fyEnd.HasValue   ? (object)fyEnd.Value   : DBNull.Value);
 
         DataTable dt = DA.GetDataTable(cmd);
 
@@ -137,105 +130,43 @@ ORDER BY a.PC_Date DESC;";
 
     private void LoadPettyCashTotals(int month, int year)
     {
+        DateTime? fyStart, fyEnd;
+        GetFYDates(out fyStart, out fyEnd);
+
         string query = @"
-   SELECT
+SELECT
     ISNULL(SUM(CASE WHEN PC_Status = 1 THEN PC_Amount ELSE 0 END), 0) AS CRAmount,
     ISNULL(SUM(CASE WHEN PC_Status = 2 THEN PC_Amount ELSE 0 END), 0) AS DTAmount,
-    ISNULL
-    (
-        (
-            SELECT TOP 1 PC_BalanceAmount
-            FROM TT_PettyCash
-            WHERE
-            (
-                @Month = 0
-                AND PC_Date >= DATEFROMPARTS(
-                        CASE
-                            WHEN MONTH(GETDATE()) >= 4 THEN YEAR(GETDATE())
-                            ELSE YEAR(GETDATE()) - 1
-                        END,
-                        4, 1
-                    )
-                AND PC_Date < DATEFROMPARTS(
-                        CASE
-                            WHEN MONTH(GETDATE()) >= 4 THEN YEAR(GETDATE()) + 1
-                            ELSE YEAR(GETDATE())
-                        END,
-                        4, 1
-                    )
-            )
-            OR
-            (
-                @Month BETWEEN 1 AND 12
-                AND MONTH(PC_Date) = @Month
-                AND YEAR(PC_Date) =
-                    CASE
-                        WHEN @Month >= 4 THEN
-                            CASE
-                                WHEN MONTH(GETDATE()) >= 4 THEN YEAR(GETDATE())
-                                ELSE YEAR(GETDATE()) - 1
-                            END
-                        ELSE
-                            CASE
-                                WHEN MONTH(GETDATE()) >= 4 THEN YEAR(GETDATE()) + 1
-                                ELSE YEAR(GETDATE())
-                            END
-                    END
-            )
-            OR
-            (
-                @Month = -1
-                AND CAST(PC_Date AS DATE) = CAST(GETDATE() AS DATE)
-            )
-            ORDER BY PC_Date DESC, PC_CashKey DESC
-        ), 0
+    ISNULL(
+        (SELECT TOP 1 PC_BalanceAmount FROM TT_PettyCash
+         WHERE (@FYStart IS NULL OR PC_Date >= @FYStart)
+           AND (@FYEnd IS NULL OR PC_Date <= @FYEnd)
+           AND (
+               (@Year = 0 AND @Month = 0)
+               OR (@Year = 0 AND @Month BETWEEN 1 AND 12 AND MONTH(PC_Date) = @Month)
+               OR (@Year > 0 AND @Month = 0 AND YEAR(PC_Date) = @Year)
+               OR (@Year > 0 AND @Month BETWEEN 1 AND 12 AND MONTH(PC_Date) = @Month AND YEAR(PC_Date) = @Year)
+               OR (@Month = -1 AND CAST(PC_Date AS DATE) = CAST(GETDATE() AS DATE))
+           )
+         ORDER BY PC_Date DESC, PC_CashKey DESC), 0
     ) AS BalanceAmount
 FROM TT_PettyCash
 WHERE
-(
-    @Month = 0
-    AND PC_Date >= DATEFROMPARTS(
-            CASE
-                WHEN MONTH(GETDATE()) >= 4 THEN YEAR(GETDATE())
-                ELSE YEAR(GETDATE()) - 1
-            END,
-            4, 1
-        )
-    AND PC_Date < DATEFROMPARTS(
-            CASE
-                WHEN MONTH(GETDATE()) >= 4 THEN YEAR(GETDATE()) + 1
-                ELSE YEAR(GETDATE())
-            END,
-            4, 1
-        )
-)
-OR
-(
-    @Month BETWEEN 1 AND 12
-    AND MONTH(PC_Date) = @Month
-    AND YEAR(PC_Date) =
-        CASE
-            WHEN @Month >= 4 THEN
-                CASE
-                    WHEN MONTH(GETDATE()) >= 4 THEN YEAR(GETDATE())
-                    ELSE YEAR(GETDATE()) - 1
-                END
-            ELSE
-                CASE
-                    WHEN MONTH(GETDATE()) >= 4 THEN YEAR(GETDATE()) + 1
-                    ELSE YEAR(GETDATE())
-                END
-        END
-)
-OR
-(
-    @Month = -1
-   AND CAST(PC_Date AS DATE) = CAST(GETDATE() AS DATE)
-);";
+    (@FYStart IS NULL OR PC_Date >= @FYStart)
+    AND (@FYEnd IS NULL OR PC_Date <= @FYEnd)
+    AND (
+        (@Year = 0 AND @Month = 0)
+        OR (@Year = 0 AND @Month BETWEEN 1 AND 12 AND MONTH(PC_Date) = @Month)
+        OR (@Year > 0 AND @Month = 0 AND YEAR(PC_Date) = @Year)
+        OR (@Year > 0 AND @Month BETWEEN 1 AND 12 AND MONTH(PC_Date) = @Month AND YEAR(PC_Date) = @Year)
+        OR (@Month = -1 AND CAST(PC_Date AS DATE) = CAST(GETDATE() AS DATE))
+    );";
 
         SqlCommand cmd = new SqlCommand(query);
         cmd.Parameters.AddWithValue("@Month", month);
         cmd.Parameters.AddWithValue("@Year", year);
+        cmd.Parameters.AddWithValue("@FYStart", fyStart.HasValue ? (object)fyStart.Value : DBNull.Value);
+        cmd.Parameters.AddWithValue("@FYEnd",   fyEnd.HasValue   ? (object)fyEnd.Value   : DBNull.Value);
 
         DataTable dt = DA.GetDataTable(cmd);
 
@@ -294,14 +225,12 @@ OR
         ddlYear.Items.Clear();
         int currentYear = DateTime.Now.Year;
 
-        for (int year = currentYear - 5; year <= currentYear + 5; year++)
-        {
-            ddlYear.Items.Add(new ListItem(year.ToString(), year.ToString()));
-        }
+        ddlYear.Items.Add(new ListItem("All", "0"));
 
-        ListItem defaultYearItem = ddlYear.Items.FindByValue(currentYear.ToString());
-        if (defaultYearItem != null)
-            defaultYearItem.Selected = true;
+        for (int year = currentYear - 5; year <= currentYear + 5; year++)
+            ddlYear.Items.Add(new ListItem(year.ToString(), year.ToString()));
+
+        ddlYear.SelectedValue = currentYear.ToString();
     }
 
 
@@ -314,6 +243,11 @@ OR
         LoadPettyCashTotals(month, year);
     }
 
+
+    protected void ddlFinancialYear_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        LoadCashByMonthYear();
+    }
 
     protected void ddlDate_SelectedIndexChanged(object sender, EventArgs e)
     {

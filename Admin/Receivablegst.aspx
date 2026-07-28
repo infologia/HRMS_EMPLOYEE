@@ -17,7 +17,7 @@
             </div>
         </div>
 
-        <table class="table datatable-basic">
+        <table class="table datatable-basic" data-order='[[ 1, "desc" ]]'>
             <thead>
                 <tr>
                     <th>Invoice No</th>
@@ -32,6 +32,18 @@
                 <asp:PlaceHolder ID="PH_Project" runat="server"></asp:PlaceHolder>
             </tbody>
         </table>
+        <div class="row" style="margin-top:15px;">
+            <div class="col-lg-12 text-center">
+                <strong>
+                    Total GST:
+                    <asp:Label ID="lblTotalGST" runat="server" CssClass="text-primary"></asp:Label>
+                    &nbsp;&nbsp;|&nbsp;&nbsp;
+                    Total Amount:
+                    <asp:Label ID="lblTotalAmount" runat="server" CssClass="text-primary"></asp:Label>
+                </strong>
+            </div>
+        </div>
+        <br />
     </div>
 
     <!-- CONFIRM MODAL -->

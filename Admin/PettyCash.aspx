@@ -49,32 +49,24 @@
 #tablecash th, #tablecash td {
     font-size: 12px;
 }
-.filter-row {
+.pc-filters {
     display: flex;
+    gap: 8px;
     align-items: center;
+    flex-wrap: wrap;
     justify-content: flex-end;
-    gap: 12px;
 }
-
-.filter-label {
-    margin-bottom: 0;
-    white-space: nowrap;
+.pc-filters .form-control {
+    height: 32px;
+    font-size: 12px;
+    border-radius: 6px;
+    border: 0.5px solid #d1d5db;
+    padding: 0 10px;
+    width: auto;
 }
-
-.filter-dropdown {
-    width: 140px;
-}
-
-/* Mobile support */
 @media (max-width: 768px) {
-    .filter-row {
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        margin-top: 10px;
-    }
+    .pc-filters { justify-content: flex-start; margin-top: 10px; }
 }
-
-
     </style>
 
 </asp:Content>
@@ -88,20 +80,26 @@
             <h5 class="panel-title mb-0">Cash Details</h5>
         </div>
 
-        <!-- RIGHT : Month, Year, Create Button -->
         <div class="col-lg-6 col-md-6 col-sm-12">
-            <div class="filter-row">
+            <div class="pc-filters">
 
-                <label class="filter-label">Select Month :</label>
+                <asp:DropDownList ID="ddlFinancialYear" runat="server"
+                    CssClass="form-control"
+                    style="width:150px"
+                    AutoPostBack="true"
+                    OnSelectedIndexChanged="ddlFinancialYear_SelectedIndexChanged">
+                </asp:DropDownList>
+
                 <asp:DropDownList ID="ddlDate" runat="server"
-                    CssClass="form-control filter-dropdown"
+                    CssClass="form-control"
+                    style="width:130px"
                     AutoPostBack="true"
                     OnSelectedIndexChanged="ddlDate_SelectedIndexChanged">
                 </asp:DropDownList>
 
-                <label class="filter-label">Select Year :</label>
                 <asp:DropDownList ID="ddlYear" runat="server"
-                    CssClass="form-control filter-dropdown"
+                    CssClass="form-control"
+                    style="width:110px"
                     AutoPostBack="true"
                     OnSelectedIndexChanged="ddlYear_SelectedIndexChanged">
                 </asp:DropDownList>
@@ -110,7 +108,8 @@
                    id="id_pettycash"
                    runat="server"
                    visible="true"
-                   class="btn btn-primary">
+                   class="btn btn-primary btn-sm"
+                   style="height:32px; padding:0 14px; font-size:12px; border-radius:6px; white-space:nowrap; display:flex; align-items:center; gap:5px;">
                     <i class="icon-plus-circle2"></i> Create Cash
                 </a>
 

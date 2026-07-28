@@ -289,8 +289,10 @@
                     <tr>
                         <td><input type="text" class="form-control" placeholder="Enter Document Name" name="docName[]" /></td>
                         <td>
-                            <input type="hidden" name="existingDocFile[]" value="" />
-                            <input type="file" class="form-control" name="docFile[]" accept=".pdf, .jpg, .jpeg, .png, .gif, .webp" />
+                            <div class="file-wrap" style="display:flex; align-items:center;">
+                                <input type="hidden" name="existingDocFile[]" value="" />
+                                <input type="file" class="form-control" name="docFile[]" accept=".pdf, .jpg, .jpeg, .png, .gif, .webp" style="margin-bottom:0;" />
+                            </div>
                         </td>
                         <td>
                             <div class="input-group">
@@ -478,8 +480,10 @@
             <tr>
                 <td><input type="text" class="form-control" placeholder="Enter Document Name" name="docName[]" /></td>
                 <td>
-                    <input type="hidden" name="existingDocFile[]" value="" />
-                    <input type="file" class="form-control" name="docFile[]" accept=".pdf, .jpg, .jpeg, .png, .gif, .webp" />
+                    <div class="file-wrap" style="display:flex; align-items:center;">
+                        <input type="hidden" name="existingDocFile[]" value="" />
+                        <input type="file" class="form-control" name="docFile[]" accept=".pdf, .jpg, .jpeg, .png, .gif, .webp" style="margin-bottom:0;" />
+                    </div>
                 </td>
                 <td>
                     <div class="input-group">
@@ -554,7 +558,7 @@
             var typeStr = isImage ? 'image' : (isPdf ? 'pdf' : 'other');
 
             var objectUrl = URL.createObjectURL(file);
-            parentTd.append('<br/><a href="javascript:void(0);" onclick="openPreview(\'' + objectUrl + '\', \'' + typeStr + '\')" class="preview-link" style="font-size:12px; color:#3a7bd5;"><i class="icon-eye"></i> View Attachment</a>');
+            parentTd.find('.file-wrap').append('<a href="' + objectUrl + '" target="_blank" class="preview-link" style="font-size:10px; color:#3a7bd5; margin-left:6px; white-space:nowrap;"><i class="icon-eye" style="font-size:10px;"></i> View</a>');
         }
     });
 

@@ -256,12 +256,12 @@ private DateTime? ParseDate(string dateText)
                     if (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".gif") typeStr = "image";
                     else if (ext == ".pdf") typeStr = "pdf";
 
-                    fileDisplay = string.Format("<br/><a href=\"javascript:void(0);\" onclick=\"openPreview('{0}', '{1}')\" class=\"preview-link\" style=\"font-size:12px; color:#3a7bd5;\"><i class=\"icon-eye\"></i> View Attachment</a>", ResolveUrl(filePath), typeStr);
+                    fileDisplay = string.Format("<a href=\"{0}\" target=\"_blank\" class=\"preview-link\" style=\"font-size:10px; color:#3a7bd5; margin-left:6px; white-space:nowrap;\"><i class=\"icon-eye\" style=\"font-size:10px;\"></i> View</a>", ResolveUrl(filePath));
                 }
 
                 sb.Append("<tr>");
                 sb.Append(string.Format("<td><input type=\"text\" class=\"form-control\" placeholder=\"Enter Document Name\" name=\"docName[]\" value=\"{0}\" /></td>", docName));
-                sb.Append(string.Format("<td><input type=\"hidden\" name=\"existingDocFile[]\" value=\"{0}\" /><input type=\"file\" class=\"form-control\" name=\"docFile[]\" accept=\".pdf, .jpg, .jpeg, .png, .gif, .webp\" />{1}</td>", filePath, fileDisplay));
+                sb.Append(string.Format("<td><div class=\"file-wrap\" style=\"display:flex; align-items:center;\"><input type=\"hidden\" name=\"existingDocFile[]\" value=\"{0}\" /><input type=\"file\" class=\"form-control\" name=\"docFile[]\" accept=\".pdf, .jpg, .jpeg, .png, .gif, .webp\" style=\"margin-bottom:0;\" />{1}</div></td>", filePath, fileDisplay));
                 sb.Append("<td><div class=\"input-group\"><span class=\"input-group-addon\"><i class=\"icon-calendar22\"></i></span>");
                 sb.Append(string.Format("<input type=\"text\" class=\"form-control pickadate\" placeholder=\"DD/MM/YYYY\" name=\"docValidFrom[]\" value=\"{0}\" /></div></td>", validFrom));
                 sb.Append("<td><div class=\"input-group\"><span class=\"input-group-addon\"><i class=\"icon-calendar22\"></i></span>");

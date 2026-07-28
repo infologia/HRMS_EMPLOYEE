@@ -18,7 +18,7 @@
     </div>
 
     <div class="horizontal-scroll">
-        <table class="table datatable-basic">
+        <table class="table datatable-basic" data-order='[[ 6, "desc" ]]'>
            <thead>
     <tr>
         <th>Client Name</th>
@@ -36,6 +36,21 @@
             </tbody>
         </table>
     </div>
+        <div class="row" style="margin-top:15px;">
+            <div class="col-lg-12 text-center">
+                <strong>
+                    Total TDS:
+                    <asp:Label ID="lblTotalTDS" runat="server" CssClass="text-primary"></asp:Label>
+                    &nbsp;&nbsp;|&nbsp;&nbsp;
+                    Total Invoice Amount:
+                    <asp:Label ID="lblTotalInvoiceAmount" runat="server" CssClass="text-primary"></asp:Label>
+                    &nbsp;&nbsp;|&nbsp;&nbsp;
+                    Total Amount:
+                    <asp:Label ID="lblTotalAmount" runat="server" CssClass="text-primary"></asp:Label>
+                </strong>
+            </div>
+        </div>
+        <br />
 </div>
 
 </asp:Content>

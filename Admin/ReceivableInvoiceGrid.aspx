@@ -52,7 +52,7 @@
     <div class="panel-body" style="padding: 0px;">
     </div>
     <div class="table-responsive">
-        <table class="table datatable-basic">
+        <table class="table datatable-basic" data-order='[[ 3, "desc" ]]'>
             <thead>
                 <tr>
                     
@@ -62,7 +62,7 @@
                     <th style="white-space: nowrap;">Invoice Date</th>
                     <th style="white-space: nowrap;">Due Date</th>
                     <th>Status</th>  
-                    <th>Download</th>
+                    <th class="text-center">Download</th>
                     <th>CreatedOn</th>
                     <th class="text-center">Actions</th>
         

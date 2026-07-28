@@ -15,7 +15,7 @@
                 </div>
                 <br />
                 <div class="col-lg-8">
-                    <a href="AssetInventory.aspx" runat="server" class="btn btn-primary  pull-right"><i class="icon-plus-circle2"></i> Create Asset Inventory</a>
+                    <a href="AssetInventory.aspx" runat="server" class="btn btn-primary  pull-right"><i class="icon-plus-circle2"></i> Create </a>
                 </div>
             </div>
         </div>
@@ -28,9 +28,9 @@
                     <th>Category</th>
                     <th>Brand</th>
                     <th>Placed Location</th>
-                    <th>Purchase Date</th>
+                    <th style="min-width:120px; white-space:nowrap;">Purchase Date</th>
                     <th>Status</th>
-                    <th>Update</th>
+                    <th class="text-center">Action</th>
                 </tr>
             </thead>
             <tbody>

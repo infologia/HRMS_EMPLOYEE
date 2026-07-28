@@ -1,9 +1,12 @@
-﻿<tr>  <td>%%createdon%%</td>
+<tr>
+<td>%%createdon%%</td>
 <td>%%employeeid%%</td>
-<td>%%Username%%</td>
 <td>%%name%%</td>
 <td>%%DocumentName%%</td>
-<td>%%Document%%</td>
-<td><a href="EditDocument.aspx?id=%%Documentkey%%"  class="label label-info">Upadte</a></td>
-<td><a href="Documents.aspx?id=%%Documentkey%%"  class="label label-info"  onclick="return confirm('Are you sure you want to delete this document?');">Delete</a></td>	 
+<td class="text-center">
+  <ul class="icons-list">
+    <li><a href="EditDocument.aspx?id=%%Documentkey%%" class="text-primary" data-popup="tooltip" title="Update"><i class="icon-pencil7"></i></a></li>
+    <li><a href="Documents.aspx?id=%%Documentkey%%" class="text-danger" data-popup="tooltip" title="Delete" onclick="return confirm('Are you sure you want to delete this document?');"><i class="icon-trash"></i></a></li>
+  </ul>
+</td>
 </tr>
