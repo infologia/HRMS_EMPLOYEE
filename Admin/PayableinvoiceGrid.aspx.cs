@@ -108,7 +108,7 @@ public partial class Admin_PayableinvoiceGrid : System.Web.UI.Page
         string query1 = @"SELECT a.PayableInvoiceKey, b.ClientName AS VendorName, a.InvoiceNumber, a.InvoiceDate, a.DueDate, a.InvoiceAmount, a.PaymentStatus, a.CreatedOn
                           FROM IT_PayableInvoices a
                           LEFT JOIN IT_ClientDetails b ON a.VendorNameNew = b.ClientKey
-                          WHERE ISNULL(a.InvoiceDate, a.CreatedOn) >= @FYStart AND ISNULL(a.InvoiceDate, a.CreatedOn) <= @FYEnd" + vendorFilter + " ORDER BY a.CreatedOn DESC";
+                          WHERE ISNULL(a.InvoiceDate, a.CreatedOn) >= @FYStart AND ISNULL(a.InvoiceDate, a.CreatedOn) <= @FYEnd" + vendorFilter + " ORDER BY a.InvoiceDate DESC";
         SqlCommand cmd1 = new SqlCommand(query1);
         cmd1.Parameters.AddWithValue("@FYStart", fyStart);
         cmd1.Parameters.AddWithValue("@FYEnd", fyEnd);
@@ -144,12 +144,12 @@ public partial class Admin_PayableinvoiceGrid : System.Web.UI.Page
                 if (str_Status == "1" || str_Status.ToLower() == "paid" || str_Status.ToLower() == "completed")
                 {
                     dr["ActiveText"] = "<span class='label label-success'>Completed</span>";
-                    dr["Remove"] = "<td><span class='label label-default' style='cursor:not-allowed; opacity:0.6;'>Remove</span></td>";
+                    dr["Remove"] = "<a href='javascript:void(0);' class='text-muted' style='cursor:not-allowed; opacity:0.6;' title='Remove'><i class='icon-trash'></i></a>";
                 }
                 else
                 {
                     dr["ActiveText"] = "<span class='label label-sm label-warning'>Pending</span>";
-                    dr["Remove"] = "<td><a href='javascript:void(0);'><span class='label label-danger' style='cursor:pointer;' onclick=\"fn_DeleteProject('" + InvoiceKey + "')\">Remove</span></a></td>";
+                    dr["Remove"] = "<a href='javascript:void(0);' class='text-danger' style='cursor:pointer;' onclick=\"fn_DeleteProject('" + InvoiceKey + "')\" title='Remove'><i class='icon-trash'></i></a>";
                 }
             }
 

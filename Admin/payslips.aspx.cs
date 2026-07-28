@@ -43,8 +43,6 @@ public partial class Admin_payslips : System.Web.UI.Page
 
         if (is_view_mode)
         {
-            // Viewing an already-saved payroll batch: trust the month/year passed in,
-            // no "previous month only" restriction (that rule only applies to generating new payroll).
             if (str_month == "" || str_year == "")
             {
                 DateTime prevMonthVM = DateTime.Now.AddMonths(-1);
@@ -54,7 +52,6 @@ public partial class Admin_payslips : System.Web.UI.Page
         }
         else
         {
-            // Default to previous month (current month & future months are restricted)
             DateTime prevMonth = DateTime.Now.AddMonths(-1);
             if (str_month == "" || str_year == "")
             {
@@ -63,7 +60,6 @@ public partial class Admin_payslips : System.Web.UI.Page
             }
             else
             {
-                // If query-string passes current/future month, fall back to previous month
                 int qs_month = int.Parse(str_month);
                 int qs_year  = int.Parse(str_year);
                 DateTime selectedDate = new DateTime(qs_year, qs_month, 1);
@@ -78,7 +74,6 @@ public partial class Admin_payslips : System.Web.UI.Page
 
         if (!IsPostBack)
         {
-            // Try setting selected value; if not in list (e.g. future year), leave as default
             if (ddl_month.Items.FindByValue(str_month) != null)
                 ddl_month.SelectedValue = str_month;
             if (ddl_year.Items.FindByValue(str_year) != null)
@@ -89,12 +84,11 @@ public partial class Admin_payslips : System.Web.UI.Page
 
         if (is_view_mode)
         {
-            // Compact, read-only header: Month / Year / Load / Save / Export controls are not
-            // relevant when looking at a specific saved payroll record, so hide them.
             div_controls.Visible = false;
             div_header.Attributes["class"] = "panel-heading ledger-header ledger-header-compact";
             btn_saveall.Visible = false;
             btn_export.Visible = false;
+            lnk_back.Visible = true;
         }
 
         if (!IsPostBack)
@@ -117,7 +111,6 @@ public partial class Admin_payslips : System.Web.UI.Page
     {
         ddl_year.Items.Clear();
         int currentYear = DateTime.Now.Year;
-        // Show only past years up to current year (no future years)
         for (int year = currentYear - 5; year <= currentYear; year++)
         {
             ddl_year.Items.Add(new ListItem(year.ToString(), year.ToString()));
@@ -134,7 +127,6 @@ public partial class Admin_payslips : System.Web.UI.Page
         int sel_month = int.Parse(str_month);
         int sel_year  = int.Parse(str_year);
 
-        // Restrict: only previous months allowed; current month & future months blocked
         DateTime selectedDate    = new DateTime(sel_year, sel_month, 1);
         DateTime currentMonthStart = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
 
@@ -264,13 +256,6 @@ public partial class Admin_payslips : System.Web.UI.Page
 
         this.LoadKpiSummary(dt_grid, month, year);
     }
-
-    /// <summary>
-    /// Returns the data exactly as it was SAVED for the given month/year
-    /// (used when the page is opened in read-only "view" mode). No live recomputation.
-    /// Column names are aliased to match the ones GetPayrollDataTable() produces,
-    /// so the same paysliadvance.txt template / KPI summary code can be reused as-is.
-    /// </summary>
     private DataTable GetSavedPayrollDataTable(int month, int year)
     {
         string str_query = @"
@@ -411,6 +396,17 @@ CTE_HalfDay AS (
         AND a.WorkDate = p.PermissionDate
     WHERE (a.NetWorkingMinutes + ISNULL(p.PermissionMinutes, 0)) < 480
       AND (a.NetWorkingMinutes + ISNULL(p.PermissionMinutes, 0)) > 240
+      AND NOT EXISTS (
+            -- Skip dates already covered by an approved leave (any type),
+            -- so half-day-leave days don't ALSO get counted as an
+            -- attendance-based half day deduction (double deduction).
+            SELECT 1
+            FROM IT_EmployeeLeaveDetails ld
+            WHERE ld.Employeekey = a.Employeekey
+              AND CAST(ld.Fromdate AS DATE) <= a.WorkDate
+              AND CAST(ld.Todate AS DATE) >= a.WorkDate
+              AND ld.Responsestatus = 2
+      )
     GROUP BY a.Employeekey
 ),
 
@@ -454,22 +450,27 @@ CTE_LateLogin AS (
         COUNT(*) AS LateLoginCount
     FROM CTE_Attendance a
     WHERE a.InTime IS NOT NULL
-      AND CAST(a.InTime AS TIME) > '09:45:00'
+      AND CAST(DATEADD(MINUTE, 330, a.InTime) AS TIME) > '09:45:00'
       AND NOT (
+            -- Exempt if approved Morning Permission exists
             EXISTS (
-                SELECT 1 
-                FROM IT_LatePermissionDetails lp
-                WHERE lp.Employeekey = a.Employeekey
-                  AND CAST(lp.Requestdate AS DATE) = a.WorkDate
-                  AND lp.Responsestatus = 2
-            )
-            AND EXISTS (
                 SELECT 1 
                 FROM IT_EmployeePermissionDetails epd
                 WHERE epd.Employeekey = a.Employeekey
                   AND CAST(epd.Requestdate AS DATE) = a.WorkDate
                   AND epd.Responsestatus = 2
                   AND TRY_CAST(epd.Fromtime AS TIME) < '12:00:00'
+            )
+            OR
+            -- Exempt if approved Half Day (Forenoon) Leave exists
+            EXISTS (
+                SELECT 1 
+                FROM IT_EmployeeLeaveDetails ld
+                WHERE ld.Employeekey = a.Employeekey
+                  AND CAST(ld.Fromdate AS DATE) <= a.WorkDate 
+                  AND CAST(ld.Todate AS DATE) >= a.WorkDate
+                  AND ld.Responsestatus = 2
+                  AND ld.LeaveType = '0' -- 0 = Half Day (Forenoon)
             )
       )
     GROUP BY a.Employeekey

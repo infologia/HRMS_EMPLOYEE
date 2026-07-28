@@ -19,9 +19,10 @@
 
         /* ===== HEADER / FILTER BAR ===== */
         .ledger-header {
-            background: var(--ledger-ink) !important;
+            background: #fff !important;
+            border-bottom: 1px solid #E4E2DB;
             border-radius: 6px 6px 0 0;
-            padding: 18px 22px !important;
+            padding: 10px 22px !important;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -33,19 +34,19 @@
                 font-size: 11px;
                 letter-spacing: 0.06em;
                 text-transform: uppercase;
-                color: #8A93C4;
+                color: #6B7280;
                 margin: 0 0 4px 0;
             }
 
             .ledger-header .panel-title {
                 margin: 0 !important;
-                color: #F6F5F1 !important;
-                font-weight: 500;
+                color: var(--ledger-ink) !important;
+                font-weight: 600;
                 font-size: 19px;
             }
 
                 .ledger-header .panel-title #lbl_monthyear {
-                    color: #F6F5F1 !important;
+                    color: var(--ledger-ink) !important;
                 }
 
         .ledger-controls {
@@ -60,16 +61,16 @@
                 margin: 0;
                 font-size: 12px;
                 font-weight: 600;
-                color: #C7CCE6;
+                color: #333;
             }
 
             .ledger-controls select.form-control {
                 height: 34px !important;
                 font-size: 12px !important;
                 border-radius: 6px !important;
-                border: 1px solid rgba(255,255,255,0.25) !important;
+                border: 1px solid #dcdbe2 !important;
                 background: #fff !important;
-                color: #1B2340 !important;
+                color: #333 !important;
             }
 
             .ledger-controls .btn-primary,
@@ -101,12 +102,13 @@
             }
 
         .ledger-columns-btn {
-            border: 1px solid rgba(255,255,255,0.25) !important;
+            border: 1px solid #dcdbe2 !important;
             border-radius: 6px !important;
             padding: 0 10px !important;
-            background: rgba(255,255,255,0.06) !important;
-            color: #F6F5F1 !important;
+            background: #f7f8fb !important;
+            color: #3b4472 !important;
             font-size: 12px;
+            font-weight: 500;
             white-space: nowrap;
             cursor: pointer;
             text-decoration: none;
@@ -120,9 +122,9 @@
         }
 
             .ledger-columns-btn:hover {
-                background: rgba(255,255,255,0.14) !important;
+                background: #e8edf3 !important;
                 text-decoration: none;
-                color: #fff !important;
+                color: #1b2340 !important;
             }
 
         /* ===== KPI SUMMARY STRIP ===== */
@@ -691,6 +693,7 @@
                     <asp:Label ID="lbl_monthyear" runat="server" Text=""></asp:Label>
                 </h5>
             </div>
+            <a href="viewpayroll.aspx" id="lnk_back" runat="server" visible="false" class="btn btn-default" style="background: #f7f8fb; color: #3b4472; border: 1px solid #dcdbe2; padding: 6px 16px; font-size: 13px; font-weight:500;"><i class="icon-arrow-left7"></i> Back</a>
             <div class="ledger-controls" id="div_controls" runat="server">
                 <label>Month :</label>
                 <asp:DropDownList ID="ddl_month" runat="server" CssClass="form-control" Style="width: 130px; display: inline-block;"></asp:DropDownList>

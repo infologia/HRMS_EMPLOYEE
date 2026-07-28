@@ -1,12 +1,14 @@
-﻿   <tr> 
+   <tr> 
                     <td>%%Company_Name%%</td>
                     <td>%%Invoice_Number%%</td>
                     <td>%%Invoice_Date%%</td>
                     <td>%%Due_Date%%</td>
                      <td>%%ActiveText%%</td>
                     <td>%%Created_Date%%</td>
-                    <td><a href="Payableinvoice.aspx?id=%%PayableInvoiceKey%%"><span class="label label-info">Update</span></a></td> 
-                                  %%Remove%%
+                    <td class="text-center">
+                        <a href="Payableinvoice.aspx?id=%%PayableInvoiceKey%%" class="text-primary" title="Update" style="margin-right: 10px;"><i class="icon-pencil7"></i></a>
+                        %%Remove%%
+                    </td>
   </tr>
            
          

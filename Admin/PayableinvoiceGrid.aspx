@@ -58,7 +58,7 @@
 </div>
     <div class="panel-body" style="padding: 0px;">
     </div>
-    <table class="table datatable-basic">
+    <table class="table datatable-basic" data-order='[[ 2, "desc" ]]'>
         <thead>
             <tr>
                 
@@ -68,8 +68,7 @@
                 <th>Due Date</th>
                 <th>Status</th>  
                 <th>CreatedOn</th>
-                <th>Update</th>
-                  <th>Remove</th>
+                <th class="text-center">Actions</th>
     
             </tr>
         </thead>

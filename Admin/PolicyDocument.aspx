@@ -20,11 +20,9 @@
             <thead>
                 <tr>
                     <th>Date</th>
-                    <th>Poloicy Document </th>
-                    <th>Upload Document </th>
+                    <th>Policy Document</th>
                     <th>Status</th>
-                    <th>Update </th>
-                    <th>Delete </th>
+                    <th class="text-center">Action</th>
                 </tr>
             </thead>
             <tbody>

@@ -25,6 +25,7 @@ public partial class Admin_Payabletds : System.Web.UI.Page
                 control1.Text = "Payable TDS";
             BindFinancialYearDropdown();
             LoadTds();
+            LoadTotalAmounts();
         }
 
     }
@@ -47,6 +48,7 @@ public partial class Admin_Payabletds : System.Web.UI.Page
     protected void ddlFinancialYear_SelectedIndexChanged(object sender, EventArgs e)
     {
         LoadTds();
+        LoadTotalAmounts();
     }
 
     private void GetFinancialYearDates(out DateTime startDate, out DateTime endDate)
@@ -68,7 +70,7 @@ public partial class Admin_Payabletds : System.Web.UI.Page
         i.TDSAmount,
         i.TotalPayableAmount,
         i.PaymentStatus,
-        CONVERT(VARCHAR(10), i.InvoiceDate, 103) AS InvoiceDate
+        CONVERT(VARCHAR(10), i.InvoiceDate, 23) AS InvoiceDate
     FROM IT_PayableInvoices i
     INNER JOIN IT_Vendors c
         ON i.VendorName = c.VendorKey
@@ -111,4 +113,38 @@ public partial class Admin_Payabletds : System.Web.UI.Page
 
 
 
+
+    private void LoadTotalAmounts()
+    {
+        DateTime fyStart, fyEnd;
+        GetFinancialYearDates(out fyStart, out fyEnd);
+
+        string query = @"SELECT 
+                ISNULL(SUM(i.TDSAmount), 0) AS TotalTDS, 
+                ISNULL(SUM(i.InvoiceAmount), 0) AS TotalInvoiceAmount,
+                ISNULL(SUM(i.TotalPayableAmount), 0) AS TotalAmount 
+            FROM IT_PayableInvoices i
+            INNER JOIN IT_Vendors c ON i.VendorName = c.VendorKey
+            WHERE i.TDSAmount > 0
+              AND ISNULL(i.InvoiceDate, i.CreatedOn) >= @FYStart 
+              AND ISNULL(i.InvoiceDate, i.CreatedOn) <= @FYEnd";
+
+        SqlCommand cmd = new SqlCommand(query);
+        cmd.Parameters.AddWithValue("@FYStart", fyStart);
+        cmd.Parameters.AddWithValue("@FYEnd", fyEnd);
+
+        DataTable dt = DA.GetDataTable(cmd);
+        if (dt != null && dt.Rows.Count > 0)
+        {
+            lblTotalTDS.Text = Convert.ToDecimal(dt.Rows[0]["TotalTDS"]).ToString("0.00");
+            lblTotalInvoiceAmount.Text = Convert.ToDecimal(dt.Rows[0]["TotalInvoiceAmount"]).ToString("0.00");
+            lblTotalAmount.Text = Convert.ToDecimal(dt.Rows[0]["TotalAmount"]).ToString("0.00");
+        }
+        else
+        {
+            lblTotalTDS.Text = "0.00";
+            lblTotalInvoiceAmount.Text = "0.00";
+            lblTotalAmount.Text = "0.00";
+        }
+    }
 }

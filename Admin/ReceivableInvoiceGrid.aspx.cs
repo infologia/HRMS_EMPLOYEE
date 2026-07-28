@@ -130,7 +130,8 @@ FROM IT_Invoices a
 INNER JOIN IT_ClientDetails b  ON a.ClientKey = b.ClientKey
 INNER JOIN IT_Projects c ON a.ProjectKey=c.ProjectKey
 LEFT JOIN IT_InvoiceStatus s ON a.InvoiceStatus = s.id
-WHERE ISNULL(a.InvoiceDate, a.CreatedOn) >= @FYStart AND ISNULL(a.InvoiceDate, a.CreatedOn) <= @FYEnd";
+WHERE ISNULL(a.InvoiceDate, a.CreatedOn) >= @FYStart AND ISNULL(a.InvoiceDate, a.CreatedOn) <= @FYEnd
+ORDER BY a.InvoiceDate DESC";
         SqlCommand cmd1 = new SqlCommand(query1);
         cmd1.Parameters.AddWithValue("@FYStart", fyStart);
         cmd1.Parameters.AddWithValue("@FYEnd", fyEnd);
@@ -161,8 +162,8 @@ WHERE ISNULL(a.InvoiceDate, a.CreatedOn) >= @FYStart AND ISNULL(a.InvoiceDate, a
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
                 dr["Download"] =
-   "<a href='ReceivableInvoiceGrid.aspx?InvoiceKey=" + dr["InvoiceKey"] + "'>" +
-   "<button type='button' class='label label-sm label-success'>Download</button></a>";
+   "<a href='ReceivableInvoiceGrid.aspx?InvoiceKey=" + dr["InvoiceKey"] + "' class='text-primary' title='Download'>" +
+   "<i class='icon-file-download'></i></a>";
                 String str_StatusName = dr["StatusName"] != DBNull.Value ? dr["StatusName"].ToString() : "Pending";
                 String str_Employee = dr["CompanyName"].ToString();
                 String str_InvoiceNumber = dr["InvoiceNumber"].ToString();

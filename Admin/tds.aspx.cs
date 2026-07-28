@@ -24,6 +24,7 @@ public partial class Admin_tds : System.Web.UI.Page
                 control1.Text = "Receivable TDS";
             BindFinancialYearDropdown();
             LoadTds();
+            LoadTotalAmounts();
         }
     }
 
@@ -45,6 +46,7 @@ public partial class Admin_tds : System.Web.UI.Page
     protected void ddlFinancialYear_SelectedIndexChanged(object sender, EventArgs e)
     {
         LoadTds();
+        LoadTotalAmounts();
     }
 
     private void GetFinancialYearDates(out DateTime startDate, out DateTime endDate)
@@ -67,7 +69,7 @@ public partial class Admin_tds : System.Web.UI.Page
         i.TotalAmount,
         i.InvoiceStatus,
         s.name as StatusName,
-        CONVERT(VARCHAR(10), i.InvoiceDate, 103) AS InvoiceDate
+        CONVERT(VARCHAR(10), i.InvoiceDate, 23) AS InvoiceDate
     FROM IT_Invoices i
     INNER JOIN IT_ClientDetails c ON i.ClientKey = c.ClientKey
     LEFT JOIN IT_Countries cnt ON cnt.CountryKey = c.Country
@@ -121,4 +123,40 @@ public partial class Admin_tds : System.Web.UI.Page
         }
     }
 
+
+    private void LoadTotalAmounts()
+    {
+        DateTime fyStart, fyEnd;
+        GetFinancialYearDates(out fyStart, out fyEnd);
+
+        string query = @"SELECT 
+                ISNULL(SUM(i.TDSAmount), 0) AS TotalTDS, 
+                ISNULL(SUM(i.InvoiceAmount), 0) AS TotalInvoiceAmount,
+                ISNULL(SUM(i.TotalAmount), 0) AS TotalAmount 
+            FROM IT_Invoices i
+            INNER JOIN IT_ClientDetails c ON i.ClientKey = c.ClientKey
+            LEFT JOIN IT_Countries cnt ON cnt.CountryKey = c.Country
+            WHERE i.TDSAmount > 0 
+              AND ISNULL(i.InvoiceDate, i.CreatedOn) >= @FYStart 
+              AND ISNULL(i.InvoiceDate, i.CreatedOn) <= @FYEnd
+              AND cnt.Country = 'India'";
+
+        SqlCommand cmd = new SqlCommand(query);
+        cmd.Parameters.AddWithValue("@FYStart", fyStart);
+        cmd.Parameters.AddWithValue("@FYEnd", fyEnd);
+
+        DataTable dt = DA.GetDataTable(cmd);
+        if (dt != null && dt.Rows.Count > 0)
+        {
+            lblTotalTDS.Text = Convert.ToDecimal(dt.Rows[0]["TotalTDS"]).ToString("0.00");
+            lblTotalInvoiceAmount.Text = Convert.ToDecimal(dt.Rows[0]["TotalInvoiceAmount"]).ToString("0.00");
+            lblTotalAmount.Text = Convert.ToDecimal(dt.Rows[0]["TotalAmount"]).ToString("0.00");
+        }
+        else
+        {
+            lblTotalTDS.Text = "0.00";
+            lblTotalInvoiceAmount.Text = "0.00";
+            lblTotalAmount.Text = "0.00";
+        }
+    }
 }

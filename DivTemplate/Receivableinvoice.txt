@@ -5,7 +5,7 @@
                     <td>%%Invoice_Date%%</td>
                     <td>%%Due_Date%%</td>
                     <td>%%ActiveText%%</td>
-                    <td>%%Download%%</td>
+                    <td class="text-center">%%Download%%</td>
                     <td>%%Created_Date%%</td>
                     <td class="text-center">
                         <ul class="icons-list">

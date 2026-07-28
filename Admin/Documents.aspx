@@ -22,13 +22,10 @@
             <thead>
                 <tr>
                     <th>Date</th>
-                    <th>Employee Id</th>
-                    <th>User Name</th>
+                    <th style="min-width:110px;">Employee Id</th>
                     <th>Name</th>
-                    <th>Document Name </th>
-                    <th>Upload Document </th>
-                    <th>Update </th>
-                    <th>Delete </th>
+                    <th style="min-width:150px;">Document Name</th>
+                    <th class="text-center">Action</th>
                 </tr>
             </thead>
             <tbody>

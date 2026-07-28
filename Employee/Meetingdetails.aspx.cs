@@ -33,10 +33,27 @@ public partial class Employee_Meetingdetails : System.Web.UI.Page
 
             if (!string.IsNullOrEmpty(Request.QueryString["Viewid"]))
             {
-                string decrypted =
-        UrlCrypto.Decrypt(Request.QueryString["Viewid"]);
+                string rawViewid = Request.QueryString["Viewid"];
+                int parsedViewid;
 
-                viewId = Convert.ToInt32(decrypted);
+                if (int.TryParse(rawViewid, out parsedViewid))
+                {
+                    // Value wasn't encrypted (e.g. manual/old URL), use as-is
+                    viewId = parsedViewid;
+                }
+                else
+                {
+                    try
+                    {
+                        string decrypted = UrlCrypto.Decrypt(rawViewid);
+                        viewId = Convert.ToInt32(decrypted);
+                    }
+                    catch (FormatException)
+                    {
+                        // Invalid/tampered value, fall back safely instead of crashing
+                        viewId = 0;
+                    }
+                }
             }
 
             if (viewId == 0)

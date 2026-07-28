@@ -26,6 +26,7 @@ public partial class Admin_gst : System.Web.UI.Page
             
             BindFinancialYearDropdown();
             LoadInvoiceGrid();
+            LoadTotalAmounts();
         }
         if (Request["__EVENTTARGET"] == "PayInvoice")
         {
@@ -50,6 +51,7 @@ public partial class Admin_gst : System.Web.UI.Page
     protected void ddlFinancialYear_SelectedIndexChanged(object sender, EventArgs e)
     {
         LoadInvoiceGrid();
+        LoadTotalAmounts();
     }
 
     private void GetFinancialYearDates(out DateTime startDate, out DateTime endDate)
@@ -80,7 +82,7 @@ public partial class Admin_gst : System.Web.UI.Page
     WHERE ISNULL(i.InvoiceDate, i.CreatedOn) >= @FYStart 
       AND ISNULL(i.InvoiceDate, i.CreatedOn) <= @FYEnd
       AND cnt.Country = 'India'
-    ORDER BY i.CreatedOn DESC";
+    ORDER BY i.InvoiceDate DESC";
 
         SqlCommand cmd = new SqlCommand(str_query);
         cmd.Parameters.AddWithValue("@FYStart", fyStart);
@@ -137,6 +139,40 @@ WHERE InvoiceKey = @InvoiceKey";
         txtDescription.Text = string.Empty;
 
         LoadInvoiceGrid();
+        LoadTotalAmounts();
     }
 
+
+    private void LoadTotalAmounts()
+    {
+        DateTime fyStart, fyEnd;
+        GetFinancialYearDates(out fyStart, out fyEnd);
+
+        string query = @"
+            SELECT 
+                ISNULL(SUM(i.GSTAmount), 0) AS TotalGST, 
+                ISNULL(SUM(i.InvoiceAmount), 0) AS TotalAmount 
+            FROM IT_Invoices i
+            INNER JOIN IT_ClientDetails c ON i.ClientKey = c.ClientKey
+            LEFT JOIN IT_Countries cnt ON cnt.CountryKey = c.Country
+            WHERE ISNULL(i.InvoiceDate, i.CreatedOn) >= @FYStart 
+              AND ISNULL(i.InvoiceDate, i.CreatedOn) <= @FYEnd
+              AND cnt.Country = 'India'";
+
+        SqlCommand cmd = new SqlCommand(query);
+        cmd.Parameters.AddWithValue("@FYStart", fyStart);
+        cmd.Parameters.AddWithValue("@FYEnd", fyEnd);
+
+        DataTable dt = DA.GetDataTable(cmd);
+        if (dt != null && dt.Rows.Count > 0)
+        {
+            lblTotalGST.Text = Convert.ToDecimal(dt.Rows[0]["TotalGST"]).ToString("0.00");
+            lblTotalAmount.Text = Convert.ToDecimal(dt.Rows[0]["TotalAmount"]).ToString("0.00");
+        }
+        else
+        {
+            lblTotalGST.Text = "0.00";
+            lblTotalAmount.Text = "0.00";
+        }
+    }
 }

@@ -1,11 +1,11 @@
 ﻿   <tr>
-                    <td>%%EmployeeKey%%</td>
-                     <td>%%EquipmentName%%</td>
+                    <td style="min-width:140px; white-space:nowrap;">%%EmployeeKey%%</td>
+                     <td style="min-width:140px; white-space:nowrap;">%%EquipmentName%%</td>
                      <td>%%Brand%%</td>
-                     <td>%%ModelSerialNumber%%</td>
-                    <td>%%AssignedDate%%</td>
+                     <td style="min-width:150px; white-space:nowrap;">%%ModelSerialNumber%%</td>
+                    <td style="min-width:130px; white-space:nowrap;">%%AssignedDate%%</td>
                     <td>%%ActiveText%%</td>
-                     <td><a href="AssignassetsCreation.aspx?id=%%AssignedAssets%%"><span class="label label-info">Update</span></a></td> 
+                     <td class="text-center"><a href="AssignassetsCreation.aspx?id=%%AssignedAssets%%" class="text-primary" data-popup="tooltip" title="Update"><i class="icon-pencil7"></i></a></td> 
                   
                 </tr>
           

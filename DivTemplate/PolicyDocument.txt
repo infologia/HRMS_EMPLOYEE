@@ -1,7 +1,11 @@
-﻿<tr>  <td>%%createdOn%%</td>                
-                    <td>%%DocumentName%%</td>
-                    <td>%%PolicyDocument%%</td>
-                    <td>%%ActiveText%%</td>
-                 <td><a href="PolicyDocumentSend.aspx?id=%%PolicyDocumentkey%%"  class="label label-info">Upadte</a></td>
-				 <td><a href="PolicyDocument.aspx?id=%%PolicyDocumentkey%%"  class="label label-info">Delete</a></td>	 
-                </tr>
+<tr>
+<td>%%createdOn%%</td>
+<td>%%DocumentName%%</td>
+<td>%%ActiveText%%</td>
+<td class="text-center">
+  <ul class="icons-list">
+    <li><a href="PolicyDocumentSend.aspx?id=%%PolicyDocumentkey%%" class="text-primary" data-popup="tooltip" title="Update"><i class="icon-pencil7"></i></a></li>
+    <li><a href="PolicyDocument.aspx?id=%%PolicyDocumentkey%%" class="text-danger" data-popup="tooltip" title="Delete" onclick="return confirm('Are you sure you want to delete this document?');"><i class="icon-trash"></i></a></li>
+  </ul>
+</td>
+</tr>

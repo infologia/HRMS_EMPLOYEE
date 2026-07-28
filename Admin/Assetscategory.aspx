@@ -6,7 +6,7 @@
         <div class="panel panel-flat">
     <div class="panel-heading">
         <h5 class="panel-title">Assets Category</h5>
-            <a href="Assetscategorycreation.aspx" class="btn btn-primary  pull-right" ><i class="icon-plus-circle2"></i> Create Category</a>
+            <a href="Assetscategorycreation.aspx" class="btn btn-primary  pull-right" ><i class="icon-plus-circle2"></i> Create</a>
     </div>
        <br />
     <div class="panel-body" style="padding: 0px;">
@@ -19,7 +19,7 @@
                 <th>Created Date</th>
                 <th>Modified Date</th>
                 <th>Status</th>
-                <th>Update</th>
+                <th class="text-center">Action</th>
             </tr>
         </thead>
         <tbody>
