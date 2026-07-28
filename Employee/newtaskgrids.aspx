@@ -395,8 +395,7 @@
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
-    <asp:HiddenField ID="hfActiveStatus" runat="server" Value="1" />
-    
+
     <!-- Project Header -->
     <div class="panel panel-flat" style="margin-bottom: 20px;">
         <div class="panel-body" style="padding: 16px 20px;">
@@ -423,6 +422,7 @@
 
     <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
         <ContentTemplate>
+            <asp:HiddenField ID="hfActiveStatus" runat="server" Value="1" />
             <div class="cards-row">
                 <div class="card-col">
                     <asp:LinkButton ID="btnCard0" runat="server" OnClick="CardClick" CommandArgument="0" style="text-decoration: none; display:block;">
@@ -554,7 +554,8 @@
           $('.datatable-basic').DataTable({
               paging: true,
               searching: true,
-              ordering: true
+              ordering: true,
+              order: []
           });
       }
 

@@ -29,6 +29,18 @@ public partial class WEB_Employee_PermissionRequestView : System.Web.UI.Page
             if (control1 != null)
                 control1.Text = "Permissions";
 
+            // Populate Year DropDown
+            int currentYear = DateTime.Now.Year;
+            ddl_year.Items.Add(new ListItem("All Years", "0"));
+            for (int y = currentYear; y >= 2020; y--)
+            {
+                ddl_year.Items.Add(new ListItem(y.ToString(), y.ToString()));
+            }
+
+            // Default to current year & current month
+            ddl_year.SelectedValue = currentYear.ToString();
+            ddl_month.SelectedValue = DateTime.Now.Month.ToString();
+
             LoadUpdateDropdown();
         }
 
@@ -44,11 +56,29 @@ public partial class WEB_Employee_PermissionRequestView : System.Web.UI.Page
                                 a.Permissionhourse,
                                 CONVERT(varchar,a.Createdon,103) as appliedraw
                               FROM IT_EmployeePermissionDetails a
-                              WHERE a.createdby=@createdby
-                              ORDER BY a.createdon DESC";
+                              WHERE a.createdby=@createdby";
+
+        if (ddl_year.SelectedValue != "0")
+        {
+            str_query += " AND YEAR(a.Requestdate) = @year";
+        }
+        if (ddl_month.SelectedValue != "0")
+        {
+            str_query += " AND MONTH(a.Requestdate) = @month";
+        }
+
+        str_query += " ORDER BY a.createdon DESC";
 
         SqlCommand cmd = new SqlCommand(str_query);
         cmd.Parameters.AddWithValue("@createdby", SC.Userid);
+        if (ddl_year.SelectedValue != "0")
+        {
+            cmd.Parameters.AddWithValue("@year", Convert.ToInt32(ddl_year.SelectedValue));
+        }
+        if (ddl_month.SelectedValue != "0")
+        {
+            cmd.Parameters.AddWithValue("@month", Convert.ToInt32(ddl_month.SelectedValue));
+        }
 
         DataTable dt_dashboard = DA.GetDataTable(cmd);
 
@@ -511,5 +541,10 @@ public partial class WEB_Employee_PermissionRequestView : System.Web.UI.Page
         DA.ExecuteNonQuery(cmd);
         
         ShowSuccessAndRedirect("Request updated successfully!", "PermissionRequestView.aspx");
+    }
+
+    protected void ddl_filter_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        // Handled automatically on Page_Load on postback
     }
 }

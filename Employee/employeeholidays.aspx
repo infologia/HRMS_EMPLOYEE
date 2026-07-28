@@ -54,7 +54,7 @@
 
             <div id="grid_all" style="display:none;">
                 <table class="table datatable-basic" id="tbl_all">
-                    <thead><tr><th>S No</th><th>Holiday</th><th>Name</th><th>Day</th><th>No Of Leave</th><th>Status</th></tr></thead>
+                    <thead><tr><th>S No</th><th>Holiday</th><th>Name</th><th>Day</th><th>No Of Leave</th><th>Countdown</th></tr></thead>
                     <tbody>
                         <asp:PlaceHolder ID="PH_All" runat="server"></asp:PlaceHolder>
                     </tbody>
@@ -63,7 +63,7 @@
 
             <div id="grid_upcoming" style="display:block;">
                 <table class=" table datatable-basic" id="tbl_upcoming">
-                    <thead><tr><th>S No</th><th>Holiday</th><th>Name</th><th>Day</th><th>No Of Leave</th><th>Status</th></tr></thead>
+                    <thead><tr><th>S No</th><th>Holiday</th><th>Name</th><th>Day</th><th>No Of Leave</th><th>Countdown</th></tr></thead>
                     <tbody>
                         <asp:PlaceHolder ID="PH_Upcoming" runat="server"></asp:PlaceHolder>
                     </tbody>
@@ -72,7 +72,7 @@
 
             <div id="grid_passed" style="display:none;">
                 <table class=" table datatable-basic" id="tbl_passed">
-                    <thead><tr><th>S No</th><th>Holiday</th><th>Name</th><th>Day</th><th>No Of Leave</th><th>Status</th></tr></thead>
+                    <thead><tr><th>S No</th><th>Holiday</th><th>Name</th><th>Day</th><th>No Of Leave</th><th>Countdown</th></tr></thead>
                     <tbody>
                         <asp:PlaceHolder ID="PH_Passed" runat="server"></asp:PlaceHolder>
                     </tbody>

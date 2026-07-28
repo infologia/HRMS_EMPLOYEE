@@ -82,7 +82,44 @@ public partial class Admin_ARPaymentEntry : System.Web.UI.Page
     protected void ddlClientName_SelectedIndexChanged(object sender, EventArgs e)
     {
         BindInvoices(ddlClientName.SelectedValue);
+        CheckIsForeignClient(ddlClientName.SelectedValue);
         ClearInvoiceFields();
+    }
+
+    private void CheckIsForeignClient(string clientId)
+    {
+        if (string.IsNullOrEmpty(clientId))
+        {
+            hfIsForeignClient.Value = "0";
+            return;
+        }
+        
+        string query = @"SELECT cnt.Country 
+                         FROM IT_ClientDetails c 
+                         INNER JOIN IT_Countries cnt ON c.Country = cnt.CountryKey 
+                         WHERE c.ClientKey = @ClientKey";
+        SqlCommand cmd = new SqlCommand(query);
+        cmd.Parameters.AddWithValue("@ClientKey", clientId);
+        DataTable dt = da.GetDataTable(cmd);
+        
+        if (dt.Rows.Count > 0 && dt.Rows[0]["Country"] != DBNull.Value)
+        {
+            string country = dt.Rows[0]["Country"].ToString();
+            if (country.Trim().Equals("India", StringComparison.OrdinalIgnoreCase))
+            {
+                hfIsForeignClient.Value = "0";
+            }
+            else
+            {
+                hfIsForeignClient.Value = "1";
+            }
+        }
+        else
+        {
+            hfIsForeignClient.Value = "0";
+        }
+        
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "toggleForeignView", "setTimeout(function(){ toggleForeignClientView(); }, 100);", true);
     }
 
     protected void ddlInvoiceNo_SelectedIndexChanged(object sender, EventArgs e)
@@ -168,6 +205,7 @@ public partial class Admin_ARPaymentEntry : System.Web.UI.Page
         txtPayment.Text       = "";
         txtBalanceAmount.Text = "";
         txtPercent.Text       = "";
+        txtConversionAmount.Text = "";
     }
 
 
@@ -176,7 +214,7 @@ public partial class Admin_ARPaymentEntry : System.Web.UI.Page
         string query = @"SELECT AR_ClientId, AR_InvoiceId, AR_InvoiceDate,
                                 AR_SubTotal, AR_GST, AR_GrandTotal,
                                 AR_Percent, AR_Amount,
-                                AR_NetDue, AR_Payment, AR_BalanceAmount
+                                AR_NetDue, AR_Payment, AR_BalanceAmount, AR_ConversionAmount
                          FROM IT_ARPaymentEntry
                          WHERE AR_Id = @AR_Id";
 
@@ -189,6 +227,7 @@ public partial class Admin_ARPaymentEntry : System.Web.UI.Page
             DataRow dr = dt.Rows[0];
 
             BindInvoices(dr["AR_ClientId"].ToString());
+            CheckIsForeignClient(dr["AR_ClientId"].ToString());
 
             ddlClientName.SelectedValue = dr["AR_ClientId"].ToString();
             ddlInvoiceNo.SelectedValue  = dr["AR_InvoiceId"].ToString();
@@ -215,6 +254,10 @@ public partial class Admin_ARPaymentEntry : System.Web.UI.Page
             txtNetDue.Text              = dr["AR_NetDue"].ToString();
             txtPayment.Text             = dr["AR_Payment"].ToString();
             txtBalanceAmount.Text       = dr["AR_BalanceAmount"].ToString();
+            if (dt.Columns.Contains("AR_ConversionAmount") && dr["AR_ConversionAmount"] != DBNull.Value)
+            {
+                txtConversionAmount.Text = dr["AR_ConversionAmount"].ToString();
+            }
             hfARId.Value                = recordId.ToString();
             
             decimal arSubTotal = dr["AR_SubTotal"] != DBNull.Value ? Convert.ToDecimal(dr["AR_SubTotal"]) : 0;
@@ -293,6 +336,7 @@ public partial class Admin_ARPaymentEntry : System.Web.UI.Page
                                         AR_NetDue        = @AR_NetDue,
                                         AR_Payment       = @AR_Payment,
                                         AR_BalanceAmount = @AR_BalanceAmount,
+                                        AR_ConversionAmount = @AR_ConversionAmount,
                                         AR_ModifiedOn    = GETDATE(),
                                         AR_ModifiedBy    = @AR_ModifiedBy
                                        WHERE AR_Id = @AR_Id";
@@ -331,13 +375,13 @@ public partial class Admin_ARPaymentEntry : System.Web.UI.Page
                                        (AR_ClientId, AR_InvoiceId, AR_InvoiceDate,
                                         AR_SubTotal, AR_GST, AR_GrandTotal,
                                         AR_Percent, AR_Amount,
-                                        AR_NetDue, AR_Payment, AR_BalanceAmount,
+                                        AR_NetDue, AR_Payment, AR_BalanceAmount, AR_ConversionAmount,
                                         AR_CreatedOn, AR_CreatedBy)
                                        VALUES
                                        (@AR_ClientId, @AR_InvoiceId, @AR_InvoiceDate,
                                         @AR_SubTotal, @AR_GST, @AR_GrandTotal,
                                         @AR_Percent, @AR_Amount,
-                                        @AR_NetDue, @AR_Payment, @AR_BalanceAmount,
+                                        @AR_NetDue, @AR_Payment, @AR_BalanceAmount, @AR_ConversionAmount,
                                         GETDATE(), @AR_CreatedBy)";
 
                 SqlCommand cmd = new SqlCommand(insertQuery);
@@ -417,6 +461,7 @@ public partial class Admin_ARPaymentEntry : System.Web.UI.Page
         cmd.Parameters.AddWithValue("@AR_NetDue",        ParseDecimal(hfNetDue.Value));
         cmd.Parameters.AddWithValue("@AR_Payment",       ParseDecimal(hfPayment.Value));
         cmd.Parameters.AddWithValue("@AR_BalanceAmount", ParseDecimal(hfBalanceAmt.Value));
+        cmd.Parameters.AddWithValue("@AR_ConversionAmount", ParseDecimal(txtConversionAmount.Text));
     }
 
     private decimal ParseDecimal(string val)

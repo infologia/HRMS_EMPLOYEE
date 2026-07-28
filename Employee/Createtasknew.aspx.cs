@@ -82,6 +82,11 @@ public partial class Employee_Createtask : System.Web.UI.Page
                     PopulateTaskData(taskKey);
                     btnSaveTask.Visible = false;
                     btnUpdateTask.Visible = true;
+                    
+                    // In edit mode, these fields must always be read-only
+                    ddlProject.Enabled = false;
+                    ddlEmployee.Enabled = false;
+                    txtStartDate.Enabled = false;
                 }
                 
                 // Set back button URL based on task's project

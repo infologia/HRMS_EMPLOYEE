@@ -627,7 +627,8 @@ public partial class WEB_EmployeeRegisterNew : System.Web.UI.Page
         cmd.Parameters.AddWithValue("@Lastname", txt_lname.Text);
         cmd.Parameters.AddWithValue("@Email", txt_email.Text);
         cmd.Parameters.AddWithValue("@Phonenumber", txt_phone.Text);
-        cmd.Parameters.AddWithValue("@Password", txt_pwd.Text);
+        string hashedPassword = BCrypt.Net.BCrypt.HashPassword(txt_pwd.Text);
+        cmd.Parameters.AddWithValue("@Password", hashedPassword);
         cmd.Parameters.AddWithValue("@Address", txt_address.Text);
         cmd.Parameters.AddWithValue("@State", ddl_state.SelectedValue);
         cmd.Parameters.AddWithValue("@City", txt_city.Text);
@@ -730,7 +731,12 @@ public partial class WEB_EmployeeRegisterNew : System.Web.UI.Page
         cmd.Parameters.AddWithValue("@Lastname", txt_lname.Text);
         cmd.Parameters.AddWithValue("@Email", txt_email.Text);
         cmd.Parameters.AddWithValue("@Phonenumber", txt_phone.Text);
-        cmd.Parameters.AddWithValue("@Password", txt_pwd.Text);
+        string passwordValue = txt_pwd.Text;
+        if (!(passwordValue.Length == 60 && (passwordValue.StartsWith("$2a$") || passwordValue.StartsWith("$2b$") || passwordValue.StartsWith("$2y$"))))
+        {
+            passwordValue = BCrypt.Net.BCrypt.HashPassword(passwordValue);
+        }
+        cmd.Parameters.AddWithValue("@Password", passwordValue);
         cmd.Parameters.AddWithValue("@Address", txt_address.Text);
         cmd.Parameters.AddWithValue("@State", ddl_state.SelectedValue);
         cmd.Parameters.AddWithValue("@City", txt_city.Text);

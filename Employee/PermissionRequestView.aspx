@@ -123,9 +123,28 @@
 
         <div class="pr-header">
             <h1>Permission Requests</h1>
-            <a href="#" class="btn-create-permission" data-toggle="modal" data-target="#newRequestModal">
-                <i class="icon-plus-circle2"></i> New Request
-            </a>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <asp:DropDownList ID="ddl_year" runat="server" CssClass="pr-filter-select" AutoPostBack="true" OnSelectedIndexChanged="ddl_filter_SelectedIndexChanged">
+                </asp:DropDownList>
+                <asp:DropDownList ID="ddl_month" runat="server" CssClass="pr-filter-select" AutoPostBack="true" OnSelectedIndexChanged="ddl_filter_SelectedIndexChanged">
+                    <asp:ListItem Value="0">All Months</asp:ListItem>
+                    <asp:ListItem Value="1">January</asp:ListItem>
+                    <asp:ListItem Value="2">February</asp:ListItem>
+                    <asp:ListItem Value="3">March</asp:ListItem>
+                    <asp:ListItem Value="4">April</asp:ListItem>
+                    <asp:ListItem Value="5">May</asp:ListItem>
+                    <asp:ListItem Value="6">June</asp:ListItem>
+                    <asp:ListItem Value="7">July</asp:ListItem>
+                    <asp:ListItem Value="8">August</asp:ListItem>
+                    <asp:ListItem Value="9">September</asp:ListItem>
+                    <asp:ListItem Value="10">October</asp:ListItem>
+                    <asp:ListItem Value="11">November</asp:ListItem>
+                    <asp:ListItem Value="12">December</asp:ListItem>
+                </asp:DropDownList>
+                <a href="#" class="btn-create-permission" data-toggle="modal" data-target="#newRequestModal" style="margin-left: 5px;">
+                    <i class="icon-plus-circle2"></i> New Request
+                </a>
+            </div>
         </div>
 
         <div class="pr-summary">

@@ -41,9 +41,11 @@ public partial class Employee_employeeholidays : System.Web.UI.Page
                                 NoOfLeave,
                                 CONVERT(VARCHAR, createdon, 103) AS createdon
                              FROM IT_Holidays 
+                             WHERE YEAR(Holidays) = @Year
                              ORDER BY Holidays ASC";
 
         SqlCommand cmd = new SqlCommand(str_query);
+        cmd.Parameters.AddWithValue("@Year", DateTime.Now.Year);
         DataTable dt = DA.GetDataTable(cmd);
 
         DateTime today = DateTime.Today;

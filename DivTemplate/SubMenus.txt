@@ -5,6 +5,10 @@
                     <td>%%ModuleName%%</td>
                     <td>%%ParentMenuName%%</td>
                     <td>%%FolderName%%</td>
-                    <td><a href="CreateSubMenu.aspx?id=%%SubMenuKey%%"><span class="label label-info">Edit</span></a></td>
-                    <td><a><span class="label label-danger" onclick="fn_DeleteSubMenu('%%SubMenuKey%%')">Delete</span></a></td>
+                    <td class="text-center">
+                        <ul class="icons-list">
+                            <li><a href="CreateSubMenu.aspx?id=%%SubMenuKey%%" class="text-primary" data-popup="tooltip" title="Edit"><i class="icon-pencil7"></i></a></li>
+                            <li><a href="javascript:void(0);" onclick="fn_DeleteSubMenu('%%SubMenuKey%%')" class="text-danger" data-popup="tooltip" title="Delete"><i class="icon-trash"></i></a></li>
+                        </ul>
+                    </td>
 	    </tr>

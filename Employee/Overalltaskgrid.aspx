@@ -72,17 +72,18 @@
             top: -25px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
             color: #222;
             white-space: nowrap;
         }
 
         .bar-label {
-            font-size: 11px;
+            font-size: 10px;
             color: #666;
             text-align: center;
             font-weight: 600;
+            white-space: nowrap;
         }
 
         .chart-legend {
@@ -105,8 +106,8 @@
             flex-shrink: 0;
         }
 
-        .legend-label { color: #555; }
-        .legend-val   { font-weight: 700; color: #222; margin-left: auto; padding-left: 20px; }
+        .legend-label { color: #555; white-space: nowrap; }
+        .legend-val   { font-weight: 700; color: #222; margin-left: auto; padding-left: 20px; white-space: nowrap; }
 
         @keyframes dance {
             0%, 100% { transform: rotate(0deg) translateY(0); }

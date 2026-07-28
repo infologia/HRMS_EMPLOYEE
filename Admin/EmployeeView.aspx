@@ -292,7 +292,7 @@
                                     <th>User ID</th>
                                     <th>Name</th>
                                     <th>Email</th>
-                                    <th>Phone Number</th>
+                                    <th style="min-width: 150px;">Phone Number</th>
                                     <th>Role</th>
                                     <th>Status</th>
                                     <th>Gender</th>
@@ -316,7 +316,7 @@
                                     <th>User ID</th>
                                     <th>Name</th>
                                     <th>Email</th>
-                                    <th>Phone Number</th>
+                                    <th style="min-width: 150px;">Phone Number</th>
                                     <th>Role</th>
                                     <th>Status</th>
                                     <th>Gender</th>

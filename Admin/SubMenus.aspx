@@ -62,15 +62,14 @@
 
         <table class="table datatable-basic">
             <thead>
-                <tr>
+                <tr style="white-space: nowrap;">
                     <th>Menu Name</th>
                     <th>Page Name</th>
                     <th>Menu List No</th>
                     <th>Module Name</th>
                     <th>Parent Menu Name</th>
                     <th>Folder Name</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
+                    <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>

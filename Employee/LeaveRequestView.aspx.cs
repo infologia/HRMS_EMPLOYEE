@@ -26,11 +26,24 @@ public partial class WEB_Employee_LeaveRequestView : System.Web.UI.Page
             Label control1 = this.Master.FindControl("lbl_bread") as Label;
             if (control1 != null)
                 control1.Text = "Leaves";
+
+            // Populate Year DropDown
+            int currentYear = DateTime.Now.Year;
+            ddl_year.Items.Add(new ListItem("All Years", "0"));
+            for (int y = currentYear; y >= 2020; y--)
+            {
+                ddl_year.Items.Add(new ListItem(y.ToString(), y.ToString()));
+            }
+
+            // Default to current year & current month
+            ddl_year.SelectedValue = currentYear.ToString();
+            ddl_month.SelectedValue = DateTime.Now.Month.ToString();
                 
             LoadLeaveCategory();
             LoadStatusDropdown();
-            BindLeaveGrids();
         }
+
+        BindLeaveGrids();
     }
 
     private void LoadLeaveCategory()
@@ -84,11 +97,29 @@ public partial class WEB_Employee_LeaveRequestView : System.Web.UI.Page
                a.responsereason
         FROM IT_EmployeeLeaveDetails a
         LEFT JOIN IT_EmployeeRegister b ON a.createdby = b.Employeekey
-        WHERE a.Employeekey = @EmpKey
-        ORDER BY a.createdon DESC";
+        WHERE a.Employeekey = @EmpKey";
+
+        if (ddl_year.SelectedValue != "0")
+        {
+            str_query += " AND (YEAR(a.Fromdate) = @year OR YEAR(a.Todate) = @year)";
+        }
+        if (ddl_month.SelectedValue != "0")
+        {
+            str_query += " AND (MONTH(a.Fromdate) = @month OR MONTH(a.Todate) = @month)";
+        }
+
+        str_query += " ORDER BY a.createdon DESC";
 
         SqlCommand cmd = new SqlCommand(str_query);
         cmd.Parameters.AddWithValue("@EmpKey", str_userid);
+        if (ddl_year.SelectedValue != "0")
+        {
+            cmd.Parameters.AddWithValue("@year", Convert.ToInt32(ddl_year.SelectedValue));
+        }
+        if (ddl_month.SelectedValue != "0")
+        {
+            cmd.Parameters.AddWithValue("@month", Convert.ToInt32(ddl_month.SelectedValue));
+        }
 
         DataTable dt_dashboard = DA.GetDataTable(cmd);
         
@@ -553,6 +584,11 @@ public partial class WEB_Employee_LeaveRequestView : System.Web.UI.Page
             "setTimeout(function(){ window.location.href = '" + redirectUrl + "'; }, 1500);",
             true
         );
+    }
+
+    protected void ddl_filter_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        // Handled automatically on Page_Load on postback
     }
 }
 
