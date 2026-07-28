@@ -48,7 +48,7 @@
         <div class="panel-heading">
             <div class="row">
                 <div class="col-lg-4">
-                    <h5 class="panel-title">Parent Menus</h5>
+                    <h5 class="panel-title">Parent Menus Details</h5>
                 </div><br />
                 <div class="col-lg-8">
                     <% if (CanCreate()) { %>
@@ -68,8 +68,7 @@
                     <th>Parent Menu Name</th>
                     <th>Module Name</th>
                     <th>Menu List No</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
+                    <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>

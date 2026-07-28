@@ -1,0 +1,18 @@
+<tr>
+    <td>%%name%%</td>
+    <td>%%request%%</td>
+    <td>%%Fromtime%% - %%Totime%%</td>
+    <td>%%Permissionhourse%%</td>
+    <td>%%ActiveText%%</td>
+    <td>
+        <a class="pr-action-btn view-btn" style="visibility:%%HideViewBtn%%; cursor:pointer;" title="View" href="/Employee/UpdateLaterecord.aspx?id=%%LatePermissionDetailskey%%">
+            <i class="icon-eye"></i>
+        </a>
+        <a class="pr-action-btn edit-btn" style="visibility:%%ViewText%%; cursor:pointer;" title="Update" href="/Employee/UpdateLaterecord.aspx?id=%%LatePermissionDetailskey%%">
+            <i class="icon-pencil7"></i>
+        </a>
+        <a class="pr-action-btn delete-btn" style="visibility:%%ViewText%%; cursor:pointer;" title="Remove" onclick="fn_DeleteProject('%%LatePermissionDetailskey%%')">
+            <i class="icon-trash"></i>
+        </a>
+    </td>
+</tr>

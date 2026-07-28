@@ -23,7 +23,7 @@ public partial class Admin_Roles : System.Web.UI.Page
         {
             Label control1 = this.Master.FindControl("lbl_bread") as Label;
             if (control1 != null)
-                control1.Text = "Roles";
+                control1.Text = "Roles Details";
 
             LoadModuleDropdown();
         }

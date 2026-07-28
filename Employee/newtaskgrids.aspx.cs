@@ -255,7 +255,14 @@ public partial class Employee_taskgrids : System.Web.UI.Page
             }
         }
         
-        if (ddlEmployee.Items.FindByValue(this.SC.Userid) != null)
+        if (Session["SelectedEmployeeFilter"] != null)
+        {
+            if (ddlEmployee.Items.FindByValue(Session["SelectedEmployeeFilter"].ToString()) != null)
+            {
+                ddlEmployee.SelectedValue = Session["SelectedEmployeeFilter"].ToString();
+            }
+        }
+        else if (ddlEmployee.Items.FindByValue(this.SC.Userid) != null)
         {
             ddlEmployee.SelectedValue = this.SC.Userid;
         }
@@ -1017,7 +1024,15 @@ public partial class Employee_taskgrids : System.Web.UI.Page
             PH_Tasks.Controls.Add(new Literal { Text = row });
         }
     }
-    protected void Filter_Changed(object sender, EventArgs e) { LoadDashboard(); }
+    protected void Filter_Changed(object sender, EventArgs e) 
+    { 
+        if (divEmployeeFilter.Visible)
+        {
+            Session["SelectedEmployeeFilter"] = ddlEmployee.SelectedValue;
+        }
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "reinitDT", "initDataTable();", true);
+        LoadDashboard(); 
+    }
 
    
 }

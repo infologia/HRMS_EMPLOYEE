@@ -57,28 +57,30 @@ public partial class Admin_ParentMenus : BasePage
                 html += "<td>" + moduleName + "</td>";
                 html += "<td>" + menuListNo + "</td>";
                 
+                html += "<td class='text-center'>";
+                html += "<ul class='icons-list'>";
+                
                 // Edit Button
-                html += "<td>";
                 if (hasEditPerm)
                 {
-                    html += "<a href='CreateParentMenu.aspx?id=" + menuKey + "'><span class='label label-info'>Edit</span></a>";
+                    html += "<li><a href='CreateParentMenu.aspx?id=" + menuKey + "' class='text-primary' data-popup='tooltip' title='Edit'><i class='icon-pencil7'></i></a></li>";
                 }
                 else
                 {
-                    html += "<span class='label label-default' style='opacity:0.5; cursor:not-allowed;'>Edit</span>";
+                    html += "<li><a class='text-muted' style='cursor:not-allowed;' data-popup='tooltip' title='Edit (No Permission)'><i class='icon-pencil7'></i></a></li>";
                 }
-                html += "</td>";
 
                 // Delete Button
-                html += "<td>";
                 if (hasDeletePerm)
                 {
-                    html += "<a><span class='label label-danger' onclick='fn_DeleteMenu(\"" + menuKey + "\")'>Delete</span></a>";
+                    html += "<li><a href='javascript:void(0);' class='text-danger' onclick='fn_DeleteMenu(\"" + menuKey + "\")' data-popup='tooltip' title='Delete'><i class='icon-trash'></i></a></li>";
                 }
                 else
                 {
-                    html += "<span class='label label-default' style='opacity:0.5; cursor:not-allowed;'>Delete</span>";
+                    html += "<li><a class='text-muted' style='cursor:not-allowed;' data-popup='tooltip' title='Delete (No Permission)'><i class='icon-trash'></i></a></li>";
                 }
+                
+                html += "</ul>";
                 html += "</td>";
                 html += "</tr>";
             }

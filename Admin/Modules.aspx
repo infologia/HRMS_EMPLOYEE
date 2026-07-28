@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Masterpage/AdminMaster.master" AutoEventWireup="true" CodeFile="Modules.aspx.cs" Inherits="Admin_Modules" %>
+<%@ Page Title="" Language="C#" MasterPageFile="~/Masterpage/AdminMaster.master" AutoEventWireup="true" CodeFile="Modules.aspx.cs" Inherits="Admin_Modules" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
     <script type="text/javascript" src="../Template/assets/js/plugins/tables/datatables/datatables.min.js"></script>
@@ -126,8 +126,7 @@
                     <th>Module Name</th>
                     <th>Description</th>
                     <th>Active</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
+                    <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>

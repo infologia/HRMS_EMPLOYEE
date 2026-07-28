@@ -18,6 +18,7 @@ public partial class Employee_Taskdashboard : System.Web.UI.Page
             Label control1 = this.Master.FindControl("lbl_bread") as Label;
             if (control1 != null)
                 control1.Text = "Assigned Projects";
+            BindProjectDropdown();
             LoadProjectDashboard();
         }
     }
@@ -33,10 +34,55 @@ public partial class Employee_Taskdashboard : System.Web.UI.Page
         return "bg-color-" + (index % 10);
     }
 
+    private void BindProjectDropdown()
+    {
+        string userid = this.SC.Userid;
+        if (string.IsNullOrEmpty(userid)) return;
+
+        string query = @"
+            SELECT DISTINCT p.ProjectKey, p.ProjectName
+            FROM IT_Projects p
+            WHERE EXISTS (SELECT 1 FROM IT_ProjectsParticipants pp WHERE pp.ProjectKey = p.ProjectKey AND pp.EmployeeKey = @UserId)
+               OR EXISTS (SELECT 1 FROM IT_ProjectTeamLeads tl WHERE tl.ProjectKey = p.ProjectKey AND tl.EmployeeKey = @UserId)
+            ORDER BY p.ProjectName";
+        
+        SqlCommand cmd = new SqlCommand(query);
+        cmd.Parameters.AddWithValue("@UserId", userid);
+        DataTable dt = DA.GetDataTable(cmd);
+
+        ddlProjectFilter.DataSource = dt;
+        ddlProjectFilter.DataTextField = "ProjectName";
+        ddlProjectFilter.DataValueField = "ProjectKey";
+        ddlProjectFilter.DataBind();
+        ddlProjectFilter.Items.Insert(0, new ListItem("-- All Projects --", "0"));
+    }
+
+    protected void ddlProjectFilter_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        LoadProjectDashboard();
+    }
+
+    protected void btnClearFilter_Click(object sender, EventArgs e)
+    {
+        ddlProjectFilter.SelectedIndex = 0;
+        LoadProjectDashboard();
+    }
+
     private void LoadProjectDashboard()
     {
         string userid = this.SC.Userid;
         if (string.IsNullOrEmpty(userid)) return;
+
+        string projectFilterCondition = "";
+        if (ddlProjectFilter.SelectedIndex > 0)
+        {
+            projectFilterCondition = " AND p.ProjectKey = @SelectedProjectKey ";
+            btnClearFilter.Visible = true;
+        }
+        else
+        {
+            btnClearFilter.Visible = false;
+        }
 
         string query = @"
 SELECT
@@ -114,16 +160,20 @@ SELECT
             AND YEAR(tc.StartDate) = YEAR(GETDATE())), 0) AS MyCurrentMonthHours,
 
     (SELECT TOP 1 FilePath FROM IT_ProjectDocuments WHERE ProjectKey = p.ProjectKey AND DocumentName LIKE '%workflow%') AS WorkflowDocumentPath,
-    (SELECT COUNT(*) FROM IT_EmployeeRegister er WHERE er.Employeekey = @UserId AND er.Division = 1) AS IsTeamLead
+    (SELECT COUNT(*) FROM IT_ProjectTeamLeads tl WHERE tl.ProjectKey = p.ProjectKey AND tl.EmployeeKey = @UserId) AS IsTeamLead
 
 FROM IT_Projects p
 LEFT JOIN ProjectType pt ON p.ProjectTypeId = pt.id
-WHERE EXISTS (SELECT 1 FROM IT_ProjectsParticipants pp WHERE pp.ProjectKey = p.ProjectKey AND pp.EmployeeKey = @UserId)
-   OR EXISTS (SELECT 1 FROM IT_ProjectTeamLeads tl WHERE tl.ProjectKey = p.ProjectKey AND tl.EmployeeKey = @UserId)
+WHERE (EXISTS (SELECT 1 FROM IT_ProjectsParticipants pp WHERE pp.ProjectKey = p.ProjectKey AND pp.EmployeeKey = @UserId)
+   OR EXISTS (SELECT 1 FROM IT_ProjectTeamLeads tl WHERE tl.ProjectKey = p.ProjectKey AND tl.EmployeeKey = @UserId))" + projectFilterCondition + @"
 ORDER BY p.StartDate DESC";
 
         SqlCommand cmd = new SqlCommand(query);
         cmd.Parameters.AddWithValue("@UserId", userid);
+        if (ddlProjectFilter.SelectedIndex > 0)
+        {
+            cmd.Parameters.AddWithValue("@SelectedProjectKey", ddlProjectFilter.SelectedValue);
+        }
         DataTable dt = DA.GetDataTable(cmd);
 
         if (dt != null && dt.Rows.Count > 0)

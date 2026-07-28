@@ -11,6 +11,9 @@
             background-color: #f2f2f2 !important;
             pointer-events: none;
         }
+        .hidden-field {
+            display: none;
+        }
     </style>
 </asp:Content>
 
@@ -79,37 +82,44 @@
                         ReadOnly="true"></asp:TextBox>
                 </div>
 
-                <div class="col-md-2">
+                <div id="divGSTPercent" class="col-md-2">
                     <label>GST %</label>
                     <asp:TextBox ID="txtGSTPercent" runat="server"
                         CssClass="form-control form-control-sm"
                         placeholder="GST %"></asp:TextBox>
                 </div>
 
-                <div class="col-md-2">
+                <div id="divGSTAmount" class="col-md-2">
                     <label>GST Amount</label>
                     <asp:TextBox ID="txtGST" runat="server"
                         CssClass="form-control form-control-sm readonly-field"
                         ReadOnly="true"></asp:TextBox>
                 </div>
 
-                <div class="col-md-2">
-                    <label>GrandTotal</label>
-                    <asp:TextBox ID="txtGrandTotal" runat="server"
-                        CssClass="form-control form-control-sm readonly-field"
-                        ReadOnly="true"></asp:TextBox>
-                </div>
-
-                <div class="col-md-2">
+                <div id="divTDSPercent" class="col-md-2">
                     <label>TDS %</label>
                     <asp:TextBox ID="txtPercent" runat="server"
                         CssClass="form-control form-control-sm"
                         placeholder="TDS %"></asp:TextBox>
                 </div>
 
-                <div class="col-md-2">
+                <div id="divTDSAmount" class="col-md-2">
                     <label>TDS Amount</label>
                     <asp:TextBox ID="txtAmount" runat="server"
+                        CssClass="form-control form-control-sm readonly-field"
+                        ReadOnly="true"></asp:TextBox>
+                </div>
+                
+                <div id="divConversionAmount" class="col-md-2 hidden-field">
+                    <label>Conversion Amount</label>
+                    <asp:TextBox ID="txtConversionAmount" runat="server"
+                        CssClass="form-control form-control-sm"
+                        placeholder="0.00"></asp:TextBox>
+                </div>
+
+                <div class="col-md-2">
+                    <label>GrandTotal</label>
+                    <asp:TextBox ID="txtGrandTotal" runat="server"
                         CssClass="form-control form-control-sm readonly-field"
                         ReadOnly="true"></asp:TextBox>
                 </div>
@@ -178,6 +188,7 @@
             <asp:HiddenField ID="hfNetDue"      runat="server" ClientIDMode="Static" />
             <asp:HiddenField ID="hfPayment"     runat="server" ClientIDMode="Static" />
             <asp:HiddenField ID="hfBalanceAmt"  runat="server" ClientIDMode="Static" />
+            <asp:HiddenField ID="hfIsForeignClient" runat="server" ClientIDMode="Static" Value="0" />
 
             <br />
             <!-- Buttons -->
@@ -275,23 +286,63 @@
 
         function calculateAmount() {
             const subTotal = parseFloat(document.getElementById('<%= txtSubTotal.ClientID %>').value) || 0;
-            const percent  = parseFloat(document.getElementById('<%= txtPercent.ClientID %>').value)   || 0;
-            const grand    = parseFloat(document.getElementById('<%= txtGrandTotal.ClientID %>').value) || 0;
+            const isForeign = document.getElementById('hfIsForeignClient').value === "1";
             
-            const amount = ((subTotal * percent) / 100);
-            document.getElementById('<%= txtAmount.ClientID %>').value = amount.toFixed(2);
-            
-            const netDue = grand - amount;
-            document.getElementById('<%= txtNetDue.ClientID %>').value = netDue.toFixed(2);
-            
-            document.getElementById('hfAmount').value = amount.toFixed(2);
-            document.getElementById('hfNetDue').value = netDue.toFixed(2);
+            if (isForeign) {
+                const convAmt = parseFloat(document.getElementById('<%= txtConversionAmount.ClientID %>').value) || 0;
+                const grand = subTotal * convAmt;
+                document.getElementById('<%= txtGrandTotal.ClientID %>').value = grand.toFixed(2);
+                
+                // For foreign, TDS is 0, Net Due is Grand Total
+                document.getElementById('<%= txtAmount.ClientID %>').value = "0.00";
+                document.getElementById('<%= txtNetDue.ClientID %>').value = grand.toFixed(2);
+                
+                document.getElementById('hfAmount').value = "0.00";
+                document.getElementById('hfNetDue').value = grand.toFixed(2);
+            } else {
+                const percent  = parseFloat(document.getElementById('<%= txtPercent.ClientID %>').value)   || 0;
+                const grand    = parseFloat(document.getElementById('<%= txtGrandTotal.ClientID %>').value) || 0;
+                
+                const amount = ((subTotal * percent) / 100);
+                document.getElementById('<%= txtAmount.ClientID %>').value = amount.toFixed(2);
+                
+                const netDue = grand - amount;
+                document.getElementById('<%= txtNetDue.ClientID %>').value = netDue.toFixed(2);
+                
+                document.getElementById('hfAmount').value = amount.toFixed(2);
+                document.getElementById('hfNetDue').value = netDue.toFixed(2);
+            }
             
             recalcTotals();
         }
 
+        function toggleForeignClientView() {
+            const isForeign = document.getElementById('hfIsForeignClient').value === "1";
+            const divGSTPercent = document.getElementById('divGSTPercent');
+            const divGSTAmount = document.getElementById('divGSTAmount');
+            const divTDSPercent = document.getElementById('divTDSPercent');
+            const divTDSAmount = document.getElementById('divTDSAmount');
+            const divConversion = document.getElementById('divConversionAmount');
+            
+            if (isForeign) {
+                if (divGSTPercent) divGSTPercent.classList.add('hidden-field');
+                if (divGSTAmount) divGSTAmount.classList.add('hidden-field');
+                if (divTDSPercent) divTDSPercent.classList.add('hidden-field');
+                if (divTDSAmount) divTDSAmount.classList.add('hidden-field');
+                if (divConversion) divConversion.classList.remove('hidden-field');
+            } else {
+                if (divGSTPercent) divGSTPercent.classList.remove('hidden-field');
+                if (divGSTAmount) divGSTAmount.classList.remove('hidden-field');
+                if (divTDSPercent) divTDSPercent.classList.remove('hidden-field');
+                if (divTDSAmount) divTDSAmount.classList.remove('hidden-field');
+                if (divConversion) divConversion.classList.add('hidden-field');
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('<%= txtPercent.ClientID %>').addEventListener('input', calculateAmount);
+            document.getElementById('<%= txtConversionAmount.ClientID %>').addEventListener('input', calculateAmount);
+            toggleForeignClientView();
         });
 
         function loadExistingPaymentRows() {

@@ -95,7 +95,7 @@
                     <th>From Date</th>
                     <th>To Date</th>
                     <th>Reason</th>
-                    <th>Action</th>
+                    <th class="text-center">Action</th>
                 </tr>
             </thead>
             <tbody>

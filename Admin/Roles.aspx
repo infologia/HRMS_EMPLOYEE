@@ -224,8 +224,7 @@
                     <th>Role Name</th>
                     <th>Modules</th>
                     <th>Description</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
+                    <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>

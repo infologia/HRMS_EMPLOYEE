@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Configuration;
 using System.Data;
@@ -369,12 +369,12 @@ INNER JOIN IT_Department d
     {
         // MenuOrder per employee, fallback to MenuListNo from IT_Menus
         string query = @"SELECT DISTINCT m.MenuKey, m.MenuName, m.MenuIcon, m.MenuListNo,
-                        m.ParentMenuKey, m.PageName, m.FolderName, m.MenuType,
-                        ISNULL(em.MenuOrder, m.MenuListNo) AS EffectiveOrder
+                        m.ParentMenuKey, m.PageName, m.FolderName, m.MenuType, m.ModuleId,
+                        CASE WHEN ISNULL(em.MenuOrder, 0) = 0 THEN m.MenuListNo ELSE em.MenuOrder END AS EffectiveOrder
                         FROM IT_Menus m
                         INNER JOIN IT_EmployeeMenus em ON m.MenuKey = em.MenuId
                         WHERE m.Status = 1 AND em.EmployeeKey = @EmployeeKey AND em.ViewPermission = 1
-                        ORDER BY ISNULL(em.MenuOrder, m.MenuListNo)";
+                        ORDER BY m.ModuleId, CASE WHEN ISNULL(em.MenuOrder, 0) = 0 THEN m.MenuListNo ELSE em.MenuOrder END";
 
         SqlCommand cmd = new SqlCommand(query);
         cmd.Parameters.AddWithValue("@EmployeeKey", SC.Userid);
@@ -388,11 +388,14 @@ INNER JOIN IT_Department d
 
         StringBuilder html = new StringBuilder();
 
-        // LINQ use பண்ணி NULL check reliable-ஆ பண்றோம்
         var parentMenus = dt.AsEnumerable()
             .Where(r => r["MenuType"].ToString() == "0" && r.IsNull("ParentMenuKey"))
-            .OrderBy(r => Convert.ToInt32(r["EffectiveOrder"]))
+            .OrderBy(r => r["ModuleId"] == DBNull.Value ? 0 : Convert.ToInt32(r["ModuleId"]))
+            .ThenBy(r => Convert.ToInt32(r["EffectiveOrder"]))
             .ToArray();
+
+        string prevModuleId = null;
+        bool isFirst = true;
 
         foreach (DataRow parent in parentMenus)
         {
@@ -401,6 +404,15 @@ INNER JOIN IT_Department d
             string menuIcon   = string.IsNullOrEmpty(parent["MenuIcon"].ToString()) ? "icon-menu" : parent["MenuIcon"].ToString();
             string pageName   = parent["PageName"].ToString();
             string folderName = parent["FolderName"].ToString();
+            string moduleId   = parent["ModuleId"] != DBNull.Value ? parent["ModuleId"].ToString() : "0";
+
+            if (!isFirst && moduleId != prevModuleId && prevModuleId == "5")
+            {
+                // Add a dotted separator (thicker and in primary theme color)
+                html.Append("<li class='navigation-divider' style='border-top: 2px dotted #667eea; margin: 12px 15px; list-style: none; opacity: 0.8;'></li>");
+            }
+            isFirst = false;
+            prevModuleId = moduleId;
 
             // Children — per-employee order-ல் sort
             var children = dt.AsEnumerable()

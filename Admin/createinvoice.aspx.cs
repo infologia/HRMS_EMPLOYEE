@@ -559,7 +559,6 @@ SET
     SGSTAmount       = @SGSTAmount,
     CGSTAmount       = @CGSTAmount,
     IGSTAmount       = @IGSTAmount,
-    GSTstatus        = @GSTstatus,
     ReceivedDate     = @ReceivedDate,
     ProjectKey       = @ProjectKey,
     conversionAmount = @conversionAmount,
@@ -604,7 +603,6 @@ WHERE
             }
 
 
-            cmd.Parameters.AddWithValue("@GSTstatus", 0);
             if (string.IsNullOrWhiteSpace(ReceivedAmount.Text))
             {
                 cmd.Parameters.AddWithValue("@conversionAmount", DBNull.Value);

@@ -5,8 +5,10 @@
                     <td>%%fromdate%%</td>
                     <td>%%Todate%%</td>
                     <td>%%Reason%%</td>
-                    <td>
-                        <a href="worktyperequest.aspx?id=%%WR_Id%%" class="btn btn-primary btn-xs"><i class="icon-pencil"></i></a>
-                        <a href="#" onclick="confirmDelete('%%WR_Id%%'); return false;" class="btn btn-danger btn-xs" style="margin-left: 5px;"><i class="icon-trash"></i></a>
+                    <td class="text-center">
+                        <ul class="icons-list">
+                            <li><a href="worktyperequest.aspx?id=%%WR_Id%%" class="text-primary" data-popup="tooltip" title="Edit"><i class="icon-pencil7"></i></a></li>
+                            <li><a href="#" onclick="confirmDelete('%%WR_Id%%'); return false;" class="text-danger" data-popup="tooltip" title="Delete"><i class="icon-trash"></i></a></li>
+                        </ul>
                     </td>
                 </tr>

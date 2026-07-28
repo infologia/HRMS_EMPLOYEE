@@ -2,8 +2,6 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
 <style>
-/* Container */
-body { background: #f8f9fa; }
 
 /* Project Card */
 .project-card {
@@ -355,8 +353,95 @@ body { background: #f8f9fa; }
 .col-lg-6:nth-child(5) .project-card { animation-delay: 0.5s; }
 .col-lg-6:nth-child(6) .project-card { animation-delay: 0.6s; }
 
+/* Filter Section */
+.filter-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+.filter-container {
+    background: #fff;
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    margin: 20px 0 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    border-left: 5px solid #2196f3;
+}
+.filter-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #455a64;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+.filter-label i {
+    font-size: 12px;
+    color: #2196f3;
+}
+.filter-dropdown {
+    width: 150px;
+}
+.filter-dropdown .form-control {
+    border: 1px solid #cfd8dc;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: #263238;
+    background-color: #f8f9fa;
+    transition: all 0.3s;
+    height: auto;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+}
+.filter-dropdown .form-control:focus {
+    border-color: #2196f3;
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.15);
+    background-color: #fff;
+    outline: none;
+}
+.btn-clear-filter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: #f8f9fa;
+    color: #78909c;
+    border-radius: 8px;
+    border: 1px solid #cfd8dc;
+    transition: all 0.3s;
+    text-decoration: none !important;
+    flex-shrink: 0;
+}
+.btn-clear-filter:hover {
+    background: #ffebee;
+    color: #f44336;
+    border-color: #ef9a9a;
+    transform: scale(1.05);
+}
+.btn-clear-filter i {
+    font-size: 16px;
+    font-weight: bold;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
+    .filter-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .filter-dropdown {
+        max-width: 100%;
+        width: 100%;
+    }
     .task-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .pc-stats-strip { flex-wrap: wrap; }
     .pc-stat { flex: 1 1 50%; border-right: none; border-bottom: 1px solid #eceff1; }
@@ -374,6 +459,22 @@ body { background: #f8f9fa; }
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+
+    <!-- FILTER SECTION -->
+    <div class="row" style="padding: 0 15px;">
+        <div class="col-12 filter-wrapper">
+            <div class="filter-container">
+                <label class="filter-label"><i class="glyphicon glyphicon-filter"></i> Filter by Project:</label>
+                <div class="filter-dropdown" style="display:flex; gap:8px;">
+                    <asp:DropDownList ID="ddlProjectFilter" runat="server" CssClass="form-control" AutoPostBack="true" OnSelectedIndexChanged="ddlProjectFilter_SelectedIndexChanged" style="flex:1;">
+                    </asp:DropDownList>
+                    <asp:LinkButton ID="btnClearFilter" runat="server" CssClass="btn-clear-filter" OnClick="btnClearFilter_Click" ToolTip="Clear Filter" Visible="false">
+                        <i class="glyphicon glyphicon-remove"></i>
+                    </asp:LinkButton>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- ONGOING -->
     <div class="page-section-header">
