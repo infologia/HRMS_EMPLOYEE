@@ -50,13 +50,14 @@ public partial class Employee_payslipdetails : System.Web.UI.Page
     {
         string query = @"
             SELECT 
-                PayrollMonth,
-                PayrollYear,
-                NetPay,
-                Createdon
-            FROM IT_EmployeePayrollDetails
-            WHERE Employeekey = @Employeekey
-            ORDER BY PayrollYear DESC, PayrollMonth DESC";
+                p.PayrollMonth,
+                p.PayrollYear,
+                p.NetPay,
+                ISNULL(e.Firstname + ' ' + e.Lastname, 'Admin') AS GeneratedBy
+            FROM IT_EmployeePayrollDetails p
+            LEFT JOIN IT_EmployeeRegister e ON p.Createdby = e.Employeekey
+            WHERE p.Employeekey = @Employeekey
+            ORDER BY p.PayrollYear DESC, p.PayrollMonth ASC";
 
         SqlCommand cmd = new SqlCommand(query);
         cmd.Parameters.AddWithValue("@Employeekey", str_userkey);
@@ -66,7 +67,7 @@ public partial class Employee_payslipdetails : System.Web.UI.Page
         dt_grid.Columns.Add("Month");
         dt_grid.Columns.Add("Year");
         dt_grid.Columns.Add("NetPay");
-        dt_grid.Columns.Add("GeneratedOn");
+        dt_grid.Columns.Add("GeneratedBy");
         dt_grid.Columns.Add("ViewLink");
         dt_grid.Columns.Add("DownloadLink");
         dt_grid.Columns.Add("SummaryLink");
@@ -81,12 +82,7 @@ public partial class Employee_payslipdetails : System.Web.UI.Page
 
                 string netPay = row["NetPay"] != DBNull.Value ? row["NetPay"].ToString() : "0.00";
                 
-                string generatedOn = "-";
-                if (row["Createdon"] != DBNull.Value)
-                {
-                    DateTimeOffset dto = (DateTimeOffset)row["Createdon"];
-                    generatedOn = dto.ToString("dd-MMM-yyyy hh:mm tt");
-                }
+                string generatedBy = row["GeneratedBy"] != DBNull.Value ? row["GeneratedBy"].ToString() : "-";
 
                 string viewLink = "<a href='payslipdetails.aspx?action=view&month=" + month + "&year=" + year + "' target='_blank'><button type='button' class='label label-info'>View</button></a>";
                 string downloadLink = "<a href='payslipdetails.aspx?action=download&month=" + month + "&year=" + year + "'><button type='button' class='label label-sm label-success'>Download</button></a>";
@@ -96,7 +92,7 @@ public partial class Employee_payslipdetails : System.Web.UI.Page
                 dr["Month"] = monthName;
                 dr["Year"] = year;
                 dr["NetPay"] = netPay;
-                dr["GeneratedOn"] = generatedOn;
+                dr["GeneratedBy"] = generatedBy;
                 dr["ViewLink"] = viewLink;
                 dr["DownloadLink"] = downloadLink;
                 dr["SummaryLink"] = summaryLink;
@@ -219,8 +215,6 @@ public partial class Employee_payslipdetails : System.Web.UI.Page
             tableEmp.AddCell(new PdfPCell(new Phrase("Date of Birth", fontNormal)) { Border = PdfPCell.NO_BORDER });
             string value = rowEmp["DOB"].ToString();
             string dob = rowEmp.Table.Columns.Contains("DOB") && rowEmp["DOB"] != DBNull.Value ? Convert.ToDateTime(rowEmp["DOB"]).ToString("dd.MM.yyyy") : "-";
-            //string dob = rowEmp.Table.Columns.Contains("DOB") && rowEmp["DOB"] != DBNull.Value ? Convert.ToDateTime(rowEmp["DOB"]).ToString("dd.MM.yyyy") : "-";
-            //string dob = rowEmp.Table.Columns.Contains("DOB") && rowEmp["DOB"] != DBNull.Value ? DateTime.Parse(rowEmp["DOB"].ToString(), CultureInfo.InvariantCulture).ToString("dd.MM.yyyy"): "-";
 
             tableEmp.AddCell(new PdfPCell(new Phrase(": " + dob, fontNormal)) { Border = PdfPCell.NO_BORDER });
 

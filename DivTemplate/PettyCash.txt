@@ -7,12 +7,7 @@
                     <td>%%Username%%</td>
                      <td>
                         <div style="display: flex; gap: 8px;">
-                             <a href="CreatePettyCash.aspx?id=%%PC_CashKey%%" style="margin-right: 8px;" title="Update">
-                                 <i class="icon-pencil7 text-primary"></i>
-                             </a>
-                             <a href="javascript:void(0);" title="Remove" onclick="fn_DeleteProject('%%PC_CashKey%%')">
-                                 <i class="icon-trash text-danger"></i>
-                             </a>
+                            %%ActionText%%
                         </div>
                     </td>
                  </tr>

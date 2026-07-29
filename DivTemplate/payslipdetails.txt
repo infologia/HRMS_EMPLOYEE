@@ -2,7 +2,7 @@
     <td>%%Month%%</td>
     <td>%%Year%%</td>
     <td>%%NetPay%%</td>
-    <td>%%GeneratedOn%%</td>
+    <td>%%GeneratedBy%%</td>
     <td>%%ViewLink%%</td>
     <td>%%DownloadLink%%</td>
     <td>%%SummaryLink%%</td>

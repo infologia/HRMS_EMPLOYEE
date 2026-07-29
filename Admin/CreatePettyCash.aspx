@@ -27,7 +27,7 @@
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
- <div class="row">
+    <div class="row">
         <div class="col-md-2"></div>
         <div class="col-md-8">
             <div class="panel panel-flat">
@@ -74,49 +74,54 @@
                         </div>
 
 
-                        
-<div class="col-md-4">
-    <div class="form-group">
-        <label>
-            Entry Date <span class="text-danger">*</span>
-        </label>
 
-        <div class="input-group">
-            <span class="input-group-addon">
-                <i class="icon-calendar22"></i>
-            </span>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>
+                                    Entry Date <span class="text-danger">*</span>
+                                </label>
 
-            <asp:TextBox ID="txt_date"
-                runat="server"
-                CssClass="form-control pickadate"
-                placeholder="DD/MM/YYYY">
-            </asp:TextBox>
-        </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="icon-calendar22"></i>
+                                    </span>
 
-        <!-- REQUIRED VALIDATION -->
-        <asp:RequiredFieldValidator
-            ID="rfvDate"
-            runat="server"
-            ControlToValidate="txt_date"
-            ErrorMessage="Entry Date is required"
-                                                ValidationGroup="vg1"
+                                    <asp:TextBox ID="txt_date"
+                                        runat="server"
+                                        CssClass="form-control pickadate"
+                                        placeholder="DD/MM/YYYY"
+                                        autocomplete="off">
+                                    </asp:TextBox>
+                                </div>
 
-            CssClass="text-danger"
-            Display="Dynamic" />
-    </div>
-</div>
+                                <!-- REQUIRED VALIDATION -->
+                                <asp:RequiredFieldValidator
+                                    ID="rfvDate"
+                                    runat="server"
+                                    ControlToValidate="txt_date"
+                                    ErrorMessage="Entry Date is required"
+                                    ValidationGroup="vg1"
+                                    CssClass="text-danger"
+                                    Display="Dynamic" />
+                            </div>
+                        </div>
+                        <div class="col-md-6" id="divAttachment" style="display:none;">
+                            <div class="form-group">
+                                <label>Attachment <small class="text-muted">(PDF, JPG, PNG — optional)</small></label>
+                                <input type="file" name="fuAttachment"
+                                    class="form-control" accept=".pdf,.jpg,.jpeg,.png,.gif,.webp" />
+                                <asp:HiddenField ID="hfExistingFile" runat="server" />
+                                <asp:Literal ID="lblExistingFile" runat="server" Visible="false"></asp:Literal>
+                            </div>
+                        </div>
 
-
-
-
-
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label>Description <span class="text-danger">*</span></label>
                                 <asp:TextBox ID="txtDescription" runat="server"
                                     CssClass="form-control"
                                     TextMode="MultiLine"
-                                    Rows="2"
+                                    Rows="1"
                                     placeholder="Enter description" />
                                 <asp:RequiredFieldValidator
                                     ID="rfvDescription"
@@ -127,6 +132,7 @@
                                     CssClass="text-danger" />
                             </div>
                         </div>
+
                     </div>
                     <div class="row  pull-right">
                         <div class="col-lg-12 pull-right">
@@ -148,13 +154,54 @@
         </div>
         <div class="col-md-2"></div>
     </div>
-         <script>
-     $('.pickadate').pickadate({
-         format: 'dd/mm/yyyy',
-         selectMonths: true,
-         selectYears: true,
-         closeOnSelect: true
-     });
-         </script>
+    <script>
+        $(document).ready(function () {
+            var $input = $('#<%= txt_date.ClientID %>');
+            var existingVal = $input.val();
+
+            // normalize any '-' or '.' separators (e.g. browser autofill) to '/'
+            if (existingVal) {
+                existingVal = existingVal.replace(/[-.]/g, '/');
+                $input.val(existingVal);
+            }
+
+            var picker = $input.pickadate({
+                format: 'dd/mm/yyyy',
+                selectMonths: true,
+                selectYears: true,
+                closeOnSelect: true
+            }).pickadate('picker');
+
+            // if edit mode — set existing date into picker
+            if (existingVal) {
+                var parts = existingVal.split('/');
+                if (parts.length === 3) {
+                    picker.set('select', [parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0])]);
+                }
+            }
+
+            // sync picker value back to textbox on every set so PostBack gets it
+            picker.on('set', function (ctx) {
+                if (ctx.select !== undefined) {
+                    var d = new Date(ctx.select);
+                    var formatted = ('0' + d.getDate()).slice(-2) + '/' +
+                                    ('0' + (d.getMonth() + 1)).slice(-2) + '/' +
+                                    d.getFullYear();
+                    $input.val(formatted);
+                }
+            });
+        });
+
+        $('#<%= ddlStatus.ClientID %>').on('change', function () {
+            if ($(this).val() === '2') {
+                $('#divAttachment').show();
+            } else {
+                // hide only if no existing file
+                if ($('#<%= hfExistingFile.ClientID %>').val() === '') {
+                    $('#divAttachment').hide();
+                }
+            }
+        }).trigger('change');
+    </script>
 
 </asp:Content>

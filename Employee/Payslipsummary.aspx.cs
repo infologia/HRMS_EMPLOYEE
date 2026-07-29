@@ -44,10 +44,13 @@ public partial class Employee_Payslipsummary : System.Web.UI.Page
 
     private void LoadPayrollSummary(int month, int year)
     {
-        string sql = @"SELECT * FROM IT_EmployeePayrollDetails
-                       WHERE Employeekey = @Employeekey
-                         AND PayrollMonth = @Month
-                         AND PayrollYear  = @Year";
+        string sql = @"SELECT p.*,
+                               ISNULL(e.Firstname + ' ' + e.Lastname, 'Admin') AS GeneratedBy
+                        FROM IT_EmployeePayrollDetails p
+                        LEFT JOIN IT_EmployeeRegister e ON p.Createdby = e.Employeekey
+                        WHERE p.Employeekey = @Employeekey
+                          AND p.PayrollMonth = @Month
+                          AND p.PayrollYear  = @Year";
 
         SqlCommand cmd = new SqlCommand(sql);
         cmd.Parameters.AddWithValue("@Employeekey", str_userkey);
@@ -111,8 +114,8 @@ public partial class Employee_Payslipsummary : System.Web.UI.Page
         lbl_ita2.Text           = val("InTimeAvailableInHRMS");
         lbl_llc2.Text           = val("LateLoginCount");
         lbl_onc2.Text           = val("OutTimeNullCount");
-        lbl_gen2.Text           = dt.Columns.Contains("Createdon") && row["Createdon"] != DBNull.Value
-                                    ? ((DateTimeOffset)row["Createdon"]).ToString("dd-MMM-yyyy hh:mm tt") : "-";
+        lbl_gen2.Text           = dt.Columns.Contains("GeneratedBy") && row["GeneratedBy"] != DBNull.Value
+                                    ? row["GeneratedBy"].ToString() : "-";
     }
 
     private void LoadAttendance(int month, int year)

@@ -63,7 +63,7 @@ public partial class Admin_PettyCash : System.Web.UI.Page
         fyEnd   = new DateTime(startYear + 1, 3, 31, 23, 59, 59);
     }
 
-    private void LoadCash(int month, int year)
+    private void LoadCash(int month, int year, int type)
     {
         DateTime? fyStart, fyEnd;
         GetFYDates(out fyStart, out fyEnd);
@@ -83,6 +83,7 @@ LEFT JOIN IT_EmployeeRegister b
 WHERE
     (@FYStart IS NULL OR a.PC_Date >= @FYStart)
     AND (@FYEnd IS NULL OR a.PC_Date <= @FYEnd)
+    AND (@Type = 0 OR a.PC_Status = @Type)
     AND (
         (@Year = 0 AND @Month = 0)
         OR (@Year = 0 AND @Month BETWEEN 1 AND 12 AND MONTH(a.PC_Date) = @Month)
@@ -95,6 +96,7 @@ ORDER BY a.PC_Date DESC;";
         SqlCommand cmd = new SqlCommand(str_query);
         cmd.Parameters.AddWithValue("@Month", month);
         cmd.Parameters.AddWithValue("@Year", year);
+        cmd.Parameters.AddWithValue("@Type", type);
         cmd.Parameters.AddWithValue("@FYStart", fyStart.HasValue ? (object)fyStart.Value : DBNull.Value);
         cmd.Parameters.AddWithValue("@FYEnd",   fyEnd.HasValue   ? (object)fyEnd.Value   : DBNull.Value);
 
@@ -107,14 +109,32 @@ ORDER BY a.PC_Date DESC;";
                 dt.Columns.Add("ActiveText");
             if (!dt.Columns.Contains("PC_DateText"))
                 dt.Columns.Add("PC_DateText", typeof(string));
+            if (!dt.Columns.Contains("ActionText"))
+                dt.Columns.Add("ActionText", typeof(string));
+
+            int curMonth = DateTime.Now.Month;
+            int curYear  = DateTime.Now.Year;
 
             foreach (DataRow dr in dt.Rows)
             {
-
                 if (dr["PC_Date"] != DBNull.Value)
                 {
                     DateTime pcDate = Convert.ToDateTime(dr["PC_Date"]);
                     dr["PC_DateText"] = pcDate.ToString("dd/MM/yyyy");
+
+                    bool isCurrentMonth = (pcDate.Month == curMonth && pcDate.Year == curYear);
+                    string key = dr["PC_CashKey"].ToString();
+
+                    if (isCurrentMonth)
+                    {
+                        dr["ActionText"] = "<a href='CreatePettyCash.aspx?id=" + key + "' title='Update'><i class='icon-pencil7 text-primary'></i></a>" +
+                                           "&nbsp;&nbsp;<a href='javascript:void(0);' title='Remove' onclick='fn_DeleteProject(" + key + ")'><i class='icon-trash text-danger'></i></a>";
+                    }
+                    else
+                    {
+                        dr["ActionText"] = "<a title='Edit disabled for past months' style='opacity:0.4; cursor:not-allowed; pointer-events:none;'><i class='icon-pencil7 text-muted'></i></a>" +
+                                           "&nbsp;&nbsp;<a title='Delete disabled for past months' style='opacity:0.4; cursor:not-allowed; pointer-events:none;'><i class='icon-trash text-muted'></i></a>";
+                    }
                 }
                 int status = Convert.ToInt32(dr["PC_Status"]);
                 dr["ActiveText"] = status == 1
@@ -128,7 +148,7 @@ ORDER BY a.PC_Date DESC;";
         }
     }
 
-    private void LoadPettyCashTotals(int month, int year)
+    private void LoadPettyCashTotals(int month, int year, int type)
     {
         DateTime? fyStart, fyEnd;
         GetFYDates(out fyStart, out fyEnd);
@@ -141,6 +161,7 @@ SELECT
         (SELECT TOP 1 PC_BalanceAmount FROM TT_PettyCash
          WHERE (@FYStart IS NULL OR PC_Date >= @FYStart)
            AND (@FYEnd IS NULL OR PC_Date <= @FYEnd)
+           AND (@Type = 0 OR PC_Status = @Type)
            AND (
                (@Year = 0 AND @Month = 0)
                OR (@Year = 0 AND @Month BETWEEN 1 AND 12 AND MONTH(PC_Date) = @Month)
@@ -154,6 +175,7 @@ FROM TT_PettyCash
 WHERE
     (@FYStart IS NULL OR PC_Date >= @FYStart)
     AND (@FYEnd IS NULL OR PC_Date <= @FYEnd)
+    AND (@Type = 0 OR PC_Status = @Type)
     AND (
         (@Year = 0 AND @Month = 0)
         OR (@Year = 0 AND @Month BETWEEN 1 AND 12 AND MONTH(PC_Date) = @Month)
@@ -165,6 +187,7 @@ WHERE
         SqlCommand cmd = new SqlCommand(query);
         cmd.Parameters.AddWithValue("@Month", month);
         cmd.Parameters.AddWithValue("@Year", year);
+        cmd.Parameters.AddWithValue("@Type", type);
         cmd.Parameters.AddWithValue("@FYStart", fyStart.HasValue ? (object)fyStart.Value : DBNull.Value);
         cmd.Parameters.AddWithValue("@FYEnd",   fyEnd.HasValue   ? (object)fyEnd.Value   : DBNull.Value);
 
@@ -237,12 +260,23 @@ WHERE
     private void LoadCashByMonthYear()
     {
         int month = Convert.ToInt32(ddlDate.SelectedValue);
-        int year = Convert.ToInt32(ddlYear.SelectedValue);
+        int year  = Convert.ToInt32(ddlYear.SelectedValue);
+        int type  = Convert.ToInt32(ddlType.SelectedValue);
 
-        LoadCash(month, year);
-        LoadPettyCashTotals(month, year);
+        LoadCash(month, year, type);
+        LoadPettyCashTotals(month, year, type);
     }
 
+
+    protected void btnApplyFilter_Click(object sender, EventArgs e)
+    {
+        LoadCashByMonthYear();
+    }
+
+    protected void ddlType_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        LoadCashByMonthYear();
+    }
 
     protected void ddlFinancialYear_SelectedIndexChanged(object sender, EventArgs e)
     {
