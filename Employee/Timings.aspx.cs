@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -216,6 +216,25 @@ public partial class Employee_Timings : System.Web.UI.Page
     protected void btn_intime_Click(object sender, EventArgs e)
     {
         DateTime now = DateTime.UtcNow;
+
+        // Duplicate check: antha date-la already intime irukana check panrom
+        string todayStr = now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+        string checkSql = @"SELECT COUNT(1) FROM IT_Inouttime 
+                            WHERE Createdby = @uid 
+                            AND CONVERT(varchar, Createdon, 103) = @today";
+        SqlCommand cmdCheck = new SqlCommand(checkSql);
+        cmdCheck.Parameters.AddWithValue("@uid", str_userid);
+        cmdCheck.Parameters.AddWithValue("@today", todayStr);
+        DataTable dtCheck = DA.GetDataTable(cmdCheck);
+
+        // Already row irunthal same page-la error message kaatu
+        if (dtCheck.Rows.Count > 0 && Convert.ToInt32(dtCheck.Rows[0][0]) > 0)
+        {
+            div_error.Visible = true;
+            lbl_error.Text = "⚠️ In-time already marked for today. You cannot mark it again.";
+            return;
+        }
+
         string sql = @"INSERT INTO IT_Inouttime(employeekey, InTime, Createdby, Modifiedon, Createdon, Flag)
                        VALUES(@key, @in, @by, @mod, @cre, 1)";
         SqlCommand cmd = new SqlCommand(sql);

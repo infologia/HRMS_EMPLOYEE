@@ -17,11 +17,11 @@ public partial class Employee_Clientlist : System.Web.UI.Page
         {
             Label control1 = this.Master.FindControl("lbl_bread") as Label;
             if (control1 != null)
-                control1.Text = "Clients";
+                control1.Text = "Clients Details";
         }
 
         string str_userid = this.SC.Userid;
-        string str_query = "SELECT ClientKey, ClientCode, ClientName, CompanyName, ContactPerson, Status, FORMAT(CreatedOn, 'dd-MM-yyyy') AS CreatedOn FROM IT_ClientDetails";
+        string str_query = "SELECT ClientKey, ClientCode, ClientName, CompanyName, ContactPerson, Status, FORMAT(CreatedOn, 'dd-MM-yyyy') AS CreatedOn FROM IT_ClientDetails where PartyType = 2";
         SqlCommand cmd = new SqlCommand(str_query);
 
         DataTable dt_all = DA.GetDataTable(cmd);

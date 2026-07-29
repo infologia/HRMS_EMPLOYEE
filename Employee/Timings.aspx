@@ -219,7 +219,7 @@
         <div class="col-md-4">
             <!-- Team -->
             <div class="panel panel-flat"
-                style="border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); border: 1px solid #ddd;">
+                style="border-radius: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); border: 1px solid #ddd;">
 
                 <!-- FIXED HEADER -->
                 <div class="panel-heading"
