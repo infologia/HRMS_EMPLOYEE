@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
@@ -22,18 +22,34 @@ public partial class Admin_Assetscategory : System.Web.UI.Page
             control1.Text = "Assets Category";
         if (!Page.IsPostBack)
         {
+            ddl_Month.SelectedValue = DateTime.Now.Month.ToString();
+            ddl_Year.SelectedValue = DateTime.Now.Year.ToString();
             this.Assetsgrid();
         }
     }
     private void Assetsgrid()
     {
-        string str_viewUser = @"select AssetsCategoryKey,b.AssetsType as Type,Category,CONVERT(VARCHAR(10), a.CreatedOn, 105) AS CreatedOn, CONVERT(VARCHAR(10), ModifiedOn, 105) AS ModifiedOn,Status from IT_AssetsCategory a left join IT_AssetsType b on a.Type= b.AssetsTypeKey";
+        string str_viewUser = @"select AssetsCategoryKey,b.AssetsType as Type,Category,CONVERT(VARCHAR(10), a.CreatedOn, 105) AS CreatedOn, CONVERT(VARCHAR(10), ModifiedOn, 105) AS ModifiedOn,Status from IT_AssetsCategory a left join IT_AssetsType b on a.Type= b.AssetsTypeKey WHERE 1=1";
 
-        SqlCommand cmd = new SqlCommand(str_viewUser);
+        SqlCommand cmd = new SqlCommand();
+
+        if (!string.IsNullOrEmpty(ddl_Month.SelectedValue))
+        {
+            str_viewUser += " AND MONTH(a.CreatedOn) = @Month";
+            cmd.Parameters.AddWithValue("@Month", ddl_Month.SelectedValue);
+        }
+        if (!string.IsNullOrEmpty(ddl_Year.SelectedValue))
+        {
+            str_viewUser += " AND YEAR(a.CreatedOn) = @Year";
+            cmd.Parameters.AddWithValue("@Year", ddl_Year.SelectedValue);
+        }
+
+        cmd.CommandText = str_viewUser;
         DataTable dt = DA.GetDataTable(cmd);
         DataSet ds = new DataSet();
         ds.Merge(dt);
 
+        PH_category.Controls.Clear();
         if (dt.Rows.Count > 0)
         {
             if (!ds.Tables[0].Columns.Contains("ActiveText"))
@@ -50,5 +66,10 @@ public partial class Admin_Assetscategory : System.Web.UI.Page
 
             this.PH.LoadGridItem(ds, PH_category, "Assetscategory.txt", "");
         }
+    }
+
+    protected void ddl_Filter_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        this.Assetsgrid();
     }
 }

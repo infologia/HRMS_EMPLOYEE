@@ -173,12 +173,7 @@
                     <div class="row" style="margin-top: 10px;">
                         <div class="col-md-3">
                             <label>Password<span style="color: red"> *</span></label>
-                            <div class="input-group">
-                                <asp:TextBox ID="txt_pwd" runat="server" TextMode="password" CssClass="form-control" autocomplete="new-password" placeholder="Password"></asp:TextBox>
-                                <span class="input-group-addon" onclick="togglePassword()" style="cursor: pointer;">
-                                    <i id="eyeIcon" class="icon-eye"></i>
-                                </span>
-                            </div>
+                            <asp:TextBox ID="txt_pwd" runat="server" TextMode="Password" CssClass="form-control" autocomplete="new-password" placeholder="Password"></asp:TextBox>
                             <asp:RegularExpressionValidator ID="valPassword" runat="server" ControlToValidate="txt_pwd" ErrorMessage="Minimum password length is 6" ValidationExpression="^([a-zA-Z0-9@#$%^&+=*]{6,30})$" ForeColor="Red" Display="Dynamic" />
                             <asp:RequiredFieldValidator ID="RequiredFieldValidator7" runat="server" ControlToValidate="txt_pwd" ErrorMessage="Enter Password" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                         </div>
@@ -425,19 +420,6 @@
                 allCheckboxes.forEach(function(checkbox) {
                     checkbox.checked = isChecked;
                 });
-            }
-        }
-
-        function togglePassword() {
-            var passwordField = document.getElementById("<%=txt_pwd.ClientID%>");
-            var eyeIcon = document.getElementById("eyeIcon");
-            
-            if (passwordField.type === "password") {
-                passwordField.type = "text";
-                eyeIcon.className = "icon-eye-blocked";
-            } else {
-                passwordField.type = "password";
-                eyeIcon.className = "icon-eye";
             }
         }
 

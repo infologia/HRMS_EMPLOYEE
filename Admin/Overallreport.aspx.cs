@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -23,17 +23,103 @@ public partial class Admin_Overallreport : System.Web.UI.Page
             if (control1 != null)
                 control1.Text = "Overall Report Details";
 
+            ddl_Month.SelectedValue = DateTime.Now.Month.ToString();
+            ddl_Year.SelectedValue = DateTime.Now.Year.ToString();
             LoadOverallAssetsGrid();
         }
     }
     private void LoadOverallAssetsGrid()
     {
-        string str_query = @"SELECT   a.AssetKey,a.AssetTag,c.Category,a.EquipmentName,a.Brand,a.Quantity,a.ModelSerialNumber,a.PlacedLocation,a.AssetCondition, a.PurchaseCost,CONVERT(VARCHAR(10), a.PurchaseDate, 105) AS PurchaseDate, CONVERT(VARCHAR(10), b.AssignedDate, 105) AS AssignedDate, CASE WHEN b.AssetKey IS NOT NULL AND b.Status = 1 THEN 1 ELSE 0 END AS AssignedStatus,d.Username FROM IT_Assets a left outer  join IT_AssignedAssets b ON a.AssetKey = b.AssetKey left outer join IT_assetscategory c on a.Category=c.AssetsCategoryKey    left outer join IT_EmployeeRegister d on d.Employeekey=b.EmployeeKey ORDER BY a.CreatedOn DESC";
+        string str_query = @"SELECT * FROM IT_V_OverallAssetsReports ORDER BY AssetKey DESC";
         SqlCommand cmd = new SqlCommand(str_query);
         DataTable dt_assets = DA.GetDataTable(cmd);
+
+        if (dt_assets.Rows.Count > 0)
+        {
+            DataTable filteredDt = dt_assets.Clone();
+            string selectedMonth = ddl_Month.SelectedValue;
+            string selectedYear = ddl_Year.SelectedValue;
+            string selectedStatus = ddl_Status.SelectedValue;
+
+            foreach (DataRow row in dt_assets.Rows)
+            {
+                string dateStr = row["AssignedDate"] != DBNull.Value ? row["AssignedDate"].ToString().Trim() : "";
+                if (string.IsNullOrEmpty(dateStr))
+                {
+                    dateStr = row["PurchaseDate"] != DBNull.Value ? row["PurchaseDate"].ToString().Trim() : "";
+                }
+
+                bool match = true;
+                if (!string.IsNullOrEmpty(dateStr))
+                {
+                    DateTime parsedDate;
+                    string[] formats = { "dd-MM-yyyy", "dd/MM/yyyy", "yyyy-MM-dd", "MM/dd/yyyy", "dd-MM-yyyy HH:mm:ss", "dd/MM/yyyy HH:mm:ss" };
+                    
+                    // Split by space to get only the date portion
+                    string dateOnly = dateStr.Split(' ')[0];
+                    
+                    if (DateTime.TryParseExact(dateOnly, formats, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out parsedDate))
+                    {
+                        if (!string.IsNullOrEmpty(selectedMonth) && parsedDate.Month.ToString() != selectedMonth)
+                        {
+                            match = false;
+                        }
+                        if (!string.IsNullOrEmpty(selectedYear) && parsedDate.Year.ToString() != selectedYear)
+                        {
+                            match = false;
+                        }
+                    }
+                    else
+                    {
+                        // Fallback parsing
+                        if (DateTime.TryParse(dateStr, out parsedDate))
+                        {
+                            if (!string.IsNullOrEmpty(selectedMonth) && parsedDate.Month.ToString() != selectedMonth)
+                            {
+                                match = false;
+                            }
+                            if (!string.IsNullOrEmpty(selectedYear) && parsedDate.Year.ToString() != selectedYear)
+                            {
+                                match = false;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(selectedMonth) || !string.IsNullOrEmpty(selectedYear))
+                    {
+                        match = false;
+                    }
+                }
+
+                // Status Filter Check
+                if (match && !string.IsNullOrEmpty(selectedStatus))
+                {
+                    int assignedStatus = Convert.ToInt32(row["AssignedStatus"]);
+                    if (selectedStatus == "1" && assignedStatus != 1)
+                    {
+                        match = false;
+                    }
+                    else if (selectedStatus == "2" && assignedStatus == 1)
+                    {
+                        match = false;
+                    }
+                }
+
+                if (match)
+                {
+                    filteredDt.ImportRow(row);
+                }
+            }
+
+            dt_assets = filteredDt;
+        }
+
         DataSet ds = new DataSet();
         ds.Merge(dt_assets);
 
+        PH_OverallAssets.Controls.Clear();
         if (dt_assets.Rows.Count > 0)
         {
             if (!ds.Tables[0].Columns.Contains("AssignmentText"))
@@ -53,4 +139,8 @@ public partial class Admin_Overallreport : System.Web.UI.Page
         }
     }
 
+    protected void ddl_Filter_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        this.LoadOverallAssetsGrid();
+    }
 }

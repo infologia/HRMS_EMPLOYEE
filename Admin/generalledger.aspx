@@ -6,26 +6,26 @@
         .gl-kpi-row {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 12px;
         }
         .gl-kpi {
             background: #fff;
             border: 0.5px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 16px 18px;
+            border-radius: 8px;
+            padding: 10px 12px;
             border-top: 3px solid var(--ka);
         }
         .gl-kpi-top {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
+            gap: 8px;
+            margin-bottom: 4px;
         }
         .gl-kpi-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -33,26 +33,26 @@
             flex-shrink: 0;
         }
         .gl-kpi-icon i {
-            font-size: 18px;
+            font-size: 14px;
             color: var(--kc);
         }
         .gl-kpi-label {
-            font-size: 11px;
-            color: #9ca3af;
+            font-size: 10px;
+            color: #6b7280;
             text-transform: uppercase;
-            letter-spacing: 0.4px;
+            letter-spacing: 0.3px;
             font-weight: 600;
         }
         .gl-kpi-value {
-            font-size: 26px;
+            font-size: 20px;
             font-weight: 600;
             color: #111827;
             line-height: 1.1;
         }
         .gl-kpi-sub {
-            font-size: 11px;
+            font-size: 10px;
             color: #9ca3af;
-            margin-top: 4px;
+            margin-top: 2px;
         }
         .gl-kpi-recv  { --ka: #2a78d6; --ki: #e6f1fb; --kc: #2a78d6; }
         .gl-kpi-pay   { --ka: #e34948; --ki: #fdeceb; --kc: #e34948; }
@@ -110,11 +110,11 @@
         .gl-table thead th {
             background: #f9fafb;
             color: #9ca3af;
-            font-size: 11px !important;
+            font-size: 10px !important;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.4px;
-            padding: 10px 14px !important;
+            padding: 6px 10px !important;
             border-bottom: 0.5px solid #e5e7eb !important;
             border-top: none !important;
             white-space: nowrap;
@@ -128,8 +128,8 @@
         .gl-table tbody tr:last-child { border-bottom: none; }
         .gl-table tbody tr:hover td { background: #f9fafb; }
         .gl-table tbody td {
-            padding: 9px 14px !important;
-            font-size: 12.5px !important;
+            padding: 5px 10px !important;
+            font-size: 11.5px !important;
             color: #374151;
             vertical-align: middle;
             border: none !important;
@@ -139,9 +139,9 @@
             font-variant-numeric: tabular-nums;
         }
         .gl-table tfoot td {
-            padding: 10px 14px !important;
+            padding: 6px 10px !important;
             background: #f9fafb;
-            font-size: 12.5px !important;
+            font-size: 11.5px !important;
             font-weight: 600;
             color: #374151;
             border-top: 0.5px solid #e5e7eb !important;
@@ -153,12 +153,12 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            padding: 2px 8px;
+            padding: 1px 6px;
             border-radius: 20px;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
         }
-        .src-pill i { font-size: 11px; }
+        .src-pill i { font-size: 10px; }
         .pill-payslip  { background: #faeeda; color: #854f0b; }
         .pill-petty    { background: #e1f5ee; color: #085041; }
         .pill-payable  { background: #fdeceb; color: #993c1d; }
@@ -167,9 +167,9 @@
         /* ── Category badges ── */
         .cat-badge {
             display: inline-block;
-            padding: 2px 8px;
+            padding: 1px 6px;
             border-radius: 4px;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
         }
         .cat-expense   { background: #faeeda; color: #854f0b; }
@@ -187,10 +187,10 @@
     background: #fff;
     border: 0.5px solid #e5e7eb;
     border-radius: 12px;
-    padding: 14px 18px;
+    padding: 8px 12px;
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: 16px;
     flex-wrap: wrap;
 }
        .gl-bal-item{
@@ -204,7 +204,7 @@
 }
 .gl-table tfoot td.num{
     text-align:right !important;
-    padding-right:14px !important;
+    padding-right:10px !important;
 }
 
 .gl-table thead th.num,
@@ -219,15 +219,70 @@
             height: 10px;
             border-radius: 2px;
         }
-        .gl-bal-label { font-size: 12px; color: #6b7280; }
-        .gl-bal-val   { font-size: 14px; font-weight: 600; color: #111827; }
-        .gl-bal-net   { font-size: 14px; font-weight: 600; color: #d03b3b; }
+        .gl-bal-label { font-size: 11px; color: #6b7280; }
+        .gl-bal-val   { font-size: 12.5px; font-weight: 600; color: #111827; }
+        .gl-bal-net   { font-size: 12.5px; font-weight: 600; color: #d03b3b; }
 
         /* ── Date col muted ── */
         .date-cell { color: #6b7280; font-size: 12px; }
 
+        /* ── Tax Cards ── */
+        .gl-tax-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .gl-tax-card {
+            background: #fff;
+            border: 0.5px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 10px 12px;
+            border-top: 3px solid #764ba2;
+        }
+        .gl-tax-card-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .gl-tax-card-title i {
+            color: #764ba2;
+        }
+        .gl-tax-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .gl-tax-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .gl-tax-label {
+            font-size: 9px;
+            color: #9ca3af;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .gl-tax-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: #111827;
+            margin-top: 1px;
+        }
+        .gl-tax-net-payable {
+            color: #d03b3b !important;
+        }
+        .gl-tax-net-itc {
+            color: #1baf7a !important;
+        }
+
         @media (max-width: 992px) {
             .gl-kpi-row { grid-template-columns: repeat(2, 1fr); }
+            .gl-tax-row { grid-template-columns: 1fr; }
         }
         @media (max-width: 576px) {
             .gl-kpi-row { grid-template-columns: 1fr; }
@@ -287,6 +342,50 @@
             </div>
             <div class="gl-kpi-sub">
                 <asp:Label ID="lbl_PayrollMonth" runat="server" Text="Current month"></asp:Label> payslips
+            </div>
+        </div>
+    </div>
+
+    <!-- Tax (GST & TDS) Summary Row -->
+    <div class="gl-tax-row">
+        <!-- GST Card -->
+        <div class="gl-tax-card">
+            <div class="gl-tax-card-title">
+                <i class="glyphicon glyphicon-piggy-bank"></i> GST Summary
+            </div>
+            <div class="gl-tax-details">
+                <div class="gl-tax-item">
+                    <span class="gl-tax-label">GST Collected</span>
+                    <span class="gl-tax-value">&#8377;<asp:Label ID="lbl_GstCollected" runat="server" Text="0"></asp:Label></span>
+                </div>
+                <div class="gl-tax-item">
+                    <span class="gl-tax-label">GST Paid</span>
+                    <span class="gl-tax-value">&#8377;<asp:Label ID="lbl_GstPaid" runat="server" Text="0"></asp:Label></span>
+                </div>
+                <div class="gl-tax-item">
+                    <span class="gl-tax-label">Net GST</span>
+                    <span class="gl-tax-value"><asp:Label ID="lbl_NetGst" runat="server" Text="0"></asp:Label></span>
+                </div>
+            </div>
+        </div>
+        <!-- TDS Card -->
+        <div class="gl-tax-card">
+            <div class="gl-tax-card-title">
+                <i class="glyphicon glyphicon-tags"></i> TDS Summary
+            </div>
+            <div class="gl-tax-details">
+                <div class="gl-tax-item">
+                    <span class="gl-tax-label">TDS Deducted</span>
+                    <span class="gl-tax-value">&#8377;<asp:Label ID="lbl_TdsDeducted" runat="server" Text="0"></asp:Label></span>
+                </div>
+                <div class="gl-tax-item">
+                    <span class="gl-tax-label">TDS Payable</span>
+                    <span class="gl-tax-value">&#8377;<asp:Label ID="lbl_TdsPayable" runat="server" Text="0"></asp:Label></span>
+                </div>
+                <div class="gl-tax-item">
+                    <span class="gl-tax-label">Net TDS</span>
+                    <span class="gl-tax-value"><asp:Label ID="lbl_NetTds" runat="server" Text="0"></asp:Label></span>
+                </div>
             </div>
         </div>
     </div>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Data;
@@ -28,9 +28,10 @@ protected void btn_Submit_Click(object sender, EventArgs e)
 {
      DateTime date = DateTime.Now;
         string getdate = date.ToString();
+        string hashedPassword = BCrypt.Net.BCrypt.HashPassword(txt_password.Text.Trim());
         string str_changepass = "Update IT_EmployeeRegister set Password=@Password,modifiedon=@modifiedon where Employeekey=@Employeekey";
         SqlCommand cmd = new SqlCommand(str_changepass);
-        cmd.Parameters.AddWithValue("@Password", txt_password.Text.Trim());
+        cmd.Parameters.AddWithValue("@Password", hashedPassword);
         cmd.Parameters.AddWithValue("@modifiedon", getdate);
         cmd.Parameters.AddWithValue("@Employeekey", userkey);
         da.ExecuteNonQuery(cmd);

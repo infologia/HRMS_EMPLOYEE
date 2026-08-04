@@ -27,13 +27,39 @@ public partial class Employee_taskgrids : System.Web.UI.Page
                 DeleteTask(Request.QueryString["taskkey"]);
                 return;
             }
+
+            bool comingFromDetails = false;
+            if (Request.UrlReferrer != null && Request.UrlReferrer.AbsolutePath.IndexOf("createtasknew.aspx", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                comingFromDetails = true;
+            }
+
+            if (!comingFromDetails)
+            {
+                Session["SelectedEmployeeFilter_NewTask"] = null;
+                Session["SelectedMonthFilter_NewTask"] = null;
+                Session["SelectedYearFilter_NewTask"] = null;
+                Session["SelectedWidget_NewTask"] = null;
+            }
             
-            hfActiveStatus.Value = "0";
+            if (Session["SelectedWidget_NewTask"] != null)
+            {
+                hfActiveStatus.Value = Session["SelectedWidget_NewTask"].ToString();
+            }
+            else
+            {
+                hfActiveStatus.Value = "0";
+            }
             
             BindMonthYear(ddlDate, ddlYear);
             CheckAndShowEmployeeFilter();
             LoadProjectHeader();
             LoadDashboard();
+
+            Session.Remove("SelectedEmployeeFilter_NewTask");
+            Session.Remove("SelectedMonthFilter_NewTask");
+            Session.Remove("SelectedYearFilter_NewTask");
+            Session.Remove("SelectedWidget_NewTask");
         }
     }
 
@@ -78,9 +104,16 @@ public partial class Employee_taskgrids : System.Web.UI.Page
         LinkButton btn = (LinkButton)sender;
         hfActiveStatus.Value = btn.CommandArgument;
         int status = int.Parse(hfActiveStatus.Value);
+        
+        if (divEmployeeFilter.Visible)
+        {
+            Session["SelectedEmployeeFilter_NewTask"] = ddlEmployee.SelectedValue;
+        }
+        Session["SelectedMonthFilter_NewTask"] = ddlDate.SelectedValue;
+        Session["SelectedYearFilter_NewTask"] = ddlYear.SelectedValue;
+        Session["SelectedWidget_NewTask"] = hfActiveStatus.Value;
+
         ScriptManager.RegisterStartupScript(this, this.GetType(), "reinitDT", "initDataTable();", true);
-        BindMonthYear(ddlDate, ddlYear);
-        CheckAndShowEmployeeFilter();
         LoadProjectHeader();
         LoadDashboard();
     }
@@ -216,22 +249,18 @@ public partial class Employee_taskgrids : System.Web.UI.Page
     private void CheckAndShowEmployeeFilter()
     {
         string str_userid = this.SC.Userid;
-        string checkQuery = @"SELECT Division FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Employeestatus = 1";
+        string projectKey = Request.QueryString["id"];
         
-        SqlCommand cmd = new SqlCommand(checkQuery);
-        cmd.Parameters.AddWithValue("@EmpId", str_userid);
+        bool isTeamLead = IsUserTeamLead(str_userid, projectKey);
         
-        DataTable dt = DA.GetDataTable(cmd);
-        
-        if (dt != null && dt.Rows.Count > 0)
+        if (isTeamLead)
         {
-            int division = Convert.ToInt32(dt.Rows[0]["Division"]);
-            
-            if (division == 1)
-            {
-                divEmployeeFilter.Visible = true;
-                BindEmployeeDropdown();
-            }
+            divEmployeeFilter.Visible = true;
+            BindEmployeeDropdown();
+        }
+        else
+        {
+            divEmployeeFilter.Visible = false;
         }
     }
 
@@ -239,7 +268,7 @@ public partial class Employee_taskgrids : System.Web.UI.Page
     {
         string query = @"SELECT EmployeeKey, (Firstname + ' ' + Lastname) AS EmployeeName 
                         FROM IT_EmployeeRegister 
-                        WHERE Employeestatus = 1 AND Destination IN (11, 12, 23, 24)
+                        WHERE Employeestatus = 1 
                         ORDER BY Firstname";
         
         DataTable dt = DA.GetDataTable(query);
@@ -255,11 +284,11 @@ public partial class Employee_taskgrids : System.Web.UI.Page
             }
         }
         
-        if (Session["SelectedEmployeeFilter"] != null)
+        if (Session["SelectedEmployeeFilter_NewTask"] != null)
         {
-            if (ddlEmployee.Items.FindByValue(Session["SelectedEmployeeFilter"].ToString()) != null)
+            if (ddlEmployee.Items.FindByValue(Session["SelectedEmployeeFilter_NewTask"].ToString()) != null)
             {
-                ddlEmployee.SelectedValue = Session["SelectedEmployeeFilter"].ToString();
+                ddlEmployee.SelectedValue = Session["SelectedEmployeeFilter_NewTask"].ToString();
             }
         }
         else if (ddlEmployee.Items.FindByValue(this.SC.Userid) != null)
@@ -274,13 +303,29 @@ public partial class Employee_taskgrids : System.Web.UI.Page
         ddlMonth.Items.Add(new ListItem("All", "0"));
         for (int m = 1; m <= 12; m++)
             ddlMonth.Items.Add(new ListItem(new DateTime(2025, m, 1).ToString("MMMM"), (m + 1).ToString()));
-        ddlMonth.SelectedValue = (DateTime.Now.Month + 1).ToString();
+            
+        if (Session["SelectedMonthFilter_NewTask"] != null)
+        {
+            ddlMonth.SelectedValue = Session["SelectedMonthFilter_NewTask"].ToString();
+        }
+        else
+        {
+            ddlMonth.SelectedValue = (DateTime.Now.Month + 1).ToString();
+        }
 
         ddlYr.Items.Clear();
         int currentYear = DateTime.Now.Year;
         for (int y = currentYear - 5; y <= currentYear + 5; y++)
             ddlYr.Items.Add(new ListItem(y.ToString(), y.ToString()));
-        ddlYr.SelectedValue = currentYear.ToString();
+            
+        if (Session["SelectedYearFilter_NewTask"] != null)
+        {
+            ddlYr.SelectedValue = Session["SelectedYearFilter_NewTask"].ToString();
+        }
+        else
+        {
+            ddlYr.SelectedValue = currentYear.ToString();
+        }
     }
 
     private void LoadDashboard()
@@ -315,10 +360,7 @@ public partial class Employee_taskgrids : System.Web.UI.Page
         int month = (monthVal >= 2) ? monthVal - 1 : 0;
         int year = int.Parse(ddlYear.SelectedValue);
 
-        SqlCommand cmdTL = new SqlCommand("SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1");
-        cmdTL.Parameters.AddWithValue("@EmpId", userid);
-        DataTable dtTL = DA.GetDataTable(cmdTL);
-        bool isTeamLead = dtTL != null && dtTL.Rows.Count > 0;
+        bool isTeamLead = IsUserTeamLead(userid, Request.QueryString["id"]);
 
         bool showAllEmployees = isTeamLead && divEmployeeFilter.Visible && ddlEmployee.SelectedValue == "0";
         string filterUserId = userid;
@@ -361,10 +403,7 @@ public partial class Employee_taskgrids : System.Web.UI.Page
         int month = (monthVal >= 2) ? monthVal - 1 : 0;
         int year = int.Parse(ddlYear.SelectedValue);
 
-        SqlCommand cmdTL = new SqlCommand("SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1");
-        cmdTL.Parameters.AddWithValue("@EmpId", userid);
-        DataTable dtTL = DA.GetDataTable(cmdTL);
-        bool isTeamLead = dtTL != null && dtTL.Rows.Count > 0;
+        bool isTeamLead = IsUserTeamLead(userid, Request.QueryString["id"]);
 
         bool showAllEmployees = isTeamLead && divEmployeeFilter.Visible && ddlEmployee.SelectedValue == "0";
         string filterUserId = userid;
@@ -408,10 +447,7 @@ public partial class Employee_taskgrids : System.Web.UI.Page
         int month = (monthVal >= 2) ? monthVal - 1 : 0;
         int year = int.Parse(ddlYear.SelectedValue);
 
-        SqlCommand cmdTL = new SqlCommand("SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1");
-        cmdTL.Parameters.AddWithValue("@EmpId", userid);
-        DataTable dtTL = DA.GetDataTable(cmdTL);
-        bool isTeamLead = dtTL != null && dtTL.Rows.Count > 0;
+        bool isTeamLead = IsUserTeamLead(userid, Request.QueryString["id"]);
 
         bool showAllEmployees = isTeamLead && divEmployeeFilter.Visible && ddlEmployee.SelectedValue == "0";
         string filterUserId = userid;
@@ -456,10 +492,7 @@ public partial class Employee_taskgrids : System.Web.UI.Page
         int month = (monthVal >= 2) ? monthVal - 1 : 0;
         int year = int.Parse(ddlYear.SelectedValue);
 
-        SqlCommand cmdTL = new SqlCommand("SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1");
-        cmdTL.Parameters.AddWithValue("@EmpId", userid);
-        DataTable dtTL = DA.GetDataTable(cmdTL);
-        bool isTeamLead = dtTL != null && dtTL.Rows.Count > 0;
+        bool isTeamLead = IsUserTeamLead(userid, Request.QueryString["id"]);
 
         bool showAllEmployees = isTeamLead && divEmployeeFilter.Visible && ddlEmployee.SelectedValue == "0";
         string filterUserId = userid;
@@ -532,10 +565,7 @@ public partial class Employee_taskgrids : System.Web.UI.Page
         int month = (monthVal >= 2) ? monthVal - 1 : 0;
         int year = int.Parse(ddlYear.SelectedValue);
 
-        SqlCommand cmdTL = new SqlCommand("SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1");
-        cmdTL.Parameters.AddWithValue("@EmpId", userid);
-        DataTable dtTL = DA.GetDataTable(cmdTL);
-        bool isTeamLead = dtTL != null && dtTL.Rows.Count > 0;
+        bool isTeamLead = IsUserTeamLead(userid, Request.QueryString["id"]);
 
         bool showAllEmployees = isTeamLead && divEmployeeFilter.Visible && ddlEmployee.SelectedValue == "0";
         string filterUserId = userid;
@@ -663,10 +693,7 @@ public partial class Employee_taskgrids : System.Web.UI.Page
         int month = (monthVal >= 2) ? monthVal - 1 : 0;
         int year = int.Parse(ddlYear.SelectedValue);
 
-        SqlCommand cmdTL = new SqlCommand("SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1");
-        cmdTL.Parameters.AddWithValue("@EmpId", userid);
-        DataTable dtTL = DA.GetDataTable(cmdTL);
-        bool isTeamLead = dtTL != null && dtTL.Rows.Count > 0;
+        bool isTeamLead = IsUserTeamLead(userid, Request.QueryString["id"]);
 
         bool showAllEmployees = isTeamLead && divEmployeeFilter.Visible && ddlEmployee.SelectedValue == "0";
         string filterUserId = userid;
@@ -764,10 +791,7 @@ public partial class Employee_taskgrids : System.Web.UI.Page
         int month = (monthVal >= 2) ? monthVal - 1 : 0;
         int year = int.Parse(ddlYear.SelectedValue);
 
-        SqlCommand cmdTL = new SqlCommand("SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1");
-        cmdTL.Parameters.AddWithValue("@EmpId", userid);
-        DataTable dtTL = DA.GetDataTable(cmdTL);
-        bool isTeamLead = dtTL != null && dtTL.Rows.Count > 0;
+        bool isTeamLead = IsUserTeamLead(userid, Request.QueryString["id"]);
 
         bool showAllEmployees = isTeamLead && divEmployeeFilter.Visible && ddlEmployee.SelectedValue == "0";
         string filterUserId = userid;
@@ -895,10 +919,7 @@ public partial class Employee_taskgrids : System.Web.UI.Page
         int month = (monthVal >= 2) ? monthVal - 1 : 0;
         int year = int.Parse(ddlYear.SelectedValue);
 
-        SqlCommand cmdTL = new SqlCommand("SELECT 1 FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Division = 1 AND Employeestatus = 1");
-        cmdTL.Parameters.AddWithValue("@EmpId", userid);
-        DataTable dtTL = DA.GetDataTable(cmdTL);
-        bool isTeamLead = dtTL != null && dtTL.Rows.Count > 0;
+        bool isTeamLead = IsUserTeamLead(userid, Request.QueryString["id"]);
 
         bool showAllEmployees = isTeamLead && divEmployeeFilter.Visible && ddlEmployee.SelectedValue == "0";
         string filterUserId = userid;
@@ -1028,11 +1049,34 @@ public partial class Employee_taskgrids : System.Web.UI.Page
     { 
         if (divEmployeeFilter.Visible)
         {
-            Session["SelectedEmployeeFilter"] = ddlEmployee.SelectedValue;
+            Session["SelectedEmployeeFilter_NewTask"] = ddlEmployee.SelectedValue;
         }
+        Session["SelectedMonthFilter_NewTask"] = ddlDate.SelectedValue;
+        Session["SelectedYearFilter_NewTask"] = ddlYear.SelectedValue;
+        Session["SelectedWidget_NewTask"] = hfActiveStatus.Value;
+        
         ScriptManager.RegisterStartupScript(this, this.GetType(), "reinitDT", "initDataTable();", true);
         LoadDashboard(); 
     }
 
-   
+    private bool IsUserTeamLead(string userid, string projectKey)
+    {
+        if (string.IsNullOrEmpty(userid)) return false;
+        
+        if (!string.IsNullOrEmpty(projectKey))
+        {
+            SqlCommand cmdCheckTL = new SqlCommand("SELECT 1 FROM IT_ProjectTeamLeads WHERE ProjectKey = @ProjectKey AND EmployeeKey = @EmpId");
+            cmdCheckTL.Parameters.AddWithValue("@ProjectKey", projectKey);
+            cmdCheckTL.Parameters.AddWithValue("@EmpId", userid);
+            DataTable dtCheckTL = DA.GetDataTable(cmdCheckTL);
+            return dtCheckTL != null && dtCheckTL.Rows.Count > 0;
+        }
+        else
+        {
+            SqlCommand cmdCheckTL = new SqlCommand("SELECT 1 FROM IT_ProjectTeamLeads WHERE EmployeeKey = @EmpId");
+            cmdCheckTL.Parameters.AddWithValue("@EmpId", userid);
+            DataTable dtCheckTL = DA.GetDataTable(cmdCheckTL);
+            return dtCheckTL != null && dtCheckTL.Rows.Count > 0;
+        }
+    }
 }

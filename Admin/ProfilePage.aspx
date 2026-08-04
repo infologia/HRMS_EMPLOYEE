@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Masterpage/AdminMaster.master" AutoEventWireup="true" CodeFile="ProfilePage.aspx.cs" Inherits="WEB_ProfilePage" %>
+<%@ Page Title="" Language="C#" MasterPageFile="~/Masterpage/AdminMaster.master" AutoEventWireup="true" CodeFile="ProfilePage.aspx.cs" Inherits="WEB_ProfilePage" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
        <style>
@@ -52,12 +52,12 @@ asp\:RequiredFieldValidator {
                             <div class="row">
                                 <div class="col-md-6">
                                     <label>Id <span style="color: red"> *</span></label>
-                                    <asp:TextBox ID="txt_admid" runat="server" class="form-control" required="" ReadOnly="true"></asp:TextBox>
+                                     <asp:TextBox ID="txt_admid" runat="server" class="form-control" required="" ReadOnly="true" style="background-color: #eee; cursor: not-allowed;"></asp:TextBox>
 
                                 </div>
                                 <div class="col-md-6" id="div_username" runat="server" visible="false">
                                     <label>Username <span style="color: red"> *</span></label>
-                                    <asp:TextBox ID="txt_username" runat="server" class="form-control" required="" ReadOnly="true" ></asp:TextBox>
+                                     <asp:TextBox ID="txt_username" runat="server" class="form-control" required="" ReadOnly="true" style="background-color: #eee; cursor: not-allowed;"></asp:TextBox>
                                 </div>
                             </div>
                         </div>
@@ -112,7 +112,7 @@ asp\:RequiredFieldValidator {
                             <div class="row">
                                 <div class="col-md-6" id="div_Password" runat="server" Visible="false">
                                     <label>Password </label>
-                                    <asp:TextBox ID="txt_pwd" runat="server" TextMode="Password" CssClass="form-control" ReadOnly="true" ></asp:TextBox>
+                                     <asp:TextBox ID="txt_pwd" runat="server" TextMode="Password" CssClass="form-control" ReadOnly="true" style="background-color: #eee; cursor: not-allowed;"></asp:TextBox>
                                    
                                 </div>
 
@@ -207,14 +207,23 @@ asp\:RequiredFieldValidator {
             
         </asp:Panel>
     </div>
- <script>
-     $('.pickadate').pickadate({
-         format: 'dd/mm/yyyy',
-         selectMonths: true,
-         selectYears: true,
-         closeOnSelect: true
-     });
- </script>
+  <script>
+      $('.pickadate:not([readonly])').pickadate({
+          format: 'dd/mm/yyyy',
+          selectMonths: true,
+          selectYears: true,
+          closeOnSelect: true
+      });
+
+      // Stop pickadate from initializing/triggering on readonly elements
+      $('.pickadate[readonly]').each(function() {
+          var $this = $(this);
+          var picker = $this.pickadate('picker');
+          if (picker) {
+              picker.stop();
+          }
+          $this.closest('.input-group').css('pointer-events', 'none');
+      });
+  </script>
 
 </asp:Content>
-

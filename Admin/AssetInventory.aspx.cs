@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
@@ -176,13 +176,23 @@ public partial class Admin_AssetInventory : System.Web.UI.Page
         cmd.Parameters.AddWithValue("@AssetCondition", txt_assetcondition.Text);
         cmd.Parameters.AddWithValue("@PurchaseCost", txt_purchasedcost.Text);
 
-        cmd.Parameters.AddWithValue("@PurchaseDate",txt_purchaseddate.Text);
+        cmd.Parameters.AddWithValue("@PurchaseDate", ParseDateOrDBNull(txt_purchaseddate.Text));
 
        
         cmd.Parameters.AddWithValue("@AMCDetails", txt_amcdetails.Text);
         cmd.Parameters.AddWithValue("@Status", rd_Status.SelectedValue);
         DA.ExecuteNonQuery(cmd);
-        Response.Redirect("AssetInventoryView.aspx");
+        
+        string successMsg = isEdit ? "Asset Inventory Updated Successfully!" : "Asset Inventory Created Successfully!";
+        
+        ScriptManager.RegisterStartupScript(
+            this,
+            this.GetType(),
+            "toastr_redirect",
+            "showToastr('success','" + successMsg + "');" +
+            "setTimeout(function(){ window.location.href = 'AssetInventoryView.aspx'; }, 2000);",
+            true
+        );
     }
 
     protected void ddl_assettype_SelectedIndexChanged(object sender, EventArgs e)

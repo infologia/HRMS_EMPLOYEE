@@ -440,9 +440,7 @@ public partial class WEB_EmployeeRegisterNew : System.Web.UI.Page
             txt_lname.Text = row["Lastname"].ToString();
             txt_email.Text = row["Email"].ToString();
             txt_phone.Text = row["Phonenumber"].ToString();
-            txt_pwd.TextMode = TextBoxMode.SingleLine;
-            txt_pwd.Attributes["type"] = "text";
-            txt_pwd.Text = row["Password"].ToString();
+            txt_pwd.Attributes["value"] = row["Password"].ToString();
             txt_address.Text = row["Address"].ToString();
             txt_city.Text = row["City"].ToString();
             txt_zipcode.Text = row["Zipcode"].ToString();
@@ -674,24 +672,36 @@ public partial class WEB_EmployeeRegisterNew : System.Web.UI.Page
 
     private void UpdateEmployee(string employeeKey)
     {
-        // Validate password format on server side
-        if (string.IsNullOrWhiteSpace(txt_pwd.Text))
+        string passwordValue = txt_pwd.Text;
+        if (string.IsNullOrEmpty(passwordValue) && !string.IsNullOrEmpty(Request.Form[txt_pwd.UniqueID]))
         {
-            ScriptManager.RegisterStartupScript(this, GetType(), "alert", "toastr.error('Password is required');", true);
-            return;
+            passwordValue = Request.Form[txt_pwd.UniqueID];
         }
-        
-        if (txt_pwd.Text.Length < 6 || txt_pwd.Text.Length > 30)
+
+        bool isAlreadyHashed = passwordValue != null && passwordValue.Length == 60 && 
+                               (passwordValue.StartsWith("$2a$") || passwordValue.StartsWith("$2b$") || passwordValue.StartsWith("$2y$"));
+
+        if (!isAlreadyHashed)
         {
-            ScriptManager.RegisterStartupScript(this, GetType(), "alert", "toastr.error('Password must be between 6 and 30 characters');", true);
-            return;
-        }
-        
-        // Check password contains only allowed characters
-        if (!System.Text.RegularExpressions.Regex.IsMatch(txt_pwd.Text, @"^[a-zA-Z0-9@#$%^&+=*]{6,30}$"))
-        {
-            ScriptManager.RegisterStartupScript(this, GetType(), "alert", "toastr.error('Password can only contain letters, numbers and special characters (@#$%^&+=*)');", true);
-            return;
+            // Validate password format on server side
+            if (string.IsNullOrWhiteSpace(passwordValue))
+            {
+                ScriptManager.RegisterStartupScript(this, GetType(), "alert", "toastr.error('Password is required');", true);
+                return;
+            }
+            
+            if (passwordValue.Length < 6 || passwordValue.Length > 30)
+            {
+                ScriptManager.RegisterStartupScript(this, GetType(), "alert", "toastr.error('Password must be between 6 and 30 characters');", true);
+                return;
+            }
+            
+            // Check password contains only allowed characters
+            if (!System.Text.RegularExpressions.Regex.IsMatch(passwordValue, @"^[a-zA-Z0-9@#$%^&+=*]{6,30}$"))
+            {
+                ScriptManager.RegisterStartupScript(this, GetType(), "alert", "toastr.error('Password can only contain letters, numbers and special characters (@#$%^&+=*)');", true);
+                return;
+            }
         }
         
         string str_newid = "";
@@ -731,7 +741,10 @@ public partial class WEB_EmployeeRegisterNew : System.Web.UI.Page
         cmd.Parameters.AddWithValue("@Lastname", txt_lname.Text);
         cmd.Parameters.AddWithValue("@Email", txt_email.Text);
         cmd.Parameters.AddWithValue("@Phonenumber", txt_phone.Text);
-        string passwordValue = txt_pwd.Text;
+        if (string.IsNullOrEmpty(passwordValue) && !string.IsNullOrEmpty(Request.Form[txt_pwd.UniqueID]))
+        {
+            passwordValue = Request.Form[txt_pwd.UniqueID];
+        }
         if (!(passwordValue.Length == 60 && (passwordValue.StartsWith("$2a$") || passwordValue.StartsWith("$2b$") || passwordValue.StartsWith("$2y$"))))
         {
             passwordValue = BCrypt.Net.BCrypt.HashPassword(passwordValue);

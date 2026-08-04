@@ -25,17 +25,43 @@ public partial class Employee_Overalltaskgrid : System.Web.UI.Page
                 return;
             }
 
+            bool comingFromDetails = false;
+            if (Request.UrlReferrer != null && Request.UrlReferrer.AbsolutePath.IndexOf("DailyTaskDetails.aspx", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                comingFromDetails = true;
+            }
+
+            if (!comingFromDetails)
+            {
+                Session["SelectedEmployeeFilter"] = null;
+                Session["SelectedMonthFilter"] = null;
+                Session["SelectedYearFilter"] = null;
+                Session["SelectedWidget_Overall"] = null;
+            }
+
             Label control1 = this.Master.FindControl("lbl_bread") as Label;
             if (control1 != null)
                 control1.Text = "Overall Task ";
 
-            hfActiveStatus.Value = "0";
+            if (Session["SelectedWidget_Overall"] != null)
+            {
+                hfActiveStatus.Value = Session["SelectedWidget_Overall"].ToString();
+            }
+            else
+            {
+                hfActiveStatus.Value = "0";
+            }
 
             CheckAndShowEmployeeFilter();
             BindMonthDropdown();
             BindYearDropdown();
             
             LoadDashboard();
+
+            Session.Remove("SelectedEmployeeFilter");
+            Session.Remove("SelectedMonthFilter");
+            Session.Remove("SelectedYearFilter");
+            Session.Remove("SelectedWidget_Overall");
         }
     }
 
@@ -49,7 +75,7 @@ public partial class Employee_Overalltaskgrid : System.Web.UI.Page
     {
         string query = @"SELECT EmployeeKey, (Firstname + ' ' + Lastname) AS EmployeeName 
                         FROM IT_EmployeeRegister 
-                        WHERE Employeestatus = 1 AND Destination IN (11, 12, 23, 24)
+                        WHERE Employeestatus = 1 AND Destination IN (9, 11, 12, 23, 24)
                         ORDER BY Firstname";
         
         DataTable dt = DA.GetDataTable(query);
@@ -65,7 +91,14 @@ public partial class Employee_Overalltaskgrid : System.Web.UI.Page
             }
         }
         
-        ddlEmployee.SelectedValue = SC.Userid;
+        if (Session["SelectedEmployeeFilter"] != null)
+        {
+            ddlEmployee.SelectedValue = Session["SelectedEmployeeFilter"].ToString();
+        }
+        else
+        {
+            ddlEmployee.SelectedValue = SC.Userid;
+        }
     }
 
     private void BindMonthDropdown()
@@ -75,7 +108,15 @@ public partial class Employee_Overalltaskgrid : System.Web.UI.Page
         int currentYear = DateTime.Now.Year;
         for (int m = 1; m <= 12; m++)
             ddlMonth.Items.Add(new ListItem(new DateTime(currentYear, m, 1).ToString("MMMM"), m.ToString()));
-        ddlMonth.SelectedValue = DateTime.Now.Month.ToString();
+            
+        if (Session["SelectedMonthFilter"] != null)
+        {
+            ddlMonth.SelectedValue = Session["SelectedMonthFilter"].ToString();
+        }
+        else
+        {
+            ddlMonth.SelectedValue = DateTime.Now.Month.ToString();
+        }
     }
 
     private void BindYearDropdown()
@@ -84,11 +125,23 @@ public partial class Employee_Overalltaskgrid : System.Web.UI.Page
         int currentYear = DateTime.Now.Year;
         for (int y = currentYear - 5; y <= currentYear + 1; y++)
             ddlYear.Items.Add(new ListItem(y.ToString(), y.ToString()));
-        ddlYear.SelectedValue = currentYear.ToString();
+            
+        if (Session["SelectedYearFilter"] != null)
+        {
+            ddlYear.SelectedValue = Session["SelectedYearFilter"].ToString();
+        }
+        else
+        {
+            ddlYear.SelectedValue = currentYear.ToString();
+        }
     }
 
     protected void Filter_Changed(object sender, EventArgs e)
     {
+        Session["SelectedEmployeeFilter"] = ddlEmployee.SelectedValue;
+        Session["SelectedMonthFilter"] = ddlMonth.SelectedValue;
+        Session["SelectedYearFilter"] = ddlYear.SelectedValue;
+        Session["SelectedWidget_Overall"] = hfActiveStatus.Value;
         LoadDashboard();
     }
 
@@ -96,6 +149,12 @@ public partial class Employee_Overalltaskgrid : System.Web.UI.Page
     {
         LinkButton btn = (LinkButton)sender;
         hfActiveStatus.Value = btn.CommandArgument;
+        
+        Session["SelectedEmployeeFilter"] = ddlEmployee.SelectedValue;
+        Session["SelectedMonthFilter"] = ddlMonth.SelectedValue;
+        Session["SelectedYearFilter"] = ddlYear.SelectedValue;
+        Session["SelectedWidget_Overall"] = hfActiveStatus.Value;
+        
         LoadDashboard();
     }
 

@@ -211,6 +211,71 @@ public partial class Admin_generalledger : System.Web.UI.Page
             lbl_PayrollMonth.Text = new DateTime(2025, month, 1).ToString("MMMM");
         else
             lbl_PayrollMonth.Text = new DateTime(year, month, 1).ToString("MMMM yyyy");
+
+        // 5. GST & TDS from Client Invoices (Receivable)
+        SqlCommand cmdTaxRecv = new SqlCommand(@"
+            SELECT 
+                ISNULL(SUM(ISNULL(SGSTAmount, 0) + ISNULL(CGSTAmount, 0) + ISNULL(IGSTAmount, 0)), 0) AS GstCollected,
+                ISNULL(SUM(ISNULL(TDSAmount, 0)), 0) AS TdsDeducted
+            FROM IT_Invoices
+            WHERE (@FYStart IS NULL OR ISNULL(InvoiceDate, CreatedOn) >= @FYStart)
+              AND (@FYEnd   IS NULL OR ISNULL(InvoiceDate, CreatedOn) <= @FYEnd)
+              AND (@Month   = 0     OR MONTH(ISNULL(InvoiceDate, CreatedOn)) = @Month)
+              AND (@Year    = 0     OR YEAR(ISNULL(InvoiceDate, CreatedOn))  = @Year)");
+        cmdTaxRecv.Parameters.AddWithValue("@FYStart", fyStart.HasValue ? (object)fyStart.Value : DBNull.Value);
+        cmdTaxRecv.Parameters.AddWithValue("@FYEnd",   fyEnd.HasValue   ? (object)fyEnd.Value   : DBNull.Value);
+        cmdTaxRecv.Parameters.AddWithValue("@Month",   month);
+        cmdTaxRecv.Parameters.AddWithValue("@Year",    year);
+        DataTable dtTaxRecv = DA.GetDataTable(cmdTaxRecv);
+
+        decimal gstCollected = Convert.ToDecimal(dtTaxRecv.Rows[0]["GstCollected"]);
+        decimal tdsDeducted  = Convert.ToDecimal(dtTaxRecv.Rows[0]["TdsDeducted"]);
+
+        // 6. GST & TDS from Vendor Invoices (Payable)
+        SqlCommand cmdTaxPay = new SqlCommand(@"
+            SELECT 
+                ISNULL(SUM(ISNULL(GSTAmount, 0)), 0) AS GstPaid,
+                ISNULL(SUM(ISNULL(TDSAmount, 0)), 0) AS TdsPayable
+            FROM IT_PayableInvoices
+            WHERE (@FYStart IS NULL OR InvoiceDate >= @FYStart)
+              AND (@FYEnd   IS NULL OR InvoiceDate <= @FYEnd)
+              AND (@Month   = 0     OR MONTH(InvoiceDate) = @Month)
+              AND (@Year    = 0     OR YEAR(InvoiceDate)  = @Year)");
+        cmdTaxPay.Parameters.AddWithValue("@FYStart", fyStart.HasValue ? (object)fyStart.Value : DBNull.Value);
+        cmdTaxPay.Parameters.AddWithValue("@FYEnd",   fyEnd.HasValue   ? (object)fyEnd.Value   : DBNull.Value);
+        cmdTaxPay.Parameters.AddWithValue("@Month",   month);
+        cmdTaxPay.Parameters.AddWithValue("@Year",    year);
+        DataTable dtTaxPay = DA.GetDataTable(cmdTaxPay);
+
+        decimal gstPaid    = Convert.ToDecimal(dtTaxPay.Rows[0]["GstPaid"]);
+        decimal tdsPayable = Convert.ToDecimal(dtTaxPay.Rows[0]["TdsPayable"]);
+
+        // Calculate Net values
+        decimal netGst = gstCollected - gstPaid;
+        decimal netTds = tdsDeducted - tdsPayable;
+
+        // Display results
+        lbl_GstCollected.Text = FormatAmount(gstCollected);
+        lbl_GstPaid.Text      = FormatAmount(gstPaid);
+        if (netGst >= 0)
+        {
+            lbl_NetGst.Text = "<span class='gl-tax-net-payable'>&#8377;" + FormatAmount(netGst) + " (Payable)</span>";
+        }
+        else
+        {
+            lbl_NetGst.Text = "<span class='gl-tax-net-itc'>&#8377;" + FormatAmount(Math.Abs(netGst)) + " (ITC)</span>";
+        }
+
+        lbl_TdsDeducted.Text = FormatAmount(tdsDeducted);
+        lbl_TdsPayable.Text  = FormatAmount(tdsPayable);
+        if (netTds >= 0)
+        {
+            lbl_NetTds.Text = "<span class='gl-tax-net-itc'>&#8377;" + FormatAmount(netTds) + " (Receivable)</span>";
+        }
+        else
+        {
+            lbl_NetTds.Text = "<span class='gl-tax-net-payable'>&#8377;" + FormatAmount(Math.Abs(netTds)) + " (Payable)</span>";
+        }
     }
 
     // ── Ledger Grid ────────────────────────────────────────────────
@@ -222,9 +287,107 @@ public partial class Admin_generalledger : System.Web.UI.Page
         DateTime? fyStart, fyEnd;
         GetFYDates(out fyStart, out fyEnd);
 
-        SqlCommand cmd = new SqlCommand("GL_Griddetails");
-        cmd.CommandType = CommandType.StoredProcedure;
+        string query = @"
+            SELECT *  
+            FROM  
+            (  
+                -- Payroll  
+                SELECT  
+                    CAST(  
+                        CAST(PayrollYear AS VARCHAR(4)) + '-' +  
+                        RIGHT('0' + CAST(PayrollMonth AS VARCHAR(2)), 2) + '-01'  
+                    AS DATE) AS TransDate,  
+                    'Payroll'         AS Source,  
+                    'Payroll Expense' AS Description,  
+                    'Expense'         AS Category,  
+                    SUM(NetPay)       AS Debit,  
+                    0                 AS Credit,
+                    0                 AS GSTAmount,
+                    0                 AS TDSAmount,
+                    'INR'             AS CurrencyCode,
+                    0                 AS ForeignAmount,
+                    1.0               AS ExchangeRate,
+                    SUM(NetPay)       AS ConversionAmount
+                FROM IT_EmployeePayrollDetails  
+                GROUP BY PayrollYear, PayrollMonth  
+  
+                UNION ALL  
+  
+                -- Petty Cash  
+                SELECT  
+                    PC_Date AS TransDate,  
+                    'PettyCash' AS Source,  
+                    PC_Description AS Description,  
+                    CASE WHEN PC_Status = 1 THEN 'Asset' ELSE 'Expense' END AS Category,  
+                    CASE WHEN PC_Status = 1 THEN 0 ELSE PC_Amount END AS Debit,  
+                    CASE WHEN PC_Status = 1 THEN PC_Amount ELSE 0 END AS Credit,
+                    0                 AS GSTAmount,
+                    0                 AS TDSAmount,
+                    'INR'             AS CurrencyCode,
+                    0                 AS ForeignAmount,
+                    1.0               AS ExchangeRate,
+                    PC_Amount         AS ConversionAmount
+                FROM TT_PettyCash  
+  
+                UNION ALL  
+  
+                -- AP Payment  
+                SELECT  
+                    CAST(PD.PD_PaymentDate AS DATE) AS TransDate,  
+                    'Payable' AS Source,  
+                    'Payment to ' + ISNULL(V.ClientName, 'Unknown Vendor')  
+                        + ISNULL(' (' + PD.PD_TransactionNo + ')', '') AS Description,  
+                    'Liability' AS Category,  
+                    PD.PD_PaymentAmount AS Debit,  
+                    0 AS Credit,
+                    ISNULL(AP.AP_GST, 0) AS GSTAmount,
+                    ISNULL(PINV.TDSAmount, 0) AS TDSAmount,
+                    ISNULL(C.CurrencyCode, 'INR') AS CurrencyCode,
+                    ISNULL(AP.AP_Amount, 0) AS ForeignAmount,
+                    ISNULL(AP.AP_Percent, 1.0) AS ExchangeRate,
+                    0.00 AS ConversionAmount
+                FROM IT_APPaymentDetails PD  
+                LEFT JOIN IT_APPaymentEntry AP ON AP.AP_Id = PD.AP_Id  
+                LEFT JOIN IT_ClientDetails V   
+                    ON V.ClientKey = AP.AP_VendorIdNew AND V.PartyType = 1  
+                LEFT JOIN IT_PayableInvoices PINV ON PINV.PayableInvoiceKey = AP.AP_InvoiceId
+                LEFT JOIN IT_Currency C ON PINV.Currency = C.LocalCurrencyID
+  
+                UNION ALL  
+  
+                -- AR Receipt  
+                SELECT  
+                    CAST(PD.PD_PaymentDate AS DATE) AS TransDate,  
+                    'Receivable' AS Source,  
+                    'Receipt from ' + ISNULL(C.ClientName, 'Unknown Client')  
+                        + ISNULL(' (' + PD.PD_TransactionNo + ')', '') AS Description,  
+                    'Income' AS Category,  
+                    0 AS Debit,  
+                    PD.PD_PaymentAmount AS Credit,
+                    ISNULL(AR.AR_GST, 0) AS GSTAmount,
+                    ISNULL(INV.TDSAmount, 0) AS TDSAmount,
+                    ISNULL(CUR.CurrencyCode, 'INR') AS CurrencyCode,
+                    ISNULL(AR.AR_Amount, 0) AS ForeignAmount,
+                    ISNULL(AR.AR_Percent, 1.0) AS ExchangeRate,
+                    AR.AR_ConversionAmount AS ConversionAmount
+                FROM IT_ARPaymentDetails PD  
+                LEFT JOIN IT_ARPaymentEntry AR ON AR.AR_Id = PD.AR_Id  
+                LEFT JOIN IT_ClientDetails C  
+                    ON TRY_CAST(AR.AR_ClientId AS UNIQUEIDENTIFIER) = C.ClientKey  
+                   AND C.PartyType = 2  
+                LEFT JOIN IT_Invoices INV ON INV.InvoiceKey = TRY_CAST(AR.AR_InvoiceId AS INT)
+                LEFT JOIN IT_Currency CUR ON INV.Currency = CUR.LocalCurrencyID
+  
+            ) AS Ledger  
+            WHERE  
+                (@FYStart IS NULL OR TransDate >= @FYStart)  
+                AND (@FYEnd   IS NULL OR TransDate <= @FYEnd)  
+                AND (@Month   IS NULL OR MONTH(TransDate) = @Month)  
+                AND (@Year    IS NULL OR YEAR(TransDate)  = @Year)  
+                AND (@Source  IS NULL OR @Source = '' OR Source = @Source)  
+            ORDER BY TransDate DESC;";
 
+        SqlCommand cmd = new SqlCommand(query);
         cmd.Parameters.AddWithValue("@FYStart", fyStart.HasValue ? (object)fyStart.Value : DBNull.Value);
         cmd.Parameters.AddWithValue("@FYEnd",   fyEnd.HasValue   ? (object)fyEnd.Value   : DBNull.Value);
         cmd.Parameters.AddWithValue("@Month",   month == 0 ? (object)DBNull.Value : month);
@@ -266,6 +429,23 @@ public partial class Admin_generalledger : System.Web.UI.Page
             decimal debit  = dr["Debit"]  != DBNull.Value ? Convert.ToDecimal(dr["Debit"])  : 0;
             decimal credit = dr["Credit"] != DBNull.Value ? Convert.ToDecimal(dr["Credit"]) : 0;
 
+            // Parse foreign currency details safely
+            string cur         = dt.Columns.Contains("CurrencyCode") && dr["CurrencyCode"] != DBNull.Value ? dr["CurrencyCode"].ToString().Trim().ToUpper() : "INR";
+            decimal foreignAmt = dt.Columns.Contains("ForeignAmount") && dr["ForeignAmount"] != DBNull.Value ? Convert.ToDecimal(dr["ForeignAmount"]) : 0;
+            decimal convAmt    = dt.Columns.Contains("ConversionAmount") && dr["ConversionAmount"] != DBNull.Value ? Convert.ToDecimal(dr["ConversionAmount"]) : 0;
+
+            string displayDesc = System.Web.HttpUtility.HtmlEncode(desc);
+            if (cur != "INR" && !string.IsNullOrEmpty(cur) && convAmt > 0)
+            {
+                // Only show foreign amount if it is greater than 0
+                if (foreignAmt > 0)
+                {
+                    displayDesc += " <span class='text-muted' style='font-size:10.5px;'>(" + cur + " " + string.Format("{0:N0}", foreignAmt) + ")</span>";
+                }
+                
+                displayDesc += " <span class='text-success' style='font-size:10.5px;font-weight:600;'>[&#8377;" + string.Format("{0:N0}", convAmt) + "]</span>";
+            }
+
             totalDebit  += debit;
             totalCredit += credit;
 
@@ -276,7 +456,7 @@ public partial class Admin_generalledger : System.Web.UI.Page
                 "<tr>" +
                     "<td class='date-cell'>" + date + "</td>" +
                     "<td>" + SourcePill(source) + "</td>" +
-                    "<td>" + System.Web.HttpUtility.HtmlEncode(desc) + "</td>" +
+                    "<td>" + displayDesc + "</td>" +
                     "<td>" + CategoryBadge(cat) + "</td>" +
                     debitCell  +
                     creditCell +

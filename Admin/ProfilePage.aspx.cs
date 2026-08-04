@@ -54,6 +54,7 @@ else // Employee
         if (this.userroles != "0")
         {
             txt_dob.ReadOnly = true;
+            txt_dob.Attributes.Add("style", "background-color: #eee; cursor: not-allowed; pointer-events: none;");
             ddl_depart.Attributes.Add("disabled", "disabled");
             ddl_dest.Attributes.Add("disabled", "disabled");
             ddl_division.Attributes.Add("disabled", "disabled");
@@ -108,7 +109,28 @@ else // Employee
             txt_email.Text = dt_dashboard.Rows[0]["Email"].ToString();
             txt_pwd.Attributes["value"] = dt_dashboard.Rows[0]["password"].ToString();
             txt_phone.Text = dt_dashboard.Rows[0]["Phonenumber"].ToString();
-            txt_dob.Text = dt_dashboard.Rows[0]["DOB"].ToString();
+            if (dt_dashboard.Rows[0]["DOB"] != DBNull.Value && !string.IsNullOrEmpty(dt_dashboard.Rows[0]["DOB"].ToString()))
+            {
+                string rawDob = dt_dashboard.Rows[0]["DOB"].ToString();
+                DateTime parsedDob;
+                string[] parseFormats = { "dd/MM/yyyy", "yyyy-MM-dd", "MM/dd/yyyy", "yyyy-MM-dd HH:mm:ss", "dd/MM/yyyy HH:mm:ss" };
+                if (DateTime.TryParseExact(rawDob.Trim(), parseFormats, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out parsedDob))
+                {
+                    txt_dob.Text = parsedDob.ToString("dd/MM/yyyy");
+                }
+                else if (DateTime.TryParse(rawDob, out parsedDob))
+                {
+                    txt_dob.Text = parsedDob.ToString("dd/MM/yyyy");
+                }
+                else
+                {
+                    txt_dob.Text = rawDob;
+                }
+            }
+            else
+            {
+                txt_dob.Text = "";
+            }
             txt_address.Text = dt_dashboard.Rows[0]["Address"].ToString();
             ddl_dest.SelectedValue = dt_dashboard.Rows[0]["Destination"].ToString();
             ddl_depart.SelectedValue = dt_dashboard.Rows[0]["Department"].ToString();
@@ -223,14 +245,22 @@ else // Employee
         cmd.Parameters.AddWithValue("@Lastname", txt_lname.Text);
         cmd.Parameters.AddWithValue("@Email", txt_email.Text);
         DateTime dob;
-
-        if (DateTime.TryParseExact(txt_dob.Text,
-                                   "yyyy-MM-dd",
+        string[] formats = { "dd/MM/yyyy", "yyyy-MM-dd", "MM/dd/yyyy" };
+        if (DateTime.TryParseExact(txt_dob.Text.Trim(),
+                                   formats,
                                    System.Globalization.CultureInfo.InvariantCulture,
                                    System.Globalization.DateTimeStyles.None,
                                    out dob))
         {
             cmd.Parameters.Add("@DOB", SqlDbType.Date).Value = dob;
+        }
+        else if (DateTime.TryParse(txt_dob.Text, out dob))
+        {
+            cmd.Parameters.Add("@DOB", SqlDbType.Date).Value = dob;
+        }
+        else
+        {
+            cmd.Parameters.Add("@DOB", SqlDbType.Date).Value = DBNull.Value;
         }
         cmd.Parameters.AddWithValue("@Phonenumber", txt_phone.Text);
 
@@ -260,11 +290,13 @@ else // Employee
         cmd.Parameters.AddWithValue("@Createdby", this.SC.Userid);
         DA.ExecuteNonQuery(cmd);
 
-        ClientScript.RegisterStartupScript(
-      this.GetType(),
-      "Infologia",
-      "<script>alert('Profile updated successfully'); window.location='Admin/Dashboard.aspx';</script>"
-  );
+        ScriptManager.RegisterStartupScript(
+            this,
+            GetType(),
+            "toastr_success",
+            "showToastr('success', 'Profile updated successfully'); setTimeout(function(){ window.location.href = '/Admin/Dashboard.aspx'; }, 2000);",
+            true
+        );
 
 
     }
@@ -291,14 +323,22 @@ else // Employee
         cmd.Parameters.AddWithValue("@Email", txt_email.Text);
         cmd.Parameters.AddWithValue("@Phonenumber", txt_phone.Text);
         DateTime dob;
-
-        if (DateTime.TryParseExact(txt_dob.Text,
-                                   "yyyy-MM-dd",
+        string[] formats = { "dd/MM/yyyy", "yyyy-MM-dd", "MM/dd/yyyy" };
+        if (DateTime.TryParseExact(txt_dob.Text.Trim(),
+                                   formats,
                                    System.Globalization.CultureInfo.InvariantCulture,
                                    System.Globalization.DateTimeStyles.None,
                                    out dob))
         {
             cmd.Parameters.Add("@DOB", SqlDbType.Date).Value = dob;
+        }
+        else if (DateTime.TryParse(txt_dob.Text, out dob))
+        {
+            cmd.Parameters.Add("@DOB", SqlDbType.Date).Value = dob;
+        }
+        else
+        {
+            cmd.Parameters.Add("@DOB", SqlDbType.Date).Value = DBNull.Value;
         }
         cmd.Parameters.AddWithValue("@Address", txt_address.Text);
         //cmd.Parameters.AddWithValue("@State", ddl_state.SelectedValue);
@@ -351,10 +391,12 @@ else // Employee
             redirectUrl = "/Employee/Timings.aspx";
         }
 
-        ClientScript.RegisterStartupScript(
-            this.GetType(),
-            "UpdateSuccess",
-            "<script>alert('Profile updated successfully'); window.location='" + redirectUrl + "';</script>"
+        ScriptManager.RegisterStartupScript(
+            this,
+            GetType(),
+            "toastr_success",
+            "showToastr('success', 'Profile updated successfully'); setTimeout(function(){ window.location.href = '" + redirectUrl + "'; }, 2000);",
+            true
         );
 
 

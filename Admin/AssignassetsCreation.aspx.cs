@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Activities.Expressions;
 using System.Collections;
 using System.Collections.Generic;
@@ -164,6 +164,7 @@ public partial class Admin_AssignassetsCreation : System.Web.UI.Page
                 SELECT ModelSerialNumber 
                 FROM IT_AssignedAssets
                 WHERE ModelSerialNumber IS NOT NULL
+                  AND (Status = 1 OR ReturnedDate IS NULL OR ReturnedDate > GETDATE())
             )
             OR A.AssetKey = (
                 SELECT ModelSerialNumber 
@@ -219,6 +220,7 @@ public partial class Admin_AssignassetsCreation : System.Web.UI.Page
             SELECT ModelSerialNumber 
             FROM IT_AssignedAssets
             WHERE ModelSerialNumber IS NOT NULL
+              AND (Status = 1 OR ReturnedDate IS NULL OR ReturnedDate > GETDATE())
         )
         OR A.AssetKey = (
             SELECT ModelSerialNumber 
@@ -272,6 +274,19 @@ public partial class Admin_AssignassetsCreation : System.Web.UI.Page
     {
         Guid userId = new Guid(SC.Userid.ToString());
 
+        if (!string.IsNullOrEmpty(txt_returneddate.Text) && !string.IsNullOrEmpty(txt_assigneddate.Text))
+        {
+            DateTime assignDate = DateTime.ParseExact(txt_assigneddate.Text, "dd/MM/yyyy", null);
+            DateTime returnDate = DateTime.ParseExact(txt_returneddate.Text, "dd/MM/yyyy", null);
+
+            if (returnDate <= assignDate)
+            {
+                ClientScript.RegisterStartupScript(this.GetType(), "err",
+                    "<script>alert('Returned Date must be greater than Assigned Date');</script>");
+                return;
+            }
+        }
+
         if (Request.QueryString["id"] != null)
         {
            
@@ -294,19 +309,6 @@ public partial class Admin_AssignassetsCreation : System.Web.UI.Page
                 ParseDateOrDBNull(txt_returneddate.Text));
             cmd.Parameters.AddWithValue("@Status", rd_Status.Text);
             cmd.Parameters.Add("@ModifiedBy", SqlDbType.UniqueIdentifier).Value = userId;
-
-            if (!string.IsNullOrEmpty(txt_returneddate.Text))
-            {
-                DateTime assignDate = DateTime.ParseExact(txt_assigneddate.Text, "dd/MM/yyyy", null);
-                DateTime returnDate = DateTime.ParseExact(txt_returneddate.Text, "dd/MM/yyyy", null);
-
-                if (returnDate <= assignDate)
-                {
-                    ClientScript.RegisterStartupScript(this.GetType(), "err",
-                        "<script>alert('Returned Date must be greater than Assigned Date');</script>");
-                    return;
-                }
-            }
 
             DA.ExecuteNonQuery(cmd);
             ScriptManager.RegisterStartupScript(

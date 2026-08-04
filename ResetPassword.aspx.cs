@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -45,8 +45,7 @@ public partial class ResetPassword : System.Web.UI.Page
  
     protected void btn_Submit_Click(object sender, EventArgs e)
     {
-        // string val = de.Register(txt_newpass.Text.Trim());
-        string val = txt_newpass.Text.Trim();
+        string val = BCrypt.Net.BCrypt.HashPassword(txt_newpass.Text.Trim());
 
         string str_Sqlupdate = "UPDATE IT_EmployeeRegister SET password=@password where employeekey=@employeekey";
         SqlCommand cmd = new SqlCommand(str_Sqlupdate);

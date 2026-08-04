@@ -44,7 +44,7 @@ public partial class Employee_taskdashboard : System.Web.UI.Page
     {
         string query = @"SELECT EmployeeKey, (Firstname + ' ' + Lastname) AS EmployeeName 
                         FROM IT_EmployeeRegister 
-                        WHERE Employeestatus = 1 AND Destination IN (11, 12, 23, 24)
+                        WHERE Employeestatus = 1 AND Destination IN (9, 11, 12, 23, 24)
                         ORDER BY Firstname";
         
         DataTable dt = DA.GetDataTable(query);

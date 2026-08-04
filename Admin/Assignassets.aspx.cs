@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
@@ -22,18 +22,34 @@ public partial class Admin_Assignassets : System.Web.UI.Page
             control1.Text = "Assets Management";
         if (!Page.IsPostBack)
         {
+            ddl_Month.SelectedValue = DateTime.Now.Month.ToString();
+            ddl_Year.SelectedValue = DateTime.Now.Year.ToString();
             this.Assetsgrid();
         }
     }
     private void Assetsgrid()
     {
-        string str_viewUser = @"SELECT a.AssignedAssets,CONCAT(b.Firstname, ' ',b.Lastname) AS EmployeeKey,d.Brand as Brand, c.EquipmentName as EquipmentName, e.ModelSerialNumber as ModelSerialNumber, CONVERT(VARCHAR(10), a.AssignedDate, 105) AS AssignedDate, a.Status FROM IT_AssignedAssets a LEFT JOIN IT_EmployeeRegister b ON a.EmployeeKey = b.Employeekey LEFT JOIN IT_Assets e on a.ModelSerialNumber = e.AssetKey left join IT_Assets d on a.Brand = d.AssetKey left join IT_Assets c on a.AssetKey=c.AssetKey";
+        string str_viewUser = @"SELECT a.AssignedAssets,CONCAT(b.Firstname, ' ',b.Lastname) AS EmployeeKey,d.Brand as Brand, c.EquipmentName as EquipmentName, e.ModelSerialNumber as ModelSerialNumber, CONVERT(VARCHAR(10), a.AssignedDate, 105) AS AssignedDate, a.Status FROM IT_AssignedAssets a LEFT JOIN IT_EmployeeRegister b ON a.EmployeeKey = b.Employeekey LEFT JOIN IT_Assets e on a.ModelSerialNumber = e.AssetKey left join IT_Assets d on a.Brand = d.AssetKey left join IT_Assets c on a.AssetKey=c.AssetKey WHERE 1=1";
 
-        SqlCommand cmd = new SqlCommand(str_viewUser);
+        SqlCommand cmd = new SqlCommand();
+
+        if (!string.IsNullOrEmpty(ddl_Month.SelectedValue))
+        {
+            str_viewUser += " AND MONTH(a.AssignedDate) = @Month";
+            cmd.Parameters.AddWithValue("@Month", ddl_Month.SelectedValue);
+        }
+        if (!string.IsNullOrEmpty(ddl_Year.SelectedValue))
+        {
+            str_viewUser += " AND YEAR(a.AssignedDate) = @Year";
+            cmd.Parameters.AddWithValue("@Year", ddl_Year.SelectedValue);
+        }
+
+        cmd.CommandText = str_viewUser;
         DataTable dt = DA.GetDataTable(cmd);
         DataSet ds = new DataSet();
         ds.Merge(dt);
 
+        PH_assests.Controls.Clear();
         if (dt.Rows.Count > 0)
         {
             if (!ds.Tables[0].Columns.Contains("ActiveText"))
@@ -49,5 +65,10 @@ public partial class Admin_Assignassets : System.Web.UI.Page
             }
             this.PH.LoadGridItem(ds, PH_assests, "Assignedassets.txt", "");
         }
+    }
+
+    protected void ddl_Filter_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        this.Assetsgrid();
     }
 }

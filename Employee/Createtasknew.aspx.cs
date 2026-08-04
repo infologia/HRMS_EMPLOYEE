@@ -292,18 +292,48 @@ public partial class Employee_Createtask : System.Web.UI.Page
     private bool CheckFullAccess()
     {
         string str_userid = this.SC.Userid;
-        string query = @"SELECT Division, Destination FROM IT_EmployeeRegister WHERE Employeekey = @EmpId AND Employeestatus = 1";
-        SqlCommand cmd = new SqlCommand(query);
-        cmd.Parameters.AddWithValue("@EmpId", str_userid);
-        DataTable dt = DA.GetDataTable(cmd);
+        if (string.IsNullOrEmpty(str_userid)) return false;
 
-        if (dt.Rows.Count > 0)
+        string projectKeyStr = "";
+        
+        // 1. Try to get project key from query string 'project'
+        if (!string.IsNullOrEmpty(Request.QueryString["project"]))
         {
-            int division = Convert.ToInt32(dt.Rows[0]["Division"]);
-            int destination = dt.Rows[0]["Destination"] != DBNull.Value ? Convert.ToInt32(dt.Rows[0]["Destination"]) : 0;
-            return (division == 1 || destination == 24 || destination == 11);
+            projectKeyStr = Request.QueryString["project"];
         }
-        return false;
+        // 2. Try to get project key from ddlProject selected value
+        else if (!string.IsNullOrEmpty(ddlProject.SelectedValue) && ddlProject.SelectedValue != "0")
+        {
+            projectKeyStr = ddlProject.SelectedValue;
+        }
+        // 3. Try to get project key from the task (if editing/viewing a task via QueryString 'id')
+        else if (!string.IsNullOrEmpty(Request.QueryString["id"]))
+        {
+            string taskId = Request.QueryString["id"];
+            SqlCommand cmdProj = new SqlCommand("SELECT ProjectName FROM IT_TaskCreation WHERE TaskKey = @TaskKey");
+            cmdProj.Parameters.AddWithValue("@TaskKey", taskId);
+            DataTable dtProj = DA.GetDataTable(cmdProj);
+            if (dtProj != null && dtProj.Rows.Count > 0)
+            {
+                projectKeyStr = dtProj.Rows[0]["ProjectName"].ToString();
+            }
+        }
+
+        if (!string.IsNullOrEmpty(projectKeyStr))
+        {
+            SqlCommand cmdCheckTL = new SqlCommand("SELECT 1 FROM IT_ProjectTeamLeads WHERE ProjectKey = @ProjectKey AND EmployeeKey = @EmpId");
+            cmdCheckTL.Parameters.AddWithValue("@ProjectKey", projectKeyStr);
+            cmdCheckTL.Parameters.AddWithValue("@EmpId", str_userid);
+            DataTable dtCheckTL = DA.GetDataTable(cmdCheckTL);
+            return dtCheckTL != null && dtCheckTL.Rows.Count > 0;
+        }
+        else
+        {
+            SqlCommand cmdCheckTL = new SqlCommand("SELECT 1 FROM IT_ProjectTeamLeads WHERE EmployeeKey = @EmpId");
+            cmdCheckTL.Parameters.AddWithValue("@EmpId", str_userid);
+            DataTable dtCheckTL = DA.GetDataTable(cmdCheckTL);
+            return dtCheckTL != null && dtCheckTL.Rows.Count > 0;
+        }
     }
 
     private bool CheckIsProjectTeamLead(int projectKey)
@@ -514,7 +544,7 @@ public partial class Employee_Createtask : System.Web.UI.Page
             e.Firstname
         FROM IT_EmployeeRegister e
         WHERE e.Employeestatus = 1
-        AND e.Destination IN (11, 12, 23, 24)
+        AND e.Destination IN (9, 11, 12, 23, 24)
         ORDER BY e.Firstname";
 
         SqlCommand cmd = new SqlCommand(sql);
@@ -542,7 +572,7 @@ public partial class Employee_Createtask : System.Web.UI.Page
             e.Firstname
         FROM IT_EmployeeRegister e
         WHERE e.Employeestatus = 1
-        AND e.Destination IN (11, 12, 23, 24)
+        AND e.Destination IN (9, 11, 12, 23, 24)
         ORDER BY e.Firstname";
 
         SqlCommand cmd = new SqlCommand(sql);

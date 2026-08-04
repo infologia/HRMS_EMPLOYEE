@@ -16,35 +16,6 @@ public partial class Login : System.Web.UI.Page
     {
         this.SC = new SessionCustom();
         this.DA = new DataAccess();
-
-        if (!IsPostBack)
-        {
-            try
-            {
-                string selectPlainQuery = "SELECT Employeekey, Password FROM IT_EmployeeRegister";
-                SqlCommand selectCmd = new SqlCommand(selectPlainQuery);
-                DataTable dtEmployees = this.DA.GetDataTable(selectCmd);
-                foreach (DataRow row in dtEmployees.Rows)
-                {
-                    string empKey = row["Employeekey"].ToString();
-                    string rawPassword = row["Password"].ToString();
-
-                    if (!string.IsNullOrEmpty(rawPassword) && !(rawPassword.Length == 60 && (rawPassword.StartsWith("$2a$") || rawPassword.StartsWith("$2b$") || rawPassword.StartsWith("$2y$"))))
-                    {
-                        string hashedPassword = BCrypt.Net.BCrypt.HashPassword(rawPassword);
-                        string updateQuery = "UPDATE IT_EmployeeRegister SET Password = @Password WHERE Employeekey = @Employeekey";
-                        SqlCommand updateCmd = new SqlCommand(updateQuery);
-                        updateCmd.Parameters.AddWithValue("@Password", hashedPassword);
-                        updateCmd.Parameters.AddWithValue("@Employeekey", empKey);
-                        this.DA.ExecuteNonQuery(updateCmd);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Fallback silently if any error happens so the page doesn't block
-            }
-        }
     }
     protected void btn_Submit_Click(object sender, EventArgs e)
     {
@@ -57,6 +28,7 @@ public partial class Login : System.Web.UI.Page
         {
             string password = dt_login.Rows[0]["Password"].ToString();
             bool isValid = false;
+            bool needsHashing = false;
 
             if (password.Length == 60 && (password.StartsWith("$2a$") || password.StartsWith("$2b$") || password.StartsWith("$2y$")))
             {
@@ -65,10 +37,25 @@ public partial class Login : System.Web.UI.Page
             else
             {
                 isValid = (txt_Pwd.Text == password);
+                needsHashing = true;
             }
 
             if (isValid)
             {
+                if (needsHashing)
+                {
+                    try
+                    {
+                        string hashedPassword = BCrypt.Net.BCrypt.HashPassword(txt_Pwd.Text);
+                        string updateQuery = "UPDATE IT_EmployeeRegister SET Password = @Password WHERE Employeekey = @Employeekey";
+                        SqlCommand updateCmd = new SqlCommand(updateQuery);
+                        updateCmd.Parameters.AddWithValue("@Password", hashedPassword);
+                        updateCmd.Parameters.AddWithValue("@Employeekey", dt_login.Rows[0]["Employeekey"].ToString());
+                        this.DA.ExecuteNonQuery(updateCmd);
+                    }
+                    catch { }
+                }
+
                 string str_role = dt_login.Rows[0]["roles"].ToString();
                 if (str_role == "0")
                 {
