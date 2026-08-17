@@ -1,0 +1,26 @@
+name: Deploy HRMS to IIS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Get latest code
+        uses: actions/checkout@v4
+
+      - name: Deploy to IIS folder
+        shell: powershell
+        run: |
+          $destination = "C:\HRMS_EMPLOYEE"
+
+          Get-ChildItem -Path $destination -Force |
+            Remove-Item -Recurse -Force
+
+          Copy-Item -Path "$env:GITHUB_WORKSPACE\*" `
+            -Destination $destination `
+            -Recurse -Force
