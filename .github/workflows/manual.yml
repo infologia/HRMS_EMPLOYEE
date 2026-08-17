@@ -1,0 +1,14 @@
+</> YAML
+
+nmae: CI/CD
+
+on:
+ push:
+  runs-on: windows-latest
+
+  steps:
+   - name: build
+   uses: actions/checkout@v4
+
+   -name: build
+   run: echo "Build completed"
