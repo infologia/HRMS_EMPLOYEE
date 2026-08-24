@@ -14,7 +14,7 @@
 
                             <div class="text-center">
                                 <div class="icon-object border-slate-300 text-slate-300"><i class="icon-user"></i></div>
-                                <h5 class="content-group">Change Password <small class="display-block">Your credential</small></h5>
+                                <h5 class="content-group">Change Password <small class="display-block">Your credentials</small></h5>
                             </div>
 
                             <div class="form-group has-feedback has-feedback-left">
